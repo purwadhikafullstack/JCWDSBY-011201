@@ -56,6 +56,7 @@ const main = () => {
   app.use(cors());
   app.use(json());
   app.use('/api', router);
+  app.use('./assets', express.static('assets'));
 
   globalAPIErrorHandler(app);
   serveWebProjectBuildResult(app);

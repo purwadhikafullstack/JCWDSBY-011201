@@ -10,4 +10,9 @@ export const getSampleDataById = async () => {
 
 export const createSampleData = async () => {
   console.log('Successfully create new sample data');
+  return await Sample.create({ name: 'Sample data' })
+};
+
+export const uploadSampleData = async (image) => {
+  return await Sample.bulkCreate(image);
 };
