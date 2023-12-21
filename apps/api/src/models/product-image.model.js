@@ -1,6 +1,6 @@
 import { Model, DataTypes } from 'sequelize';
 
-export default class categories extends Model {
+export default class product_image extends Model {
   /**
    * Helper method for defining associations.
    * This method is not a part of Sequelize lifecycle.
@@ -8,20 +8,19 @@ export default class categories extends Model {
    */
   static associate(models) {
     // define association here
-    categories.hasMany(models.product);
   }
 }
 
 export const init = (sequelize) => {
-  categories.init(
+  product_image.init(
     {
-      name: DataTypes.STRING,
+      productId: DataTypes.INTEGER,
       image: DataTypes.STRING,
       deletedAt: DataTypes.DATE,
     },
     {
       sequelize,
-      modelName: 'categories',
+      modelName: 'product_image',
       paranoid: true,
     }
   );

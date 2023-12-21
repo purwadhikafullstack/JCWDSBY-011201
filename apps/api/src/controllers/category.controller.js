@@ -1,21 +1,21 @@
-import categories from "../models/categories.model";
+import category from "../models/categories.model";
 import { unlink } from "fs";
 
 const dir = './src/assets/category/';
 
 export const createCategory = async (data) => {
-  return await categories.create(data);
+  return await category.create(data);
 };
 
 export const getCategoryData = async () => {
-  return await categories.findAll();
+  return await category.findAll();
 };
 
 export const updateCategory = async (id, data, image) => { 
   if(image){
-    const prevData = await categories.findByPk(id);
+    const prevData = await category.findByPk(id);
 
-    await categories.update(
+    await category.update(
       { 
         name: data.name, 
         image: image.filename 
@@ -24,11 +24,11 @@ export const updateCategory = async (id, data, image) => {
     });
 
     unlink(dir + prevData.image, (err) => {
-      if (err) Error(err);
+      if (err) throw Error(err);
     });
   }
 
-  await categories.update(
+  await category.update(
     { 
       name: data.name
     }, 
@@ -37,11 +37,11 @@ export const updateCategory = async (id, data, image) => {
 };
 
 export const deleteCategory = async (id) => { 
-  const prevData = await categories.findByPk(id);
+  const prevData = await category.findByPk(id);
 
-  await categories.destroy({ where: { id } });
+  await category.destroy({ where: { id } });
 
   unlink(dir + prevData.image, (err) => {
-    if (err) Error(err);
+    if (err) throw Error(err);
   });
 };
