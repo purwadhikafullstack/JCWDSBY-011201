@@ -9,6 +9,7 @@ import NewPassword from './pages/NewPassword';
 import VerifyAccount from './pages/VerifyAccount';
 import LoginAdmin from './pages/LoginAdmin';
 import Landing from './pages/Landing';
+import Cart from './pages/cart';
 import { gapi } from 'gapi-script';
 import { useEffect, useState } from 'react';
 import AdminDashboard from './pages/AdminDashboard';
@@ -55,6 +56,7 @@ function App() {
         {/* Fahmi */}
         <Route path="/manage/category" element={<ManageCategories />} />
         {/* Afra */}
+        <Route path="/cart" element={<Cart />} />
 
       </Routes>
       {/* Wahyu Widiantoro */}

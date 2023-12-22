@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { sampleRouter } from './routers/sample.router';
+import { cartRouter } from './routers/carts.router';
 import { authRouter } from './routers/auth.router';
 import { categoryRouter } from './routers/category.router';
 import { productRouter } from './routers/product.router';
@@ -23,5 +24,6 @@ router.use('/product', productRouter);
 router.use('/product/image', productImageRouter);
 
 //Afra
+router.use('/cart', cartRouter);
 
 export default router;
