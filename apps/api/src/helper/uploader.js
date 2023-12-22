@@ -13,7 +13,7 @@ const uploader = (dir) => {
             } else {
                 fs.mkdirSync(path, (err) => {
                     if (err) {
-                        console.log("error creating directory", err);
+                        // console.log("error creating directory", err);
                         cb(err);
                     } else {
                         cb(null, path);
@@ -27,10 +27,10 @@ const uploader = (dir) => {
     })
 
     const fileFilter = (req, file, cb) => {
-        if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+        if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' || file.mimetype === 'image/gif' || file.mimetype === 'image/jpg') {
             cb(null, true);
         } else {
-            cb(new Error('Your file extension is denied, please upload jpg, jpeg, png, or gif file.'), false);
+            cb(Error('Your file extension is denied, please upload jpg, jpeg, png, or gif file.'), false);
         }
     };
 

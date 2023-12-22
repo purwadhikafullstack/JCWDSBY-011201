@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import { validateToken } from '../middleware/tokenValidation';
-import signUp from './auth/signup';
+import signUp from './auth/signUp';
 import login from './auth/login';
 import verifyAccount from './auth/verifyAccount';
-import googleSignUp from './auth/socialsignup';
+import googleSignUp from './auth/socialSignUp';
 import googleLogin from './auth/socialLogin';
 import loginAdmin from './auth/loginAdmin';
 import keepLogin from './auth/keepLogin';

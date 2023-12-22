@@ -1,13 +1,12 @@
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Home from './pages/home/Home';
+import ManageCategories from './pages/manage/category/ManageCategories';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import Forgot from './pages/Forgot';
 import NewPassword from './pages/NewPassword';
 import VerifyAccount from './pages/VerifyAccount';
-import VerifyEmail from './pages/VerifyEmail';
 import LoginAdmin from './pages/LoginAdmin';
 import Landing from './pages/Landing';
 import { gapi } from 'gapi-script';
@@ -36,24 +35,28 @@ function App() {
       setIsLoading(false);
     }, 1000);
   }, [window.location.pathname]);
-  // Wahyu Widiantoro
+
+  // Fahmi
+
+  // Afra
 
   return (
     <>
-      <BrowserRouter>
-        <Routes>
-          {/* Wahyu Widiantoro */}
-          <Route path="/" element={<Landing />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/forgot" element={<Forgot />} />
-          <Route path="/forgot/reset-password" element={<NewPassword />} />
-          <Route path="/signup/verify-account" element={<VerifyAccount />} />
-          <Route path="/auth/login" element={<LoginAdmin />} />
-          <Route path="/auth/dashboard" element={<AdminDashboard />} />
-          {/* Wahyu Widiantoro */}
-        </Routes>
-      </BrowserRouter>
+      <Routes>
+        {/* Wahyu Widiantoro */}
+        <Route path="/" element={<Landing />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/forgot" element={<Forgot />} />
+        <Route path="/forgot/reset-password" element={<NewPassword />} />
+        <Route path="/signup/verify-account" element={<VerifyAccount />} />
+        <Route path="/auth/login" element={<LoginAdmin />} />
+        <Route path="/auth/dashboard" element={<AdminDashboard />} />
+        {/* Fahmi */}
+        <Route path="/manage/category" element={<ManageCategories />} />
+        {/* Afra */}
+
+      </Routes>
       {/* Wahyu Widiantoro */}
       <ToastContainer
         position="top-right"

@@ -4,13 +4,14 @@ import App from './App.jsx';
 import './index.css';
 import { Provider } from 'react-redux';
 import globalState from './redux/index.js';
+import { BrowserRouter } from 'react-router-dom';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    {/* Wahyu Widiantoro */}
     <Provider store={globalState}>
-      <App />
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
     </Provider>
-    {/* Wahyu Widiantoro */}
-  </React.StrictMode>,
+  </React.StrictMode>
 );
