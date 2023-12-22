@@ -16,3 +16,9 @@ export const DB_PORT = process.env.DB_PORT || 3306;
 export const DB_USER = process.env.DB_USER || 'root';
 export const DB_PASSWORD = process.env.DB_PASSWORD || null;
 export const DB_NAME = process.env.DB_NAME;
+
+//Wahyu Widiantoro
+export const MAILER_USER = process.env.MAILER_USER;
+export const MAILER_PASS = process.env.MAILER_PASS;
+export const APP_URL = process.env.APP_URL;
+export const SCRT_KEY = process.env.SCRT_KEY;
