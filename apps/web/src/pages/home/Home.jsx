@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import reactLogo from '../../assets/react.svg';
 import viteLogo from '/vite.svg';
-import './Home.css';
 
 function Home() {
   const [sampleData, setSampleData] = useState([]);
