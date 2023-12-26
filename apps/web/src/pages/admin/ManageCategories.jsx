@@ -1,106 +1,163 @@
-import { useEffect, useState } from 'react';
-import { Sidebar, Button, Label, Modal, TextInput, ModalBody, ModalFooter, ModalHeader, FileInput } from 'flowbite-react'
-import { HiHome, HiChartPie, HiInbox, HiShoppingBag, HiTable, HiUser, HiViewBoards } from 'react-icons/hi';
-import { GiHamburgerMenu } from "react-icons/gi";
-import { IoMdListBox } from "react-icons/io";
-import { BsBoxFill } from "react-icons/bs";
-import { FaPlus } from "react-icons/fa6";
+import { useEffect, useState, useRef } from 'react';
+import AdminSidebar from '../../components/AdminSidebar';
+import LayoutPageAdmin from '../../components/LayoutPageAdmin';
+import BoxAddItem from '../../components/BoxAddItem';
+import CardCategory from '../../components/CardCategory';
+import API_CALL from '../../helpers/API';
+import ModalCategory from '../../components/ModalCategory';
+import { MAX_SIZE, REGEX_FILE_TYPE } from '../../constant/file';
 
 const ManageCategories = () => {
     const [openModal, setOpenModal] = useState(false);
     const [categoryName, setCategoryName] = useState('');
+    const [imageSrc, setImageSrc] = useState(null);
+    const [categoryId, setCategoryId] = useState(null);
+    const [file, setFile] = useState(null);
+    const [error, setError] = useState({ size: false, requiredName: false, requiredFile: false, ext: false });
+    const [category, setCategory] = useState(null);
+    const [onEdit, setOnEdit] = useState(false);
+    const hiddenFileInput = useRef(null);
+
+    useEffect(() => {
+        getCategory();
+    }, []);
+
+    const getCategory = async () => {
+        const res = await API_CALL.get('category');
+        setCategory(res.data);
+    };
 
     const onCloseModal = () => {
         setOpenModal(false);
+        setOnEdit(false);
         setCategoryName('');
+        setCategoryId(null);
+        setFile(null);
+        setError({ size: false, requiredName: false, requiredFile: false, ext: false });
+    };
+
+    const handleSaveButton = async () => {
+        if (!categoryName) {
+            setError({ ...error, requiredName: true });
+            return;
+        }
+        if (file) {
+            if (file.size > MAX_SIZE) {
+                setError({ ...error, size: true });
+                return;
+            }
+            if (!file.type.match(REGEX_FILE_TYPE)) {
+                setError({ ...error, ext: true });
+                return;
+            }
+            const formData = new FormData();
+            formData.append('name', categoryName);
+            formData.append('categoryUpload', file);
+            await API_CALL.patch('category/' + categoryId, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+        }
+        await API_CALL.patch('category/' + categoryId, { name: categoryName });
+        setOpenModal(false);
+        setCategoryName('');
+        setFile(null);
+        setError({ ...error, size: false, requiredName: false, ext: false });
+        getCategory();
+    };
+
+    const handleAddButton = async () => {
+        if (categoryName === '') {
+            return setError({ ...error, requiredName: true });
+        }
+        if (file) {
+            if (file.size > MAX_SIZE) {
+                return setError({ ...error, size: true, requiredName: false });
+            }
+            if (!file.type.match(REGEX_FILE_TYPE)) {
+                return setError({ ...error, ext: true, requiredName: false });
+            }
+            const formData = new FormData();
+            formData.append('name', categoryName);
+            formData.append('categoryUpload', file);
+            await API_CALL.post('category', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+        } else {
+            return setError({ ...error, requiredFile: true });
+        }
+        setOpenModal(false);
+        setCategoryName('');
+        setFile(null);
+        setError({ size: false, requiredName: false, requiredFile: false, ext: false });
+        getCategory();
+    };
+
+    const handleDeleteButton = async (id) => {
+        await API_CALL.delete(`category/${id}`);
+        getCategory();
+    };
+
+    const handleEditButton = async (id) => {
+        const res = await API_CALL.get(`category/${id}`);
+        if (res) {
+            setOnEdit(true);
+            setCategoryName(res.data.name);
+            setCategoryId(res.data.id);
+            setImageSrc(res.data.image ? `${import.meta.env.VITE_IMG_URL}/category/${res.data.image}` : '/defaultImage.jpg');
+            setOpenModal(true);
+        }
+    };
+
+    const handleOnChangeFile = (event) => {
+        const value = event.target.files[0];
+        if (!value.type.match(REGEX_FILE_TYPE)) {
+            return setError({ ...error, ext: true });
+        }
+        if (value.size > MAX_SIZE) {
+            return setError({ ...error, size: true });
+        }
+        if (onEdit) {
+            setFile(value);
+            setImageSrc(URL.createObjectURL(value));
+            setError({ ...error, size: false, ext: false });
+            return;
+        }
+        setError({ ...error, size: false, ext: false });
+        setFile(value)
     };
 
     return <>
-        <div className='flex flex-row container bg-slate-200 min-w-[360px] h-screen'>
-            {/* SIDEBAR */}
-            <div>
-                <Sidebar collapsed={true} collapseBehavior='collapse'>
-                    <Sidebar.Items>
-                        <Sidebar.ItemGroup>
-                            <button className='group flex w-full items-center rounded-lg p-2 text-base font-normal text-gray-900 transition duration-75 dark:text-white dark:hover:bg-gray-700'>
-                                <GiHamburgerMenu className='h-6 w-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white' />
-                            </button>
-                            <Sidebar.Item href="#" icon={HiHome} >
-                                Dashboard
-                            </Sidebar.Item>
-                            <Sidebar.Item href="#" icon={IoMdListBox} >
-                                Manage Category
-                            </Sidebar.Item>
-                            <Sidebar.Item href="#" icon={BsBoxFill} >
-                                Manage Product
-                            </Sidebar.Item>
-                        </Sidebar.ItemGroup>
-                    </Sidebar.Items>
-                </Sidebar>
-            </div>
-            {/* END-SIDEBAR */}
-            <div className='w-full p-5'>
-                {/* TITLE */}
-                <div className='mb-2'>
-                    <p className='font-extrabold text-xl'>Manage Categories</p>
-                </div>
-
+        <div className='flex flex-row container bg-slate-200 min-w-[360px] h-max min-h-screen'>
+            <AdminSidebar />
+            <LayoutPageAdmin title='Manage Categories'>
                 <div className='flex flex-wrap justify-between gap-y-5'>
-                    {/* BOX ADD CATEGORY */}
-                    <div className='grid place-items-center w-32 h-32 border border-black rounded'>
-                        <div className='flex flex-col justify-center gap-1 w-24 h-24' >
-                            <div className='grid place-items-center' >
-                                <FaPlus className='text-3xl' />
-                            </div>
-                            <div>
-                                <p className='text-sm text-center font-bold'>Add Category</p>
-                            </div>
-                        </div>
-                    </div>
-                    {/* MODAL */}
-                    <Modal show={true} size='sm' dismissible>
-                        <ModalHeader>Add Category</ModalHeader>
-                        <ModalBody>
-                            <div className='space-y-4'>
-                                <div>
-                                    <div className='mb-2 block'>
-                                        <Label value='Category Name' />
-                                    </div>
-                                    <TextInput
-                                        id='category-name'
-                                        placeholder='Snack'
-                                        value={categoryName}
-                                        onChange={(event) => setCategoryName(event.target.value)}
-                                        required
-                                    />
-                                </div>
-                                <div>
-                                    <div className='mb-2 block'>
-                                        <Label value='Image' />
-                                    </div>
-                                    <FileInput helperText='JPG, JPEG, PNG or GIF (MAX. 1MB)'/>
-                                </div>
-                            </div>
-                        </ModalBody>
-                        <ModalFooter className='justify-end'>
-                            <Button >Add</Button>
-                            <Button onClick={onCloseModal}>Close</Button>
-                        </ModalFooter>
-                    </Modal>
-                    {/* BOX CATEGORY */}
-                    <div className='flex flex-col w-32 h-32 bg-white border border-black rounded'>
-                        <div className='h-[65%]'>
-                            <img className='w-full h-full object-cover' src='https://picsum.photos/200' />
-                        </div>
-                        <div className='grid content-center flex-grow pl-1 pr-1'>
-                            <p className='text-xs text-center line-clamp-2'>Sereal Sehat </p>
-                        </div>
-                    </div>
-                    <div className='w-32 h-32 border border-red-900'></div>
-                    <div className='w-32 h-32 border border-red-900'></div>
+                    <BoxAddItem title='Add Category' onClick={() => setOpenModal(true)} />
+                    <ModalCategory
+                        show={openModal}
+                        onClose={onCloseModal}
+                        onEdit={onEdit}
+                        onEditImage={() => hiddenFileInput.current.click()}
+                        refImage={hiddenFileInput}
+                        src={imageSrc}
+                        errorRequiredName={error.requiredName}
+                        errorRequiredFile={error.requiredFile}
+                        errorSize={error.size}
+                        errorExt={error.ext}
+                        categoryName={categoryName}
+                        onChangeCategory={(event) => setCategoryName(event.target.value)}
+                        onChangeFile={handleOnChangeFile}
+                        onAdd={handleAddButton}
+                        onSave={handleSaveButton}
+                    />
+                    {category && category.map((item, index) => {
+                        return (
+                            <CardCategory
+                                key={index}
+                                src={item.image ? `${import.meta.env.VITE_IMG_URL}/category/${item.image}` : '/defaultImage.jpg'}
+                                name={item.name}
+                                onEdit={() => handleEditButton(item.id)}
+                                onDelete={() => handleDeleteButton(item.id)}
+                            />
+                        )
+                    })}
                 </div>
-
-            </div>
+            </LayoutPageAdmin>
         </div>
     </>
 };

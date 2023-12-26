@@ -3,12 +3,17 @@ import { unlink } from "fs";
 
 const dir = './src/assets/category/';
 
-export const createCategory = async (data) => {
-  return await category.create(data);
+export const createCategory = async (data, image) => {
+  const value = image ? {name: data.name, image: image.filename} : {name: data.name};
+  return await category.create(value);
 };
 
 export const getCategoryData = async () => {
   return await category.findAll();
+};
+
+export const getCategoryDataById = async (id) => {
+  return await category.findByPk(id);
 };
 
 export const updateCategory = async (id, data, image) => { 

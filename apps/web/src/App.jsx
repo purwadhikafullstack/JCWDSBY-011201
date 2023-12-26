@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import ManageCategories from './pages/manage/category/ManageCategories';
+import ManageCategories from './pages/admin/ManageCategories';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import Forgot from './pages/Forgot';
@@ -9,7 +9,7 @@ import NewPassword from './pages/NewPassword';
 import VerifyAccount from './pages/VerifyAccount';
 import LoginAdmin from './pages/LoginAdmin';
 import Landing from './pages/Landing';
-import Cart from './pages/cart';
+import Cart from './pages/Cart';
 import { gapi } from 'gapi-script';
 import { useEffect, useState } from 'react';
 import AdminDashboard from './pages/AdminDashboard';
