@@ -18,14 +18,17 @@ export default async function googleSignUp(req, res, next) {
       email: req.body.email,
       password: hashedPassword,
       isVerified: true,
+      type: 'google',
     });
-    const { id, name, email, role } = result.dataValues;
+    const { id, name, email, role, type, image } = result.dataValues;
     const token = jwt.sign(
       {
         id,
         name,
         email,
         role,
+        type,
+        method: 'AUTHORIZATION',
       },
       SCRT_KEY,
       { expiresIn: '7d' },
@@ -46,6 +49,8 @@ export default async function googleSignUp(req, res, next) {
         name,
         email,
         role,
+        image,
+        type,
         token,
       },
     });

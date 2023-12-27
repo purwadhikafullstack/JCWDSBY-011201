@@ -22,6 +22,7 @@ export const init = (sequelize) => {
       role: DataTypes.STRING,
       image: DataTypes.STRING,
       isVerified: DataTypes.BOOLEAN,
+      type: DataTypes.STRING,
     },
     {
       sequelize,
