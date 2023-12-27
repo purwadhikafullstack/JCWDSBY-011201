@@ -15,7 +15,7 @@ export default async function loginAdmin(req, res, next) {
     if (!isExist) {
       throw { rc: 404, message: 'User not found' };
     }
-    const { id, email, name, role, password } = isExist.dataValues;
+    const { id, email, name, role, image, type, password } = isExist.dataValues;
     const compare = await verifyPassword(req.body.password, password);
     if (!compare) {
       throw { rc: 401, message: 'Password is no match' };
@@ -26,6 +26,8 @@ export default async function loginAdmin(req, res, next) {
         email,
         name,
         role,
+        type,
+        method: 'AUTHORIZATION',
       },
       SCRT_KEY,
       { expiresIn: '7d' },
@@ -35,10 +37,12 @@ export default async function loginAdmin(req, res, next) {
       success: true,
       message: 'Login successfully',
       result: {
-        email: email,
-        name: name,
-        role: role,
-        token: token,
+        name,
+        email,
+        role,
+        image,
+        type,
+        token,
       },
     });
   } catch (error) {

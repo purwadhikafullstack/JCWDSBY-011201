@@ -5,6 +5,9 @@ import { SCRT_KEY } from '../../config';
 
 export default async function keepLogin(req, res, next) {
   try {
+    if (req.tokenData.method !== 'AUTHORIZATION') {
+      throw { rc: 401, message: 'Unauthorized token' };
+    }
     const result = await findUser({
       [Op.and]: [
         { id: req.tokenData.id },
@@ -16,13 +19,14 @@ export default async function keepLogin(req, res, next) {
     if (!result) {
       throw { rc: 401, message: 'Unauthorized user' };
     }
-    const { id, name, email, role, image } = result.dataValues;
+    const { id, name, email, role, image, type } = result.dataValues;
     const token = jwt.sign(
       {
         id,
         name,
         email,
         role,
+        type,
       },
       SCRT_KEY,
       { expiresIn: '7d' },
@@ -35,6 +39,7 @@ export default async function keepLogin(req, res, next) {
         email,
         role,
         image,
+        type,
         token,
       },
     });

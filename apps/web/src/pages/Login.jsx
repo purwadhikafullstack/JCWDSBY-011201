@@ -7,6 +7,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import customToast from '../utils/toast';
 import LoginWithGoogle from '../components/LoginWithGoogle';
+import Container from '../components/Container';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -51,7 +52,7 @@ const Login = () => {
   });
 
   return (
-    <div className="container lg:w-[1024px] m-auto h-screen overflow-auto">
+    <Container>
       <div className="flex w-full h-full">
         <div className="header flex flex-col w-full h-full">
           <div className="img-container w-full h-[30%] relative">
@@ -81,6 +82,7 @@ const Login = () => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.email}
+                  placeholder="Input your email address"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 />
                 <span
@@ -107,6 +109,7 @@ const Login = () => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.password}
+                  placeholder="Input your password"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 />
                 <span
@@ -159,7 +162,7 @@ const Login = () => {
           </div>
         </div>
       </div>
-    </div>
+    </Container>
   );
 };
 

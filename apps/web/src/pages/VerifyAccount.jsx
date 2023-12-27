@@ -1,11 +1,8 @@
-import {
-  Navigate,
-  useLocation,
-  useNavigate,
-  useSearchParams,
-} from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import API_CALL from '../helpers/API';
 import { useRef, useState } from 'react';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import customToast from '../utils/toast';
 import ButtonWithLoading from '../components/ButtonWithLoading';
 
@@ -13,35 +10,23 @@ const VerifyAccount = () => {
   const [searchParams] = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const password = useRef();
-  const confPass = useRef();
 
-  const handleVerify = async () => {
+  const handleVerify = async (data) => {
     try {
       setIsLoading(true);
-      if (
-        password.current.value === confPass.current.value &&
-        password.current.value &&
-        confPass.current.value
-      ) {
-        if (searchParams.get('key')) {
-          const token = searchParams.get('key');
-          const result = await API_CALL.patch(
-            '/auth/verify-account',
-            {
-              password: password.current.value,
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            },
-          );
-          if (result.data.success) {
-            customToast('success', result.data.message);
-            navigate('/login');
-          }
+      if (searchParams.get('key')) {
+        const token = searchParams.get('key');
+        const result = await API_CALL.patch('/auth/verify-account', data, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (result.data.success) {
+          customToast('success', result.data.message);
+          navigate('/login');
         }
+      } else {
+        customToast('error', 'Invalid verify token');
       }
     } catch (error) {
       console.log(error.message);
@@ -49,6 +34,31 @@ const VerifyAccount = () => {
     }
     setIsLoading(false);
   };
+
+  const verifySchema = Yup.object({
+    password: Yup.string()
+      .min(8, 'Minimum password length is 8')
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/,
+        'Password must contain uppercase letter, lowercase letter, number, and no space',
+      )
+      .required('Required'),
+    confPass: Yup.string()
+      .oneOf([Yup.ref('password')], 'Password confirmation not match')
+      .required('Required'),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      password: '',
+      confPass: '',
+    },
+    validationSchema: verifySchema,
+    onSubmit: (values) => {
+      handleVerify(values);
+    },
+  });
+
   return (
     <div className="container lg:w-[1024px] m-auto h-screen">
       <div className="flex w-full h-full">
@@ -60,37 +70,62 @@ const VerifyAccount = () => {
               </div>
               <div className="mb-1">
                 <label
-                  for="newPassword-input"
+                  for="password"
                   className="block font-semibold text-gray-900 text-sm mb-1"
                 >
                   Create New Password
                 </label>
                 <input
                   type="password"
-                  id="newPassword-input"
-                  ref={password}
+                  id="password"
+                  name="password"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.password}
                   placeholder="Input new password"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 />
-                <span className=" invisible text-xs text-red-500">tes</span>
+                <span
+                  className={`${
+                    formik.touched.password && formik.errors.password
+                      ? ''
+                      : 'invisible'
+                  } text-xs text-red-500`}
+                >
+                  {formik.errors.password || 'Correct'}
+                </span>
               </div>
               <div className="mb-1">
                 <label
-                  for="confirmPassword-input"
+                  for="confPass"
                   className="block font-semibold text-gray-900 text-sm mb-1"
                 >
                   Confirm Password
                 </label>
                 <input
                   type="password"
-                  id="confirmPassword-input"
-                  ref={confPass}
+                  id="confPass"
+                  name="confPass"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.confPass}
                   placeholder="Input new password again"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 />
-                <span className=" invisible text-xs text-red-500">tes</span>
+                <span
+                  className={`${
+                    formik.touched.confPass && formik.errors.confPass
+                      ? ''
+                      : 'invisible'
+                  } text-xs text-red-500`}
+                >
+                  {formik.errors.confPass || 'Correct'}
+                </span>
               </div>
-              <ButtonWithLoading isLoading={isLoading} func={handleVerify}>
+              <ButtonWithLoading
+                isLoading={isLoading}
+                func={formik.handleSubmit}
+              >
                 Verify
               </ButtonWithLoading>
             </div>

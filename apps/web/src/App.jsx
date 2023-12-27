@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import ManageCategories from './pages/manage/category/ManageCategories';
+import ManageCategories from './pages/admin/ManageCategories';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import Forgot from './pages/Forgot';
@@ -11,14 +11,15 @@ import LoginAdmin from './pages/LoginAdmin';
 import Landing from './pages/Landing';
 import Cart from './pages/cart';
 import { gapi } from 'gapi-script';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import AdminDashboard from './pages/AdminDashboard';
-import Loader from './components/Loader';
+import { useDispatch, useSelector } from 'react-redux';
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 function App() {
   // Wahyu Widiantoro
-  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
+  const globalUser = useSelector((reducer) => reducer.userReducer);
 
   useEffect(() => {
     function start() {
@@ -29,17 +30,6 @@ function App() {
     }
     gapi.load('client:auth2', start);
   });
-
-  useEffect(() => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-  }, [window.location.pathname]);
-
-  // Fahmi
-
-  // Afra
 
   return (
     <>
@@ -57,7 +47,6 @@ function App() {
         <Route path="/manage/category" element={<ManageCategories />} />
         {/* Afra */}
         <Route path="/cart" element={<Cart />} />
-
       </Routes>
       {/* Wahyu Widiantoro */}
       <ToastContainer
@@ -73,7 +62,6 @@ function App() {
         pauseOnHover
         theme="light"
       />
-      <Loader isLoading={isLoading} />
       {/* Wahyu Widiantoro */}
     </>
   );

@@ -1,8 +1,45 @@
 import { HiChevronLeft } from 'react-icons/hi2';
 import { useNavigate } from 'react-router-dom';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { useState } from 'react';
+import API_CALL from '../helpers/API';
+import customToast from '../utils/toast';
+import ButtonWithLoading from '../components/ButtonWithLoading';
 
 const Forgot = () => {
+  const [isLoading, setIsloading] = useState(false);
   const navigate = useNavigate();
+
+  const handleForgot = async (data) => {
+    try {
+      setIsloading(true);
+      const result = await API_CALL.post('/auth/forgot', data);
+      if (result.data.success) {
+        customToast('success', result.data.message);
+        navigate('/login');
+      }
+    } catch (error) {
+      console.log(error);
+      customToast('error', error.response.data.message);
+    }
+    setIsloading(false);
+  };
+
+  const forgotSchema = Yup.object({
+    email: Yup.string().email('Invalid email address').required('Required'),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+    },
+    validationSchema: forgotSchema,
+    onSubmit: (values) => {
+      handleForgot(values);
+    },
+  });
+
   return (
     <div className="container lg:w-[1024px] m-auto h-screen">
       <div className="flex w-full h-full">
@@ -23,24 +60,37 @@ const Forgot = () => {
               </div>
               <div className="mb-1">
                 <label
-                  for="email-input"
+                  for="email"
                   className="block font-semibold text-gray-900 text-sm mb-1"
                 >
                   Email Address
                 </label>
                 <input
                   type="email"
-                  id="email-input"
+                  id="email"
+                  name="email"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.email}
+                  placeholder="Input your registered email"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 />
-                <span className=" invisible text-xs text-red-500">tes</span>
+                <span
+                  className={`${
+                    formik.touched.email && formik.errors.email
+                      ? ''
+                      : 'invisible'
+                  } text-xs text-red-500`}
+                >
+                  {formik.errors.email || 'Correct'}
+                </span>
               </div>
-              <button
-                type="button"
-                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-lg px-5 py-2.5 mb-1"
+              <ButtonWithLoading
+                isLoading={isLoading}
+                func={formik.handleSubmit}
               >
-                Send Email
-              </button>
+                Send Reset Link
+              </ButtonWithLoading>
             </div>
           </div>
         </div>

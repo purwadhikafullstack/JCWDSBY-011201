@@ -29,6 +29,11 @@ module.exports = {
       image: {
         type: Sequelize.STRING,
       },
+      type: {
+        defaultValue: 'regular',
+        allowNull: false,
+        type: Sequelize.STRING,
+      },
       isVerified: {
         allowNull: false,
         defaultValue: false,

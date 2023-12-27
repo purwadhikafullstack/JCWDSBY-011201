@@ -6,6 +6,9 @@ import transporter from '../../helper/mailer';
 
 export default async function verifyAccount(req, res, next) {
   try {
+    if (req.tokenData.method !== 'VERIFY_ACCOUNT') {
+      throw { rc: 401, message: 'Unauthorized token' };
+    }
     const hashedPassword = await hashPassword(req.body.password, 10);
     const result = await updateUser(
       {
@@ -17,9 +20,13 @@ export default async function verifyAccount(req, res, next) {
           { id: req.tokenData.id },
           { email: req.tokenData.email },
           { name: req.tokenData.name },
+          { type: 'regular' },
         ],
       },
     );
+    if (!result[0]) {
+      throw { rc: 404, message: 'Account not found' };
+    }
     await transporter.sendMail({
       to: req.tokenData.email,
       subject: `Welcome to Cosmo ${req.tokenData.name}`,
