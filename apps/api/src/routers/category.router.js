@@ -1,20 +1,18 @@
 import { Router } from 'express';
 import uploader from '../helper/uploader';
 import {
-  createCategory,
   getCategoryData,
+  getCategoryDataById,
+  createCategory,
   updateCategory,
   deleteCategory,
 } from '../controllers/category.controller';
 
 const categoryRouter = Router();
 
-categoryRouter.post('/', uploader('/category').single('categoryUpload'), async (req, res, next) => {
+categoryRouter.post('/', uploader('/category', 1).single('categoryUpload'), async (req, res, next) => {
   try {
-    const result = await createCategory({
-      name: req.body.name,
-      image: req.file.filename
-    });
+    const result = await createCategory(req.body, req.file);
 
     res.status(200).json(result);
   } catch (error) {
@@ -31,7 +29,16 @@ categoryRouter.get('/', async (req, res, next) => {
   }
 });
 
-categoryRouter.patch('/:id', uploader('/category').single('categoryUpload'), async (req, res, next) => {
+categoryRouter.get('/:id', async (req, res, next) => {
+  try {
+    const result = await getCategoryDataById(req.params.id);
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+});
+
+categoryRouter.patch('/:id', uploader('/category', 1).single('categoryUpload'), async (req, res, next) => {
   try {
     await updateCategory(req.params.id, req.body, req.file);
     res.status(200).json('Category updated successfully!');

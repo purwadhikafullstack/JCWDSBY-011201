@@ -9,7 +9,7 @@ import NewPassword from './pages/NewPassword';
 import VerifyAccount from './pages/VerifyAccount';
 import LoginAdmin from './pages/LoginAdmin';
 import Landing from './pages/Landing';
-import Cart from './pages/cart';
+import Cart from './pages/Cart';
 import { gapi } from 'gapi-script';
 import { useEffect } from 'react';
 import AdminDashboard from './pages/AdminDashboard';

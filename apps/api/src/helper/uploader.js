@@ -1,7 +1,7 @@
 import multer from 'multer';
 import fs from 'fs';
 
-const uploader = (dir) => {
+const uploader = (dir, maxSize) => {
     const defaultdir = './src/assets';
 
     const storage = multer.diskStorage({
@@ -30,11 +30,11 @@ const uploader = (dir) => {
         if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' || file.mimetype === 'image/gif' || file.mimetype === 'image/jpg') {
             cb(null, true);
         } else {
-            cb(Error('Your file extension is denied, please upload jpg, jpeg, png, or gif file.'), false);
+            cb(Error('Only JPG, JPEG, PNG, and GIF files are allowed.'), false);
         }
     };
 
-    return multer({ storage, fileFilter });
+    return multer({ storage, fileFilter, limits: { fileSize: 1024 * 1024 * maxSize }});
 };
 
 export default uploader;
