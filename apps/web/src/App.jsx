@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import ManageCategories from './pages/manage/category/ManageCategories';
+import ManageCategories from './pages/admin/ManageCategories';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import Forgot from './pages/Forgot';
