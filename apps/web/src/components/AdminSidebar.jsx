@@ -3,20 +3,26 @@ import { HiHome } from 'react-icons/hi';
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoMdListBox } from "react-icons/io";
 import { BsBoxFill } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 
 const AdminSidebar = () => {
+    const navigate = useNavigate();
+
     const menu = [
         {
             title: 'Dashboard',
             icon: HiHome,
+            page: '/manage/category' //! redirect to dashboard page
         },
         {
             title: 'Manage Category',
             icon: IoMdListBox,
+            page: '/manage/category'
         },
         {
             title: 'Manage Product',
             icon: BsBoxFill,
+            page: '/manage/product'
         },
     ]
 
@@ -30,7 +36,7 @@ const AdminSidebar = () => {
                         </button>
                         {menu.map((item, index) => {
                             return (
-                                <Sidebar.Item href="#" icon={item.icon} key={index}>
+                                <Sidebar.Item onClick={() => navigate(item.page)} icon={item.icon} key={index}>
                                     {item.title}
                                 </Sidebar.Item>
                             )

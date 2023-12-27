@@ -10,8 +10,8 @@ const CardCategory = (props) => {
                 <p className='text-xs text-center line-clamp-2 font-bold'>{props.name}</p>
                 <div className='absolute right-0 bottom-0'>
                     <div className='flex gap-1 p-1 text-xs'>
-                        <MdModeEditOutline className='cursor-pointer' onClick={props.onEdit} />
-                        <MdDelete color='red' className='cursor-pointer' onClick={props.onDelete} />
+                        <MdModeEditOutline onClick={props.onEdit} />
+                        <MdDelete color='red' onClick={props.onDelete} />
                     </div>
                 </div>
             </div>

@@ -6,6 +6,7 @@ import CardCategory from '../../components/CardCategory';
 import API_CALL from '../../helpers/API';
 import ModalCategory from '../../components/ModalCategory';
 import { MAX_SIZE, REGEX_FILE_TYPE } from '../../constant/file';
+import { Spinner } from 'flowbite-react';
 
 const ManageCategories = () => {
     const [openModal, setOpenModal] = useState(false);
@@ -16,6 +17,7 @@ const ManageCategories = () => {
     const [error, setError] = useState({ size: false, requiredName: false, requiredFile: false, ext: false });
     const [category, setCategory] = useState(null);
     const [onEdit, setOnEdit] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const hiddenFileInput = useRef(null);
 
     useEffect(() => {
@@ -23,8 +25,12 @@ const ManageCategories = () => {
     }, []);
 
     const getCategory = async () => {
+        setIsLoading(true);
         const res = await API_CALL.get('category');
-        setCategory(res.data);
+        if(res){
+            setIsLoading(false);
+            setCategory(res.data);
+        }
     };
 
     const onCloseModal = () => {
@@ -126,6 +132,9 @@ const ManageCategories = () => {
         <div className='flex flex-row container bg-slate-200 min-w-[360px] h-max min-h-screen'>
             <AdminSidebar />
             <LayoutPageAdmin title='Manage Categories'>
+                <div className={`top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ${isLoading ? 'fixed' : 'hidden'}`}>
+                    <Spinner className="w-16 h-16" />
+                </div>
                 <div className='flex flex-wrap justify-between gap-y-5'>
                     <BoxAddItem title='Add Category' onClick={() => setOpenModal(true)} />
                     <ModalCategory

@@ -14,6 +14,8 @@ import { gapi } from 'gapi-script';
 import { useEffect, useState } from 'react';
 import AdminDashboard from './pages/AdminDashboard';
 import Loader from './components/Loader';
+import ManageProduct from './pages/admin/ManageProduct';
+import CreateProduct from './pages/admin/CreateProduct';
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 function App() {
@@ -55,6 +57,8 @@ function App() {
         <Route path="/auth/dashboard" element={<AdminDashboard />} />
         {/* Fahmi */}
         <Route path="/manage/category" element={<ManageCategories />} />
+        <Route path="/manage/product" element={<ManageProduct />} />
+        <Route path="/manage/product/create" element={<CreateProduct />} />
         {/* Afra */}
         <Route path="/cart" element={<Cart />} />
 
