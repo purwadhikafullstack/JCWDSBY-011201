@@ -2,6 +2,7 @@ import { GoogleLogin, useGoogleLogout } from '@leecheuk/react-google-login';
 import { useNavigate } from 'react-router-dom';
 import customToast from '../utils/toast';
 import API_CALL from '../helpers/API';
+import { replace } from 'formik';
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 const SignUpWithGoogle = () => {
@@ -18,7 +19,7 @@ const SignUpWithGoogle = () => {
       if (result.data.success) {
         customToast('success', result.data.message);
         localStorage.setItem('authToken', result.data.result.token);
-        navigate('/');
+        navigate('/', { replace: true });
       }
     } catch (error) {
       console.log(error);

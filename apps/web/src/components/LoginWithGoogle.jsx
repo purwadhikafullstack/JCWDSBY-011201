@@ -17,7 +17,7 @@ const LoginWithGoogle = () => {
       if (result.data.success) {
         customToast('success', result.data.message);
         localStorage.setItem('authToken', result.data.result.token);
-        navigate('/');
+        navigate('/', { replace: true });
       }
     } catch (error) {
       console.log(error.message);

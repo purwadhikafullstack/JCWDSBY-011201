@@ -27,6 +27,7 @@ export default async function keepLogin(req, res, next) {
         email,
         role,
         type,
+        method: 'AUTHORIZATION',
       },
       SCRT_KEY,
       { expiresIn: '7d' },
