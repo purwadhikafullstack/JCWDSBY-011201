@@ -9,6 +9,7 @@ import keepLogin from './auth/keepLogin';
 import signUp from './auth/signUp';
 import forgotPassword from './auth/forgotPassword';
 import resetPassword from './auth/resetPassword';
+import { body } from 'express-validator';
 
 const authRouter = Router();
 

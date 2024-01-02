@@ -1,10 +1,11 @@
 'use strict';
 
 import { Model, DataTypes } from 'sequelize';
+import cities from './cities.model';
 import stores from './stores.model';
 import user_addresses from './user-addresses.model';
 
-export default class users extends Model {
+export default class provinces extends Model {
   /**
    * Helper method for defining associations.
    * This method is not a part of Sequelize lifecycle.
@@ -12,25 +13,20 @@ export default class users extends Model {
    */
   static associate(models) {
     // define association here
-    users.hasOne(stores, { foreignKey: 'userId' });
-    users.hasMany(user_addresses, { foreignKey: 'userId' });
+    provinces.hasMany(cities, { foreignKey: 'provinceId' });
+    provinces.hasMany(stores, { foreignKey: 'provinceId' });
+    provinces.hasMany(user_addresses, { foreignKey: 'provinceId' });
   }
 }
 
 export const init = (sequelize) => {
-  users.init(
+  provinces.init(
     {
-      name: DataTypes.STRING,
-      email: DataTypes.STRING,
-      password: DataTypes.STRING,
-      role: DataTypes.STRING,
-      image: DataTypes.STRING,
-      isVerified: DataTypes.BOOLEAN,
-      type: DataTypes.STRING,
+      provinceName: DataTypes.STRING,
     },
     {
       sequelize,
-      modelName: 'users',
+      modelName: 'provinces',
     },
   );
 };

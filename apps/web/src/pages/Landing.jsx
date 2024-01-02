@@ -14,21 +14,27 @@ const Landing = () => {
           <span className="font-bold text-sm">Delivery to</span>
           <span className="font-semibold text-sm">Baron, Nganjuk, 64394</span>
         </div>
-        <CarouselViews data={[]} />
+        <div className="h-56 w-full sm:h-64 xl:h-80 2xl:h-96">
+          <Carousel>
+            <img
+              className="h-full object-stretch"
+              src="https://www.astronauts.id/blog/wp-content/uploads/2023/12/Spesial-Akhir-Tahun-Belanja-di-Astro-Pakai-Kartu-Kredit-BRI-Dapat-Diskon-1.jpg"
+              alt="..."
+            />
+            <img
+              className="h-full object-stretch"
+              src="https://www.astronauts.id/blog/wp-content/uploads/2023/10/Serbu-Promo-Tanggal-Kembar-di-Astro.png"
+              alt="..."
+            />
+            <img
+              className="h-full object-stretch"
+              src="https://www.astronauts.id/blog/wp-content/uploads/2023/12/Super-Brand-Day-Colgate-Palmolive-Hadir-di-Astro-dengan-Berbagai-Hadiah-Menarik.jpg"
+              alt="..."
+            />
+          </Carousel>
+        </div>
         <div className="flex flex-col">
           <span className="font-bold text-base">Categories</span>
-          <div className="grid grid-cols-4">
-            {Array(5, 4, 2, 3, 21, 2, 3, 1, 3, 2).map((value) => {
-              return (
-                <UserCategoryButton
-                  image={
-                    'https://media.wired.com/photos/5b493b6b0ea5ef37fa24f6f6/16:9/w_2400,h_1350,c_limit/meat-80049790.jpg'
-                  }
-                  categoryName={'Meat'}
-                />
-              );
-            })}
-          </div>
         </div>
         <div className="flex w-full h-[2000px]"></div>
       </div>

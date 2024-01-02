@@ -1,13 +1,20 @@
-import { createUser, findUser } from '../../controllers/auth.controller';
+import {
+  createUser,
+  findOneUser,
+  findUser,
+} from '../../controllers/auth.controller';
 import jwt from 'jsonwebtoken';
 import { SCRT_KEY } from '../../config';
 import { verifyPassword } from '../../helper/hash';
 import { Op } from 'sequelize';
+import { body, validationResult } from 'express-validator';
 
 export default async function login(req, res, next) {
   try {
-    const isExist = await findUser({
-      [Op.and]: [{ email: req.body.email }, { type: 'regular' }],
+    const isExist = await findOneUser({
+      where: {
+        [Op.and]: [{ email: req.body.email }, { type: 'regular' }],
+      },
     });
     if (!isExist) {
       throw { rc: 404, message: 'User not found' };
