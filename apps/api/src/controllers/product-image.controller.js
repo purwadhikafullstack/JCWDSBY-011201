@@ -1,7 +1,6 @@
+import { assetsDir } from "../constants/assets";
 import productImage from "../models/product-image.model";
 import { unlink } from "fs";
-
-const dir = './src/assets/product/'
 
 export const getProductImage = async (id) => {
     return await productImage.findAll({
@@ -22,7 +21,7 @@ export const createProductImage = async (productId, image) => {
 
 export const updateProductImage = async (id, image) => {
     const prevData = await productImage.findByPk(id);
-    console.log('prevData', prevData.image);
+    // console.log('prevData', prevData.image);
     const result = await productImage.update(
         {
             image: image.filename
@@ -35,7 +34,7 @@ export const updateProductImage = async (id, image) => {
     );
 
     if (result) {
-        unlink(dir + prevData.image, (err) => {
+        unlink(assetsDir + prevData.image, (err) => {
             if (err) throw Error(err);
         });
     }
@@ -43,7 +42,7 @@ export const updateProductImage = async (id, image) => {
 
 export const deleteProductImage = async (id) => {
     const prevData = await productImage.findByPk(id);
-    console.log('prevData', prevData.image);
+    // console.log('prevData', prevData.image);
     const result = await productImage.destroy({
         where: {
             id
@@ -51,7 +50,7 @@ export const deleteProductImage = async (id) => {
     });
 
     if (result) {
-        unlink(dir + prevData.image, (err) => {
+        unlink(assetsDir + prevData.image, (err) => {
             if (err) throw Error(err);
         });
     }

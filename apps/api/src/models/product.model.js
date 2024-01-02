@@ -8,8 +8,18 @@ export default class product extends Model {
    */
   static associate(models) {
     // define association here
-    product.belongsTo(models.categories);
-    product.hasMany(models.inventory);
+    product.belongsTo(models.categories, {
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    });
+    product.hasMany(models.inventory, {
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    });
+    product.hasMany(models.product_image, {
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    });
   }
 };
 

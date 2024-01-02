@@ -10,7 +10,10 @@ export default class inventory extends Model {
     // define association here
     // inventory.belongsTo(models.stores);
     // inventory.belongsTo(models.discounts);
-    inventory.belongsTo(models.product);
+    inventory.belongsTo(models.product, {
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    });
   }
 };
 export const init = (sequelize) => {

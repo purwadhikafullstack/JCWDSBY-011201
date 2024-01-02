@@ -16,6 +16,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import Loader from './components/Loader';
 import ManageProduct from './pages/admin/ManageProduct';
 import CreateProduct from './pages/admin/CreateProduct';
+import EditProduct from './pages/admin/EditProduct';
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 function App() {
@@ -59,6 +60,7 @@ function App() {
         <Route path="/manage/category" element={<ManageCategories />} />
         <Route path="/manage/product" element={<ManageProduct />} />
         <Route path="/manage/product/create" element={<CreateProduct />} />
+        <Route path="/manage/product/edit" element={<EditProduct />} />
         {/* Afra */}
         <Route path="/cart" element={<Cart />} />
 

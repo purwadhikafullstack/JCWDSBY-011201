@@ -1,8 +1,8 @@
 import { MdModeEditOutline, MdDelete } from "react-icons/md";
 
-const CardCategory = (props) => {
+const CardManage = (props) => {
     return <>
-        <div className='flex flex-col w-32 h-32 bg-slate-50 border border-black rounded'>
+        <div className='flex flex-col w-28 h-28 bg-slate-50 border border-black rounded'>
             <div className='h-[65%]'>
                 <img className='w-full h-full object-cover rounded-t' src={props.src} />
             </div>
@@ -19,4 +19,4 @@ const CardCategory = (props) => {
     </>
 };
 
-export default CardCategory;
+export default CardManage;

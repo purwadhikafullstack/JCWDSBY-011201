@@ -10,14 +10,17 @@ export async function up(queryInterface, Sequelize) {
       },
       productId: {
         allowNull: false,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+        references: {
+          model: 'products',
+          key: 'id'
+        },
       },
       image: {
         allowNull: false,
         type: Sequelize.STRING
-      },
-      deletedAt: {
-        type: Sequelize.DATE
       },
       createdAt: {
         allowNull: false,

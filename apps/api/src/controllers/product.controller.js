@@ -1,6 +1,9 @@
 import product from "../models/product.model";
 import categories from "../models/categories.model";
 import inventory from "../models/inventory.model";
+import productImage from "../models/product-image.model";
+import { assetsDir } from "../constants/assets";
+import { unlink, existsSync } from "fs";
 
 export const getProductData = async () => {
     return await product.findAll({
@@ -8,6 +11,10 @@ export const getProductData = async () => {
             {
                 model: categories,
                 as: 'category',
+                required: true,
+            },
+            {
+                model: productImage,
                 required: true,
             }
         ]
@@ -55,9 +62,30 @@ export const updateInventory = async (id, stock) => {
 };
 
 export const deleteProduct = async (id) => {
-    return await product.destroy({
+    const deleteProduct = await product.destroy({ 
         where: { id }
-    });
+    })
+    
+    if (deleteProduct) {
+        await inventory.destroy({
+            where: { productId: id }
+        });
+        const image = await productImage.findAll({
+            where: { productId: id }
+        });
+        if (image.length > 0) {
+            image.forEach(image => {
+                if(existsSync(assetsDir + image.image)) {
+                    return unlink(assetsDir + image.image, (err) => {
+                        if (err) throw err;
+                    });
+                }
+            });
+        }
+        return await productImage.destroy({
+            where: { productId: id }
+        });
+    }
 };
 
 export const deleteInventory = async (id) => {
