@@ -1,15 +1,25 @@
 import banner from '../assets/login-banner.jpg';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import customToast from '../utils/toast';
 import ButtonWithLoading from '../components/ButtonWithLoading';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import API_CALL from '../helpers/API';
+import { useSelector } from 'react-redux';
 
 const LoginAdmin = () => {
   const navigate = useNavigate();
   const [isLoading, setIsloading] = useState(false);
+  const globalUserRole = useSelector((reducer) => reducer.userReducer.role);
+
+  if (globalUserRole) {
+    if (globalUserRole === 'user') {
+      return <Navigate to={'/'} replace={true} />;
+    } else if (globalUserRole === 'admin' || globalUserRole === 'super') {
+      return <Navigate to={'/manage/dashboard'} replace={true} />;
+    }
+  }
 
   const handleLogin = async (data) => {
     try {

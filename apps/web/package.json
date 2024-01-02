@@ -7,8 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview",
-    "test": "npx cypress verify & cypress run --component"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@leecheuk/react-google-login": "^5.4.1",

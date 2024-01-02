@@ -1,4 +1,4 @@
-import { createUser, findUser } from '../../controllers/auth.controller';
+import { findOneUser } from '../../controllers/auth.controller';
 import transporter from '../../helper/mailer';
 import jwt from 'jsonwebtoken';
 import { APP_URL, SCRT_KEY } from '../../config';
@@ -6,8 +6,10 @@ import { Op } from 'sequelize';
 
 export default async function forgotPassword(req, res, next) {
   try {
-    const isExist = await findUser({
-      [Op.and]: [{ email: req.body.email }, { type: 'regular' }],
+    const isExist = await findOneUser({
+      where: {
+        [Op.and]: [{ email: req.body.email }, { type: 'regular' }],
+      },
     });
     if (!isExist) {
       throw { rc: 404, message: 'Account is not found' };

@@ -1,17 +1,25 @@
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import API_CALL from '../helpers/API';
-import { useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import customToast from '../utils/toast';
 import ButtonWithLoading from '../components/ButtonWithLoading';
 import SignUpWithGoogle from '../components/SignUpWithGoogle';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
+import { useSelector } from 'react-redux';
 
 const SignUp = () => {
   const navigate = useNavigate();
-  const email = useRef();
-  const name = useRef();
   const [isLoading, setIsLoading] = useState(false);
+  const globalUserRole = useSelector((reducer) => reducer.userReducer.role);
+
+  if (globalUserRole) {
+    if (globalUserRole === 'user') {
+      return <Navigate to={'/'} replace={true} />;
+    } else if (globalUserRole === 'admin' || globalUserRole === 'super') {
+      return <Navigate to={'/manage/dashboard'} replace={true} />;
+    }
+  }
 
   const handleSignup = async (data) => {
     try {
@@ -19,7 +27,7 @@ const SignUp = () => {
       const result = await API_CALL.post('/auth/signup', data);
       if (result.data.success) {
         customToast('success', result.data.message);
-        navigate('/login');
+        navigate('/login', { replace: true });
       }
     } catch (error) {
       console.log(error);

@@ -1,16 +1,27 @@
-import { createUser, findUser } from '../../controllers/auth.controller';
+import {
+  createUser,
+  findOneUser,
+  findAllUser,
+} from '../../controllers/auth.controller';
 import jwt from 'jsonwebtoken';
 import { SCRT_KEY } from '../../config';
 import { verifyPassword } from '../../helper/hash';
 import { Op } from 'sequelize';
+import stores from '../../models/stores.model';
 
 export default async function loginAdmin(req, res, next) {
   try {
-    const isExist = await findUser({
-      [Op.and]: [
-        { email: req.body.username },
-        { [Op.or]: [{ role: 'admin' }, { role: 'super' }] },
-      ],
+    const isExist = await findOneUser({
+      include: {
+        model: stores,
+        required: false,
+      },
+      where: {
+        [Op.and]: [
+          { email: req.body.username },
+          { [Op.or]: [{ role: 'admin' }, { role: 'super' }] },
+        ],
+      },
     });
     if (!isExist) {
       throw { rc: 404, message: 'User not found' };
@@ -27,6 +38,7 @@ export default async function loginAdmin(req, res, next) {
         name,
         role,
         type,
+        storeId: isExist.dataValues.store?.id || null,
         method: 'AUTHORIZATION',
       },
       SCRT_KEY,

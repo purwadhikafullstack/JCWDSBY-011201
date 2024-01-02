@@ -1,4 +1,4 @@
-import { createUser, findUser } from '../../controllers/auth.controller';
+import { createUser, findOneUser } from '../../controllers/auth.controller';
 import jwt from 'jsonwebtoken';
 import { APP_URL, SCRT_KEY } from '../../config';
 import { verifyPassword } from '../../helper/hash';
@@ -6,8 +6,10 @@ import { Op } from 'sequelize';
 
 export default async function googleLogin(req, res, next) {
   try {
-    const isExist = await findUser({
-      [Op.and]: [{ email: req.body.email }, { type: 'google' }],
+    const isExist = await findOneUser({
+      where: {
+        [Op.and]: [{ email: req.body.email }, { type: 'google' }],
+      },
     });
     if (!isExist) {
       throw { rc: 404, message: 'User not found' };

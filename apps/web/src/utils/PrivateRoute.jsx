@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react';
 import API_CALL from '../helpers/API';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../components/Loader';
-import { login } from '../redux/slice/userSlice';
+import { login, logout } from '../redux/slice/userSlice';
 import NotFound from '../pages/NotFound';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 
 const PrivateRoute = ({ children, role, navigate }) => {
   const dispatch = useDispatch();
+  const location = useLocation();
   const currRole = useSelector((reducer) => reducer.userReducer.role);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -21,26 +22,47 @@ const PrivateRoute = ({ children, role, navigate }) => {
         headers: { Authorization: `Bearer ${token}` },
       });
       dispatch(login(result.data.result));
+      localStorage.setItem('authToken', result.data.result.token);
       setIsLoading(false);
     } catch (error) {
       console.log(error);
+      dispatch(logout());
+      localStorage.removeItem('authToken');
       setIsLoading(false);
     }
   };
 
+  const checkRole = (allowedRole) => {
+    if (typeof allowedRole === 'string') {
+      return allowedRole === currRole;
+    } else if (typeof allowedRole === 'object') {
+      return allowedRole.includes(currRole);
+    }
+  };
+
   useEffect(() => {
-    authCheck();
+    if (currRole === '') {
+      authCheck();
+    } else {
+      setIsLoading(false);
+    }
   }, []);
 
   if (isLoading) {
     return <Loader isLoading={isLoading} />;
   }
 
-  if (currRole === role) {
+  if (checkRole(role)) {
     return children;
   } else {
     if (navigate) {
-      return <Navigate to={navigate} />;
+      return (
+        <Navigate
+          to={navigate}
+          replace={true}
+          state={{ previousPath: location.pathname }}
+        />
+      );
     }
     return <NotFound />;
   }

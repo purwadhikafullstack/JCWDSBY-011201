@@ -1,10 +1,13 @@
-import { Op } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 import { APP_URL } from '../../config';
 import { updateUser } from '../../controllers/auth.controller';
 import { hashPassword } from '../../helper/hash';
 import transporter from '../../helper/mailer';
+import { DB } from '../../db';
 
 export default async function resetPassword(req, res, next) {
+  await DB.initialize();
+  const t = await DB.db.sequelize.transaction();
   try {
     if (req.tokenData.method !== 'FORGOT_PASSWORD') {
       throw { rc: 401, message: 'Unauthorized token' };
@@ -15,12 +18,15 @@ export default async function resetPassword(req, res, next) {
         password: hashedPassword,
       },
       {
-        [Op.and]: [
-          { id: req.tokenData.id },
-          { email: req.tokenData.email },
-          { name: req.tokenData.name },
-          { type: 'regular' },
-        ],
+        where: {
+          [Op.and]: [
+            { id: req.tokenData.id },
+            { email: req.tokenData.email },
+            { name: req.tokenData.name },
+            { type: 'regular' },
+          ],
+        },
+        transaction: t,
       },
     );
     if (!result[0]) {
@@ -34,6 +40,7 @@ export default async function resetPassword(req, res, next) {
         APP_URL + `/login`
       }">Go to Cosmo</a><br><p>Hope you not forgot again :)</p><br>`,
     });
+    await t.commit();
     return res.status(201).json({
       rc: 201,
       success: true,
@@ -41,7 +48,7 @@ export default async function resetPassword(req, res, next) {
       result: null,
     });
   } catch (error) {
-    console.log(error.message);
+    await t.rollback();
     return res.status(error.rc || 500).json({
       rc: error.rc || 500,
       success: false,

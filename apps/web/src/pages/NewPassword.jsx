@@ -1,15 +1,25 @@
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import API_CALL from '../helpers/API';
-import { useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import customToast from '../utils/toast';
 import ButtonWithLoading from '../components/ButtonWithLoading';
+import { useSelector } from 'react-redux';
 
 const NewPassword = () => {
   const [searchParams] = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const globalUserRole = useSelector((reducer) => reducer.userReducer.role);
+
+  if (globalUserRole) {
+    if (globalUserRole === 'user') {
+      return <Navigate to={'/'} replace={true} />;
+    } else if (globalUserRole === 'admin' || globalUserRole === 'super') {
+      return <Navigate to={'/manage/dashboard'} replace={true} />;
+    }
+  }
 
   const handleVerify = async (data) => {
     try {
@@ -23,7 +33,7 @@ const NewPassword = () => {
         });
         if (result.data.success) {
           customToast('success', result.data.message);
-          navigate('/login');
+          navigate('/login', { replace: true });
         }
       } else {
         customToast('error', 'Invalid reset token');
