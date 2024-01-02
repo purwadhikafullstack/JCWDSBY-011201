@@ -1,6 +1,8 @@
 'use strict';
 
 import { Model, DataTypes } from 'sequelize';
+import stores from './stores.model';
+import user_addresses from './user-addresses.model';
 
 export default class users extends Model {
   /**
@@ -10,6 +12,8 @@ export default class users extends Model {
    */
   static associate(models) {
     // define association here
+    users.hasOne(stores, { foreignKey: 'userId' });
+    users.hasMany(user_addresses, { foreignKey: 'userId' });
   }
 }
 
@@ -22,6 +26,7 @@ export const init = (sequelize) => {
       role: DataTypes.STRING,
       image: DataTypes.STRING,
       isVerified: DataTypes.BOOLEAN,
+      type: DataTypes.STRING,
     },
     {
       sequelize,

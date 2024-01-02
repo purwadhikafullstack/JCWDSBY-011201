@@ -22,3 +22,5 @@ export const MAILER_USER = process.env.MAILER_USER;
 export const MAILER_PASS = process.env.MAILER_PASS;
 export const APP_URL = process.env.APP_URL;
 export const SCRT_KEY = process.env.SCRT_KEY;
+export const OPENCAGE_API_URL = process.env.OPENCAGE_API_URL;
+export const OPENCAGE_API_KEY = process.env.OPENCAGE_API_KEY;
