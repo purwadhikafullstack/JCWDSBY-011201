@@ -1,5 +1,5 @@
 import { Op } from 'sequelize';
-import { findOneUser } from '../../controllers/auth.controller';
+import { findOneUser } from '../../controllers/user.controller';
 import jwt from 'jsonwebtoken';
 import { SCRT_KEY } from '../../config';
 import stores from '../../models/stores.model';

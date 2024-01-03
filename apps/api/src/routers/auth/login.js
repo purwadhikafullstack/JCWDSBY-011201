@@ -2,7 +2,7 @@ import {
   createUser,
   findOneUser,
   findUser,
-} from '../../controllers/auth.controller';
+} from '../../controllers/user.controller';
 import jwt from 'jsonwebtoken';
 import { SCRT_KEY } from '../../config';
 import { verifyPassword } from '../../helper/hash';

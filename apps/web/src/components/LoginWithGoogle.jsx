@@ -2,10 +2,13 @@ import { GoogleLogin, useGoogleLogout } from '@leecheuk/react-google-login';
 import API_CALL from '../helpers/API';
 import customToast from '../utils/toast';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { login } from '../redux/slice/userSlice';
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 const LoginWithGoogle = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const logOut = useGoogleLogout({ clientId: clientId });
 
   const onSuccess = async (res) => {
@@ -17,6 +20,7 @@ const LoginWithGoogle = () => {
       if (result.data.success) {
         customToast('success', result.data.message);
         localStorage.setItem('authToken', result.data.result.token);
+        dispatch(login(result.data.result));
         navigate('/', { replace: true });
       }
     } catch (error) {

@@ -20,6 +20,7 @@ import PrivateRoute from './utils/PrivateRoute';
 import Loader from './components/Loader';
 import { login, logout } from './redux/slice/userSlice';
 import API_CALL from './helpers/API';
+import ProfileDetail from './pages/ProfileDetail';
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 function App() {
@@ -83,6 +84,14 @@ function App() {
           element={
             <PrivateRoute role={'user'} navigate={'/login'}>
               <UserProfile />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/profile/detail"
+          element={
+            <PrivateRoute role={'user'} navigate={'/login'}>
+              <ProfileDetail />
             </PrivateRoute>
           }
         />
