@@ -9,7 +9,7 @@ import { Carousel } from 'flowbite-react';
 const Landing = () => {
   return (
     <UserLayout>
-      <div className="flex flex-col w-full p-4 gap-4">
+      <div className="flex flex-col w-full flex-grow p-4 gap-4">
         <div className="flex flex-col w-full gap-1">
           <span className="font-bold text-sm">Delivery to</span>
           <span className="font-semibold text-sm">Baron, Nganjuk, 64394</span>
@@ -36,7 +36,6 @@ const Landing = () => {
         <div className="flex flex-col">
           <span className="font-bold text-base">Categories</span>
         </div>
-        <div className="flex w-full h-[2000px]"></div>
       </div>
     </UserLayout>
   );

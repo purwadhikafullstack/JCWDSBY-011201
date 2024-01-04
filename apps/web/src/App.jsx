@@ -22,6 +22,9 @@ import { login, logout } from './redux/slice/userSlice';
 import API_CALL from './helpers/API';
 import UserProfileDetail from './pages/UserProfileDetail';
 import UserChangePassword from './pages/UserChangePassword';
+import UserAddressList from './pages/UserAddressList';
+import UserAddAddress from './pages/UserAddAddress';
+import UserEditAddress from './pages/UserEditAddress';
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 function App() {
@@ -101,6 +104,30 @@ function App() {
           element={
             <PrivateRoute role={'user'} navigate={'/login'}>
               <UserChangePassword />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/profile/address"
+          element={
+            <PrivateRoute role={'user'} navigate={'/login'}>
+              <UserAddressList />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/profile/address/create"
+          element={
+            <PrivateRoute role={'user'} navigate={'/login'}>
+              <UserAddAddress />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/profile/address/:id"
+          element={
+            <PrivateRoute role={'user'} navigate={'/login'}>
+              <UserEditAddress />
             </PrivateRoute>
           }
         />

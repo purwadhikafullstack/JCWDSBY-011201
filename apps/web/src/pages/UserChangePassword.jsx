@@ -84,7 +84,7 @@ const UserChangePassword = (props) => {
             <span className="w-8 h-8">
               <HiChevronLeft size={'100%'} />
             </span>
-            <span className="font-bold text-3xl w-[60%] line-clamp-2 py-2">
+            <span className="font-bold text-3xl line-clamp-2 py-2">
               Change Password
             </span>
           </div>

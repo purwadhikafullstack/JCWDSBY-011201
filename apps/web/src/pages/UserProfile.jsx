@@ -53,7 +53,7 @@ const UserProfile = (props) => {
           <span className="font-bold text-base">Settings</span>
           <div className="flex flex-col gap-4">
             <span
-              className="font-semibold text-lg cursor-pointer hover:underline underline-offset-2"
+              className="font-semibold text-lg cursor-pointer text-blue-500 hover:underline underline-offset-2"
               onClick={() => {
                 navigate('/profile/detail', {
                   state: { previousPath: location.pathname },
@@ -64,7 +64,7 @@ const UserProfile = (props) => {
             </span>
             {globalUser.type === 'regular' ? (
               <span
-                className="font-semibold text-lg cursor-pointer hover:underline underline-offset-2"
+                className="font-semibold text-lg cursor-pointer text-blue-500 hover:underline underline-offset-2"
                 onClick={() => {
                   navigate('/profile/change-password', {
                     state: { previousPath: location.pathname },
@@ -74,9 +74,18 @@ const UserProfile = (props) => {
                 Change Password
               </span>
             ) : null}
-            <span className="font-semibold text-lg">Manage Address</span>
             <span
-              className="font-semibold text-lg cursor-pointer hover:underline underline-offset-2"
+              className="font-semibold text-lg cursor-pointer text-blue-500 hover:underline underline-offset-2"
+              onClick={() => {
+                navigate('/profile/address', {
+                  state: { previousPath: location.pathname },
+                });
+              }}
+            >
+              Manage Address
+            </span>
+            <span
+              className="font-semibold text-lg cursor-pointer text-blue-500 hover:underline underline-offset-2"
               onClick={() => {
                 dispatch(logout());
                 localStorage.removeItem('authToken');

@@ -24,6 +24,7 @@ export default class user_addresses extends Model {
 export const init = (sequelize) => {
   user_addresses.init(
     {
+      UUID: DataTypes.STRING,
       userId: DataTypes.INTEGER,
       districtId: DataTypes.INTEGER,
       cityId: DataTypes.INTEGER,

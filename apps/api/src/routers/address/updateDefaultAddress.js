@@ -27,7 +27,7 @@ export default async function (req, res, next) {
     const result = await updateUserAddress(
       { isDefault: true },
       {
-        where: { id: req.params.id, userId: req.tokenData.id },
+        where: { UUID: req.params.id, userId: req.tokenData.id },
         transaction: t,
       },
     );

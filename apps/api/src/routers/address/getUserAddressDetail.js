@@ -1,23 +1,18 @@
-import { findAllUserAddress } from '../../controllers/address.controller';
-import cities from '../../models/cities.model';
-import districts from '../../models/districts.model';
-import provinces from '../../models/provinces.model';
+import {
+  findAllUserAddress,
+  findOneUserAddress,
+} from '../../controllers/address.controller';
 
 export default async function (req, res, next) {
   try {
-    const result = await findAllUserAddress({
+    const result = await findOneUserAddress({
       where: {
         userId: req.tokenData.id,
+        UUID: req.params.id,
       },
-      order: [['isDefault', 'DESC']],
       attributes: {
         exclude: ['id', 'userId', 'createdAt', 'updatedAt', 'deletedAt'],
       },
-      include: [
-        { model: districts, attributes: ['districtName'] },
-        { model: cities, attributes: ['cityName'] },
-        { model: provinces, attributes: ['provinceName'] },
-      ],
     });
 
     return res.status(201).json({
