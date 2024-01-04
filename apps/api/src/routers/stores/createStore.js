@@ -1,15 +1,11 @@
-import {
-  createUserAddress,
-  findOneUserAddress,
-} from '../../controllers/address.controller';
 import { findOneCity } from '../../controllers/city.controller';
 import { findOneDistrict } from '../../controllers/district.controller';
 import { findOneProvince } from '../../controllers/province.controller';
+import { createStore, findOneStore } from '../../controllers/store.controller';
 import { DB } from '../../db';
 import geocode from '../../helper/geocode';
-import { nanoid } from 'nanoid';
 
-export default async function (req, res, next) {
+export default async function () {
   await DB.initialize();
   const t = await DB.db.sequelize.transaction();
   try {
@@ -22,34 +18,33 @@ export default async function (req, res, next) {
       province.dataValues.provinceName,
     );
     if (!latLon) {
-      throw { rc: 404, message: 'Address not found' };
+      throw { rc: 404, message: 'Address for store not found' };
     }
     const data = {
-      UUID: nanoid(40),
+      name: req.body.storeName,
+      userId: req.body.user,
       address: req.body.address,
+      postalCode: req.body.postalCode,
       districtId: req.body.district,
       cityId: req.body.city,
       provinceId: req.body.province,
-      postalCode: req.body.postalCode,
       lat: latLon.lat,
       lon: latLon.lng,
-      userId: req.tokenData.id,
     };
-    const isExist = await findOneUserAddress({
+    const isExist = await findOneStore({
       where: {
-        userId: req.tokenData.id,
-        isDefault: true,
+        isMain: true,
       },
     });
     if (!isExist) {
-      data.isDefault = true;
+      data.isMain = true;
     }
-    const result = await createUserAddress(data, { transaction: t });
+    const result = await createStore(data, { transaction: t });
     await t.commit();
     return res.status(201).json({
       rc: 201,
       success: true,
-      message: 'Success add address',
+      message: 'Success add store',
       result: null,
     });
   } catch (error) {

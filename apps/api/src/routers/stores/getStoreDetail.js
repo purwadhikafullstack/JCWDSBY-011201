@@ -1,24 +1,20 @@
-import {
-  findAllUserAddress,
-  findOneUserAddress,
-} from '../../controllers/address.controller';
+import { findOneStore } from '../../controllers/store.controller';
 
 export default async function (req, res, next) {
   try {
-    const result = await findOneUserAddress({
+    const result = await findOneStore({
       where: {
-        userId: req.tokenData.id,
-        UUID: req.params.id,
+        id: req.params.id,
       },
       attributes: {
-        exclude: ['id', 'userId', 'createdAt', 'updatedAt', 'deletedAt'],
+        exclude: ['createdAt', 'updatedAt', 'deletedAt'],
       },
     });
 
     return res.status(201).json({
       rc: 201,
       success: true,
-      message: 'Success get address detail',
+      message: 'Success get store detail',
       result: result,
     });
   } catch (error) {

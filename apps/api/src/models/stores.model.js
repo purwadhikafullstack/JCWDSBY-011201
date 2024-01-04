@@ -33,10 +33,12 @@ export const init = (sequelize) => {
       provinceId: DataTypes.INTEGER,
       lat: DataTypes.STRING,
       lon: DataTypes.STRING,
+      isMain: DataTypes.BOOLEAN,
     },
     {
       sequelize,
       modelName: 'stores',
+      paranoid: true,
     },
   );
 };
