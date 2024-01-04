@@ -12,12 +12,7 @@ export default async function keepLogin(req, res, next) {
 
     const parameter = {
       where: {
-        [Op.and]: [
-          { id: req.tokenData.id },
-          { email: req.tokenData.email },
-          { name: req.tokenData.name },
-          { role: req.tokenData.role },
-        ],
+        [Op.and]: [{ id: req.tokenData.id }, { role: req.tokenData.role }],
       },
     };
 

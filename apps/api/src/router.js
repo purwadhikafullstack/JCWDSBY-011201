@@ -9,6 +9,7 @@ import { addressRouter } from './routers/address.router';
 import { provinceRouter } from './routers/province.router';
 import { cityRouter } from './routers/city.router';
 import { districtRouter } from './routers/district.router';
+import { userRouter } from './routers/user.router';
 
 const router = Router();
 
@@ -25,6 +26,7 @@ router.use('/address', addressRouter);
 router.use('/province', provinceRouter);
 router.use('/city', cityRouter);
 router.use('/district', districtRouter);
+router.use('/user', userRouter);
 
 //Fahmi Ardiansyah
 router.use('/category', categoryRouter);

@@ -20,12 +20,7 @@ export default async function verifyAccount(req, res, next) {
       },
       {
         where: {
-          [Op.and]: [
-            { id: req.tokenData.id },
-            { email: req.tokenData.email },
-            { name: req.tokenData.name },
-            { type: 'regular' },
-          ],
+          [Op.and]: [{ id: req.tokenData.id }, { email: req.tokenData.email }],
         },
         transaction: t,
       },

@@ -3,6 +3,7 @@ import Container from '../components/Container';
 
 const NotFound = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   return (
     <Container>
       <div className="flex w-full h-full justify-center items-center">
@@ -12,10 +13,14 @@ const NotFound = () => {
           <span
             className=" text-blue-800 cursor-pointer font-semibold hover:underline underline-offset-2"
             onClick={() => {
-              navigate(-1);
+              if (location.state?.previousPath) {
+                navigate(-1);
+              } else {
+                navigate('/');
+              }
             }}
           >
-            {'<-'} Go Back
+            {location.state?.previousPath ? '<-  Go Back' : '<- Go Home'}
           </span>
         </div>
       </div>

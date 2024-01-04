@@ -19,14 +19,14 @@ const UserProfile = (props) => {
           </div>
           <div className="flex items-center">
             <span className="font-bold text-4xl w-[60%] line-clamp-2 py-2">
-              Hallo,{globalUser.name}
+              Hallo, {globalUser.name}
             </span>
             <div className="flex w-[40%] justify-end lg:justify-center items-center">
               <Avatar
                 className="lg:hidden"
                 img={
                   globalUser.image
-                    ? `${import.meta.env.VITE_API_URL}/avatar/${
+                    ? `${import.meta.env.VITE_IMG_URL}/avatar/${
                         globalUser.image
                       }`
                     : '/defaultImageSquare.jpg'
@@ -38,7 +38,7 @@ const UserProfile = (props) => {
                 className="max-md:hidden"
                 img={
                   globalUser.image
-                    ? `${import.meta.env.VITE_API_URL}/avatar/${
+                    ? `${import.meta.env.VITE_IMG_URL}/avatar/${
                         globalUser.image
                       }`
                     : '/defaultImageSquare.jpg'
@@ -63,7 +63,16 @@ const UserProfile = (props) => {
               Profile Details
             </span>
             {globalUser.type === 'regular' ? (
-              <span className="font-semibold text-lg">Change Password</span>
+              <span
+                className="font-semibold text-lg cursor-pointer hover:underline underline-offset-2"
+                onClick={() => {
+                  navigate('/profile/change-password', {
+                    state: { previousPath: location.pathname },
+                  });
+                }}
+              >
+                Change Password
+              </span>
             ) : null}
             <span className="font-semibold text-lg">Manage Address</span>
             <span

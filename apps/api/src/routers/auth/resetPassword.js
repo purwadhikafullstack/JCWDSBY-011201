@@ -19,12 +19,7 @@ export default async function resetPassword(req, res, next) {
       },
       {
         where: {
-          [Op.and]: [
-            { id: req.tokenData.id },
-            { email: req.tokenData.email },
-            { name: req.tokenData.name },
-            { type: 'regular' },
-          ],
+          [Op.and]: [{ id: req.tokenData.id }, { type: 'regular' }],
         },
         transaction: t,
       },

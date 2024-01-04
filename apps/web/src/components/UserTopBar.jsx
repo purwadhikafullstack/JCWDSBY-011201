@@ -1,10 +1,17 @@
 import { Avatar } from 'flowbite-react';
-import { HiOutlineMagnifyingGlass } from 'react-icons/hi2';
+import {
+  HiOutlineBuildingStorefront,
+  HiOutlineMagnifyingGlass,
+  HiOutlineReceiptPercent,
+  HiOutlineShoppingCart,
+  HiOutlineSquaresPlus,
+} from 'react-icons/hi2';
 import { useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const UserTopbar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const currUser = useSelector((reducer) => reducer.userReducer);
   return (
     <div
@@ -27,22 +34,81 @@ const UserTopbar = () => {
         </span>
       </div>
       <div className="hidden lg:flex items-center gap-6 text-base font-semibold">
-        <span className="cursor-pointer hover:underline underline-offset-2 transition-all duration-500">
-          Home
-        </span>
-        <span className="cursor-pointer hover:underline underline-offset-2 transition-all duration-500">
-          Category
-        </span>
-        <span className="cursor-pointer hover:underline underline-offset-2 transition-all duration-500">
-          Cart
-        </span>
-        <span className="cursor-pointer hover:underline underline-offset-2 transition-all duration-500">
-          Orders
-        </span>
-        <span className="flex items-center gap-1 cursor-pointer text-blue-800 hover:underline underline-offset-2 transition-all duration-500">
+        <div
+          className={`menuList flex flex-col justify-center items-center p-2 cursor-pointer ${
+            location.pathname === '/' ? 'text-blue-700' : ''
+          }`}
+          onClick={() => {
+            navigate('/', { state: { previousPath: location.pathname } });
+          }}
+        >
+          <span className="w-6 h-6">
+            <HiOutlineBuildingStorefront size={'100%'} />
+          </span>
+          <span className="text-xs font-semibold">Home</span>
+        </div>
+        <div
+          className={`menuList flex flex-col justify-center items-center p-2 cursor-pointer ${
+            location.pathname.includes('category') ? 'text-blue-700' : ''
+          }`}
+          onClick={() => {
+            navigate('/category', {
+              state: { previousPath: location.pathname },
+            });
+          }}
+        >
+          <span className="w-6 h-6">
+            <HiOutlineSquaresPlus size={'100%'} />
+          </span>
+          <span className="text-xs font-semibold">Category</span>
+        </div>
+        <div
+          className={`menuList flex flex-col justify-center items-center p-2 cursor-pointer ${
+            location.pathname.includes('cart') ? 'text-blue-700' : ''
+          }`}
+          onClick={() => {
+            navigate('/cart', { state: { previousPath: location.pathname } });
+          }}
+        >
+          <span className="w-6 h-6">
+            <HiOutlineShoppingCart size={'100%'} />
+          </span>
+          <span className="text-xs font-semibold">Cart</span>
+        </div>
+        <div
+          className={`menuList flex flex-col justify-center items-center p-2 cursor-pointer ${
+            location.pathname.includes('orders') ? 'text-blue-700' : ''
+          }`}
+          onClick={() => {
+            navigate('/orders', { state: { previousPath: location.pathname } });
+          }}
+        >
+          <span className="w-6 h-6">
+            <HiOutlineReceiptPercent size={'100%'} />
+          </span>
+          <span className="text-xs font-semibold">Orders</span>
+        </div>
+        <span
+          className="flex items-center gap-1 cursor-pointer text-blue-800 hover:underline underline-offset-2 transition-all duration-500"
+          onClick={() => {
+            if (currUser.name) {
+              navigate('/profile', {
+                state: { previousPath: location.pathname },
+              });
+            } else {
+              navigate('/login', {
+                state: { previousPath: location.pathname },
+              });
+            }
+          }}
+        >
           <span> {currUser.name || 'Login'}</span>
           <Avatar
-            img={currUser.image ? `` : '/defaultImageSquare.jpg'}
+            img={
+              currUser.image
+                ? `${import.meta.env.VITE_IMG_URL}/avatar/${currUser.image}`
+                : '/defaultImageSquare.jpg'
+            }
             size={'sm'}
             rounded
           />
