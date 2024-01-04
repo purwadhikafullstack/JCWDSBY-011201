@@ -14,7 +14,7 @@ export default class carts extends Model {
 export const init = (sequelize) => {
   carts.init({
     userId: DataTypes.INTEGER,
-    productId: DataTypes.INTEGER,
+    inventoryId: DataTypes.INTEGER,
     amount: DataTypes.INTEGER,
     checked: DataTypes.BOOLEAN
   }, {

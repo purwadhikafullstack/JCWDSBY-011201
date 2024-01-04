@@ -13,7 +13,7 @@ export const getCarts = async (req) => {
 };
 
 export const deleteOneProductInCart = async (req) => (
-    await carts.destroy({ where: { productId: req.params.productId}})
+    await carts.destroy({ where: { productId: req.params.inventoryId}})
 );
 
 

@@ -11,7 +11,7 @@ import LoginAdmin from './pages/LoginAdmin';
 import Landing from './pages/Landing';
 import Cart from './pages/Cart';
 import { gapi } from 'gapi-script';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import AdminDashboard from './pages/AdminDashboard';
 import { useDispatch, useSelector } from 'react-redux';
 import NotFound from './pages/NotFound';
@@ -87,14 +87,14 @@ function App() {
           }
         />
         {/* Afra */}
-        <Route
+        {/* <Route
           path="/cart"
           element={
             <PrivateRoute role={'user'} navigate={'/login'}>
               <Cart />
             </PrivateRoute>
           }
-        />
+        /> */}
         {/* Admin Side */}
         {/* Wahyu Widiantoro */}
         <Route path="/manage/login" element={<LoginAdmin />} />
