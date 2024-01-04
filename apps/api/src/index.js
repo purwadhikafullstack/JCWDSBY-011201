@@ -59,8 +59,9 @@ const main = () => {
   app.use(cors());
   app.use(json());
   app.use('/api', router);
-  app.use('/category', express.static(__dirname + '/assets/category'));
-  app.use('/product', express.static(__dirname + '/assets/product'));
+  app.use('/category', express.static(__dirname + '/assets/category')); //! To be discussed
+  app.use('/product', express.static(__dirname + '/assets/product')); //! To be discussed
+  app.use('/avatar', express.static(__dirname + '/assets/avatar')); //! To be discussed
 
   globalAPIErrorHandler(app);
   serveWebProjectBuildResult(app);

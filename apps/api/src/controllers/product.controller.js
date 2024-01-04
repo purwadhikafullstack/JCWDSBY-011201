@@ -12,24 +12,57 @@ export const getProductData = async () => {
                 model: categories,
                 as: 'category',
                 required: true,
+                attributes: ['id', 'name'],
             },
             {
                 model: productImage,
                 required: true,
+                attributes: ['id', 'productId', 'image'],
             }
         ]
     },);
 };
 
+export const findProductById = async (id) => {
+    return await product.findOne({
+        where: { id },
+        include: [
+            {
+                model: categories,
+                as: 'category',
+                required: true,
+                attributes: ['id', 'name'],
+            },
+            {
+                model: productImage,
+                required: true,
+                attributes: ['id', 'productId', 'image'],
+            }
+        ]
+    });
+};
+
 export const getInventoryData = async () => {
+    // console.log('get inventory data');
+    // return await inventory.findAll()
     return await inventory.findAll({
         include: [
             {
                 model: product,
                 as: 'product',
                 required: true,
+                attributes: {exclude: ['createdAt', 'updatedAt', 'deletedAt']},
+                include: [
+                    {
+                        model: categories,
+                        as: 'category',
+                        required: true,
+                        attributes: ['name'],
+                    }
+                ],
             }
-        ]
+        ],
+        attributes: ['id', 'storeId','discountId', 'stock'],
     });
 };
 

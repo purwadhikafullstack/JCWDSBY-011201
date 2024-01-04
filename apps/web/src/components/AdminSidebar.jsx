@@ -1,5 +1,6 @@
 import { Sidebar } from 'flowbite-react'
 import { HiHome } from 'react-icons/hi';
+import { MdInventory } from "react-icons/md";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoMdListBox } from "react-icons/io";
 import { BsBoxFill } from "react-icons/bs";
@@ -12,7 +13,7 @@ const AdminSidebar = () => {
         {
             title: 'Dashboard',
             icon: HiHome,
-            page: '/manage/category' //! redirect to dashboard page
+            page: '/manage/dashboard'
         },
         {
             title: 'Manage Category',
@@ -23,6 +24,11 @@ const AdminSidebar = () => {
             title: 'Manage Product',
             icon: BsBoxFill,
             page: '/manage/product'
+        },
+        {
+            title: 'Inventory',
+            icon: MdInventory,
+            page: '/manage/inventory'
         },
     ]
 
