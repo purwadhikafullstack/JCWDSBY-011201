@@ -111,11 +111,31 @@ function App() {
           }
         />
         {/* Fahmi */}
-        <Route path="/manage/category" element={<ManageCategories />} />
-        <Route path="/manage/product" element={<ManageProduct />} />
-        <Route path="/manage/product/create" element={<CreateProduct />} />
-        <Route path="/manage/product/edit/:id" element={<EditProduct />} />
-        <Route path="/manage/inventory" element={<Inventory />} />
+        <Route path="/manage/category" element={
+          <PrivateRoute role={['admin', 'super']}>
+            <ManageCategories />
+          </PrivateRoute>
+        } />
+        <Route path="/manage/product" element={
+          <PrivateRoute role={['admin', 'super']}>
+            <ManageProduct />
+          </PrivateRoute>
+        } />
+        <Route path="/manage/product/create" element={
+          <PrivateRoute role={['admin', 'super']}>
+            <CreateProduct />
+          </PrivateRoute>
+        } />
+        <Route path="/manage/product/edit/:id" element={
+          <PrivateRoute role={['admin', 'super']}>
+            <EditProduct />
+          </PrivateRoute>
+        } />
+        <Route path="/manage/inventory" element={
+          <PrivateRoute role={['admin', 'super']}>
+            <Inventory />
+          </PrivateRoute>
+        } />
         {/* Afra */}
         <Route path="/cart" element={<Cart />} />
 

@@ -77,9 +77,6 @@ const Inventory = () => {
         }
     };
 
-    const tes = () => {
-        console.log('ITEM >>>', items[0].product.name);
-    };
     return <>
         <div className='flex flex-row container bg-slate-200 min-w-[360px] h-max min-h-screen'>
             <AdminSidebar />

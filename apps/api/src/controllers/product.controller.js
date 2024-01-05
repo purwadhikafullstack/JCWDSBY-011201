@@ -43,8 +43,6 @@ export const findProductById = async (id) => {
 };
 
 export const getInventoryData = async () => {
-    // console.log('get inventory data');
-    // return await inventory.findAll()
     return await inventory.findAll({
         include: [
             {
