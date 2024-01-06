@@ -24,6 +24,9 @@ import ManageProduct from './pages/admin/ManageProduct';
 import CreateProduct from './pages/admin/CreateProduct';
 import EditProduct from './pages/admin/EditProduct';
 import Inventory from './pages/admin/Inventory';
+import ManageAdmin from './pages/admin/ManageAdmin';
+import RegisteredUser from './pages/admin/RegisteredUser';
+import ManageStore from './pages/admin/ManageStore';
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 function App() {
@@ -134,6 +137,21 @@ function App() {
         <Route path="/manage/inventory" element={
           <PrivateRoute role={['admin', 'super']}>
             <Inventory />
+          </PrivateRoute>
+        } />
+        <Route path="/manage/admin" element={
+          <PrivateRoute role={'super'}>
+            <ManageAdmin />
+          </PrivateRoute>
+        } />
+        <Route path="/manage/user" element={
+          <PrivateRoute role={'super'}>
+            <RegisteredUser />
+          </PrivateRoute>
+        } />
+        <Route path="/manage/store" element={
+          <PrivateRoute role={['admin', 'super']}>
+            <ManageStore />
           </PrivateRoute>
         } />
         {/* Afra */}
