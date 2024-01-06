@@ -27,6 +27,13 @@ import UserAddAddress from './pages/UserAddAddress';
 import UserEditAddress from './pages/UserEditAddress';
 import UserFindCategory from './pages/UserFIndCategory';
 import UserProductDetail from './pages/UserProductDetail';
+import ManageProduct from './pages/admin/ManageProduct';
+import CreateProduct from './pages/admin/CreateProduct';
+import EditProduct from './pages/admin/EditProduct';
+import Inventory from './pages/admin/Inventory';
+import ManageAdmin from './pages/admin/ManageAdmin';
+import RegisteredUser from './pages/admin/RegisteredUser';
+import ManageStore from './pages/admin/ManageStore';
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 function App() {
@@ -160,9 +167,72 @@ function App() {
           }
         />
         {/* Fahmi */}
-        <Route path="/manage/category" element={<ManageCategories />} />
-        {/* Not Found */}
-        <Route path="/*" element={<NotFound />} />
+        <Route
+          path="/manage/category"
+          element={
+            <PrivateRoute role={['admin', 'super']}>
+              <ManageCategories />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/product"
+          element={
+            <PrivateRoute role={['admin', 'super']}>
+              <ManageProduct />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/product/create"
+          element={
+            <PrivateRoute role={['admin', 'super']}>
+              <CreateProduct />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/product/edit/:id"
+          element={
+            <PrivateRoute role={['admin', 'super']}>
+              <EditProduct />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/inventory"
+          element={
+            <PrivateRoute role={['admin', 'super']}>
+              <Inventory />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/admin"
+          element={
+            <PrivateRoute role={'super'}>
+              <ManageAdmin />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/user"
+          element={
+            <PrivateRoute role={'super'}>
+              <RegisteredUser />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/store"
+          element={
+            <PrivateRoute role={['admin', 'super']}>
+              <ManageStore />
+            </PrivateRoute>
+          }
+        />
+        {/* Afra */}
+        <Route path="/cart" element={<Cart />} />
       </Routes>
       <ToastContainer
         position="top-right"
