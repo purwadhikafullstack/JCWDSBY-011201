@@ -1,4 +1,4 @@
-import { findOneUser } from '../../controllers/auth.controller';
+import { findOneUser } from '../../controllers/user.controller';
 import transporter from '../../helper/mailer';
 import jwt from 'jsonwebtoken';
 import { APP_URL, SCRT_KEY } from '../../config';

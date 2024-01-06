@@ -6,10 +6,12 @@ import customToast from '../utils/toast';
 import ButtonWithLoading from '../components/ButtonWithLoading';
 import { useEffect, useState } from 'react';
 import API_CALL from '../helpers/API';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { login } from '../redux/slice/userSlice';
 
 const LoginAdmin = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [isLoading, setIsloading] = useState(false);
   const globalUserRole = useSelector((reducer) => reducer.userReducer.role);
 
@@ -26,9 +28,10 @@ const LoginAdmin = () => {
       setIsloading(true);
       const result = await API_CALL.post('/auth/login/admin', data);
       if (result.data.success) {
+        dispatch(login(result.data.result));
         localStorage.setItem('authToken', result.data.result.token);
         customToast('success', `Welcome admin ${result.data.result.name}`);
-        navigate('/auth/dashboard');
+        navigate('/manage/dashboard', { replace: true });
       }
     } catch (error) {
       console.log(error);

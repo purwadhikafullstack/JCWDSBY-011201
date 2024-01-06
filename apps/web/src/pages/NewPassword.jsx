@@ -1,25 +1,18 @@
-import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import API_CALL from '../helpers/API';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import customToast from '../utils/toast';
 import ButtonWithLoading from '../components/ButtonWithLoading';
-import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { logout } from '../redux/slice/userSlice';
 
 const NewPassword = () => {
   const [searchParams] = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const globalUserRole = useSelector((reducer) => reducer.userReducer.role);
-
-  if (globalUserRole) {
-    if (globalUserRole === 'user') {
-      return <Navigate to={'/'} replace={true} />;
-    } else if (globalUserRole === 'admin' || globalUserRole === 'super') {
-      return <Navigate to={'/manage/dashboard'} replace={true} />;
-    }
-  }
+  const dispatch = useDispatch();
 
   const handleVerify = async (data) => {
     try {
@@ -32,6 +25,8 @@ const NewPassword = () => {
           },
         });
         if (result.data.success) {
+          localStorage.removeItem('authToken');
+          dispatch(logout());
           customToast('success', result.data.message);
           navigate('/login', { replace: true });
         }

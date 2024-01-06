@@ -7,7 +7,7 @@ export default async function (req, res, next) {
   try {
     const result = await deleteUserAddress({
       where: {
-        id: req.params.id,
+        UUID: req.params.id,
         isDefault: false,
       },
     });

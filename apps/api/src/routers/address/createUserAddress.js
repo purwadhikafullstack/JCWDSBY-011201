@@ -7,6 +7,7 @@ import { findOneDistrict } from '../../controllers/district.controller';
 import { findOneProvince } from '../../controllers/province.controller';
 import { DB } from '../../db';
 import geocode from '../../helper/geocode';
+import { nanoid } from 'nanoid';
 
 export default async function (req, res, next) {
   await DB.initialize();
@@ -24,6 +25,7 @@ export default async function (req, res, next) {
       throw { rc: 404, message: 'Address not found' };
     }
     const data = {
+      UUID: nanoid(40),
       address: req.body.address,
       districtId: req.body.district,
       cityId: req.body.city,

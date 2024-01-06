@@ -8,6 +8,10 @@ export default class product_image extends Model {
    */
   static associate(models) {
     // define association here
+    product_image.belongsTo(models.product, {
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    });
   }
 }
 
@@ -16,12 +20,10 @@ export const init = (sequelize) => {
     {
       productId: DataTypes.INTEGER,
       image: DataTypes.STRING,
-      deletedAt: DataTypes.DATE,
     },
     {
       sequelize,
       modelName: 'product_image',
-      paranoid: true,
     }
   );
 };
