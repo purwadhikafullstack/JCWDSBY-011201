@@ -41,7 +41,7 @@ const AdminSidebar = () => {
         {
             title: 'Store',
             icon: MdStore,
-            page: '/manage/store'
+            page: '/manage/store'0
         },
     ]
 
@@ -65,6 +65,13 @@ const AdminSidebar = () => {
                                 {item.title}
                             </Sidebar.Item>
                         })}
+                        {/* <Sidebar.Collapse icon={FaUser} label='tes'>
+                            <Sidebar.Item>user</Sidebar.Item>
+                            <Sidebar.Item>admin store</Sidebar.Item>
+                        </Sidebar.Collapse> */}
+                    </Sidebar.ItemGroup>
+                    <Sidebar.ItemGroup className='mb-5'>
+                        <Avatar rounded />
                     </Sidebar.ItemGroup>
                     <Sidebar.ItemGroup className='mb-5'>
                         <Avatar rounded />
