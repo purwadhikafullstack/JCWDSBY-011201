@@ -5,6 +5,7 @@ import users from './users.model';
 import cities from './cities.model';
 import provinces from './provinces.model';
 import districts from './districts.model';
+import { nanoid } from 'nanoid';
 
 export default class stores extends Model {
   /**
@@ -24,6 +25,10 @@ export default class stores extends Model {
 export const init = (sequelize) => {
   stores.init(
     {
+      UUID: {
+        type: DataTypes.STRING,
+        defaultValue: nanoid(),
+      },
       name: DataTypes.STRING,
       postalCode: DataTypes.STRING,
       address: DataTypes.STRING,

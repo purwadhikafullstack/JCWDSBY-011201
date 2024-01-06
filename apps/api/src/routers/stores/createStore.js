@@ -2,10 +2,11 @@ import { findOneCity } from '../../controllers/city.controller';
 import { findOneDistrict } from '../../controllers/district.controller';
 import { findOneProvince } from '../../controllers/province.controller';
 import { createStore, findOneStore } from '../../controllers/store.controller';
+import { findOneUser } from '../../controllers/user.controller';
 import { DB } from '../../db';
 import geocode from '../../helper/geocode';
 
-export default async function () {
+export default async function (req, res, next) {
   await DB.initialize();
   const t = await DB.db.sequelize.transaction();
   try {
@@ -20,9 +21,13 @@ export default async function () {
     if (!latLon) {
       throw { rc: 404, message: 'Address for store not found' };
     }
+    const user = await findOneUser({ where: { UUID: req.body.user } });
+    if (!user) {
+      throw { rc: 404, message: 'User not found' };
+    }
     const data = {
       name: req.body.storeName,
-      userId: req.body.user,
+      userId: user.dataValues.id,
       address: req.body.address,
       postalCode: req.body.postalCode,
       districtId: req.body.district,

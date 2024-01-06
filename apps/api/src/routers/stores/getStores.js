@@ -9,7 +9,7 @@ export default async function (req, res, next) {
     const result = await findAllStores({
       order: [['isMain', 'DESC']],
       attributes: {
-        exclude: ['createdAt', 'updatedAt', 'deletedAt'],
+        exclude: ['id', 'createdAt', 'updatedAt', 'deletedAt'],
       },
       include: [
         { model: users, attributes: ['name'] },

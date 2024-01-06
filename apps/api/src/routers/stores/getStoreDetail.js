@@ -4,10 +4,10 @@ export default async function (req, res, next) {
   try {
     const result = await findOneStore({
       where: {
-        id: req.params.id,
+        UUID: req.params.id,
       },
       attributes: {
-        exclude: ['createdAt', 'updatedAt', 'deletedAt'],
+        exclude: ['id', 'createdAt', 'updatedAt', 'deletedAt'],
       },
     });
 

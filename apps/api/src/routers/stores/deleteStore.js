@@ -8,7 +8,7 @@ export default async function (req, res, next) {
   try {
     const result = await deleteStore({
       where: {
-        id: req.params.id,
+        UUID: req.params.id,
         isDefault: false,
       },
     });

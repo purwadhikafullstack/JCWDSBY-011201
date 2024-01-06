@@ -31,7 +31,7 @@ export default async function (req, res, next) {
       lon: latLon.lng,
     };
     const result = await updateStore(data, {
-      where: { id: req.params.id },
+      where: { UUID: req.params.id },
       transaction: t,
     });
 
