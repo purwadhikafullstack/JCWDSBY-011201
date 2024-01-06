@@ -1,6 +1,6 @@
 import { Avatar, Sidebar } from 'flowbite-react'
 import { HiHome } from 'react-icons/hi';
-import { MdInventory } from "react-icons/md";
+import { MdInventory, MdStore } from "react-icons/md";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoMdListBox } from "react-icons/io";
 import { BsBoxFill } from "react-icons/bs";
@@ -38,6 +38,11 @@ const AdminSidebar = () => {
             icon: FaUser,
             // page: '/manage/inventory'
         },
+        {
+            title: 'Store',
+            icon: MdStore,
+            page: '/manage/store'
+        },
     ]
 
     return <>
@@ -52,18 +57,14 @@ const AdminSidebar = () => {
                             // console.log('USER ROLE', globalUser.role);
                             if (globalUser.role === 'super' && item.title === 'User') {
                                 return <Sidebar.Collapse icon={FaUser} label={item.title} key={index}>
-                                    <Sidebar.Item icon={FaUserCog}>Admin Store</Sidebar.Item>
-                                    <Sidebar.Item icon={FaUserCheck}>Registered</Sidebar.Item>
+                                    <Sidebar.Item icon={FaUserCog} onClick={() => navigate('/manage/admin')}>Admin Store</Sidebar.Item>
+                                    <Sidebar.Item icon={FaUserCheck} onClick={() => navigate('/manage/user')}>Registered</Sidebar.Item>
                                 </Sidebar.Collapse>
                             }
                             return <Sidebar.Item onClick={() => navigate(item.page)} icon={item.icon} key={index}>
                                 {item.title}
                             </Sidebar.Item>
                         })}
-                        {/* <Sidebar.Collapse icon={FaUser} label='tes'>
-                            <Sidebar.Item>user</Sidebar.Item>
-                            <Sidebar.Item>admin store</Sidebar.Item>
-                        </Sidebar.Collapse> */}
                     </Sidebar.ItemGroup>
                     <Sidebar.ItemGroup className='mb-5'>
                         <Avatar rounded />
