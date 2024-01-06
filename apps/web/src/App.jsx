@@ -20,6 +20,10 @@ import PrivateRoute from './utils/PrivateRoute';
 import Loader from './components/Loader';
 import { login, logout } from './redux/slice/userSlice';
 import API_CALL from './helpers/API';
+import ManageProduct from './pages/admin/ManageProduct';
+import CreateProduct from './pages/admin/CreateProduct';
+import EditProduct from './pages/admin/EditProduct';
+import Inventory from './pages/admin/Inventory';
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 function App() {
@@ -107,9 +111,34 @@ function App() {
           }
         />
         {/* Fahmi */}
-        <Route path="/manage/category" element={<ManageCategories />} />
-        {/* Not Found */}
-        <Route path="/*" element={<NotFound />} />
+        <Route path="/manage/category" element={
+          <PrivateRoute role={['admin', 'super']}>
+            <ManageCategories />
+          </PrivateRoute>
+        } />
+        <Route path="/manage/product" element={
+          <PrivateRoute role={['admin', 'super']}>
+            <ManageProduct />
+          </PrivateRoute>
+        } />
+        <Route path="/manage/product/create" element={
+          <PrivateRoute role={['admin', 'super']}>
+            <CreateProduct />
+          </PrivateRoute>
+        } />
+        <Route path="/manage/product/edit/:id" element={
+          <PrivateRoute role={['admin', 'super']}>
+            <EditProduct />
+          </PrivateRoute>
+        } />
+        <Route path="/manage/inventory" element={
+          <PrivateRoute role={['admin', 'super']}>
+            <Inventory />
+          </PrivateRoute>
+        } />
+        {/* Afra */}
+        <Route path="/cart" element={<Cart />} />
+
       </Routes>
       <ToastContainer
         position="top-right"

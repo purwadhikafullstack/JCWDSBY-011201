@@ -11,6 +11,12 @@
       categoryId: {
         allowNull: false,
         type: Sequelize.INTEGER,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+        references: {
+          model: 'categories',
+          key: 'id'
+        }
       },
       name: {
         allowNull: false,

@@ -2,10 +2,11 @@ import { useEffect, useState, useRef } from 'react';
 import AdminSidebar from '../../components/AdminSidebar';
 import LayoutPageAdmin from '../../components/LayoutPageAdmin';
 import BoxAddItem from '../../components/BoxAddItem';
-import CardCategory from '../../components/CardCategory';
+import CardManage from '../../components/CardManage';
 import API_CALL from '../../helpers/API';
 import ModalCategory from '../../components/ModalCategory';
-import { MAX_SIZE, REGEX_FILE_TYPE } from '../../constant/file';
+import { MAX_SIZE, REGEX_FILE_TYPE } from '../../constants/file';
+import LoadingSpinner from '../../components/LoadingSpinner';
 
 const ManageCategories = () => {
     const [openModal, setOpenModal] = useState(false);
@@ -16,6 +17,7 @@ const ManageCategories = () => {
     const [error, setError] = useState({ size: false, requiredName: false, requiredFile: false, ext: false });
     const [category, setCategory] = useState(null);
     const [onEdit, setOnEdit] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const hiddenFileInput = useRef(null);
 
     useEffect(() => {
@@ -23,8 +25,12 @@ const ManageCategories = () => {
     }, []);
 
     const getCategory = async () => {
+        setIsLoading(true);
         const res = await API_CALL.get('category');
-        setCategory(res.data);
+        if(res){
+            setIsLoading(false);
+            setCategory(res.data);
+        }
     };
 
     const onCloseModal = () => {
@@ -126,6 +132,7 @@ const ManageCategories = () => {
         <div className='flex flex-row container bg-slate-200 min-w-[360px] h-max min-h-screen'>
             <AdminSidebar />
             <LayoutPageAdmin title='Manage Categories'>
+                <LoadingSpinner size={16} isLoading={isLoading}/>
                 <div className='flex flex-wrap justify-between gap-y-5'>
                     <BoxAddItem title='Add Category' onClick={() => setOpenModal(true)} />
                     <ModalCategory
@@ -147,7 +154,7 @@ const ManageCategories = () => {
                     />
                     {category && category.map((item, index) => {
                         return (
-                            <CardCategory
+                            <CardManage
                                 key={index}
                                 src={item.image ? `${import.meta.env.VITE_IMG_URL}/category/${item.image}` : '/defaultImage.jpg'}
                                 name={item.name}

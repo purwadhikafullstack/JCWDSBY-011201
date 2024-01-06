@@ -8,7 +8,10 @@ export default class categories extends Model {
    */
   static associate(models) {
     // define association here
-    categories.hasMany(models.product);
+    categories.hasMany(models.product, {
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    });
   }
 }
 

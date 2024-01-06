@@ -1,7 +1,8 @@
 import { Router } from "express";
 import {
     getProductData,
-    getInventoryData, 
+    getInventoryData,
+    findProductById, 
     createProduct,
     updateProduct,
     updateInventory, 
@@ -19,7 +20,6 @@ productRouter.get('/', async (req, res, next) => {
         next(error);
     }
 });
-
 productRouter.get('/inventory', async (req, res, next) => {
     try {
         const result = await getInventoryData();
@@ -28,6 +28,16 @@ productRouter.get('/inventory', async (req, res, next) => {
         next(error);
     }
 });
+
+productRouter.get('/:id', async (req, res, next) => {
+    try {
+        const result = await findProductById(req.params.id);
+        res.status(200).json(result);
+    } catch (error) {
+        next(error);
+    }
+});
+
 
 productRouter.post('/', async (req, res, next) => {
     try {
