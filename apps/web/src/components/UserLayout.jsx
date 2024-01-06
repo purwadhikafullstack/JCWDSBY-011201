@@ -5,7 +5,7 @@ import UserTopbar from './UserTopBar';
 const UserLayout = (props) => {
   return (
     <Container>
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full overflow-auto">
         <UserTopbar />
         {props.children}
         <UserBottomBar />

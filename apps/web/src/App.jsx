@@ -25,6 +25,8 @@ import UserChangePassword from './pages/UserChangePassword';
 import UserAddressList from './pages/UserAddressList';
 import UserAddAddress from './pages/UserAddAddress';
 import UserEditAddress from './pages/UserEditAddress';
+import UserFindCategory from './pages/UserFIndCategory';
+import UserProductDetail from './pages/UserProductDetail';
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 function App() {
@@ -131,6 +133,12 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route path="/category" element={<UserFindCategory />} />
+        <Route
+          path="/product/sjddahGkasJSNx-672nSjdskak"
+          element={<UserProductDetail />}
+        />
+
         {/* Afra */}
         <Route
           path="/cart"

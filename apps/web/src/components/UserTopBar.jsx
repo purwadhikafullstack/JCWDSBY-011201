@@ -1,4 +1,5 @@
 import { Avatar } from 'flowbite-react';
+import { HiChevronLeft } from 'react-icons/hi2';
 import {
   HiOutlineBuildingStorefront,
   HiOutlineMagnifyingGlass,
@@ -7,11 +8,12 @@ import {
   HiOutlineSquaresPlus,
 } from 'react-icons/hi2';
 import { useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 const UserTopbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const currUser = useSelector((reducer) => reducer.userReducer);
   return (
     <div
@@ -19,20 +21,73 @@ const UserTopbar = () => {
         location.pathname.includes('profile') ? 'hidden' : 'flex'
       } lg:flex sticky top-0 w-full bg-blue-50 items-center gap-2 lg:gap-6 py-2 px-4 z-50`}
     >
-      <div className="flex cursor-pointer">
+      <div
+        className="hidden md:flex cursor-pointer"
+        onClick={() => {
+          navigate('/');
+        }}
+      >
+        <span className="text-blue-800 font-extrabold text-2xl">Cosmo</span>
+      </div>
+      <div
+        className={`flex md:hidden cursor-pointer ${
+          location.pathname.includes('category') ||
+          location.pathname.includes('product')
+            ? 'hidden'
+            : ''
+        }`}
+        onClick={() => {
+          navigate('/');
+        }}
+      >
         <span className="text-blue-800 font-extrabold text-2xl">Cosmo</span>
       </div>
 
-      <div className="search flex flex-grow items-center border-2 py-2 px-4 rounded-full gap-2">
+      <div
+        className={`${
+          location.pathname.includes('category') ||
+          location.pathname.includes('product')
+            ? 'flex'
+            : 'hidden'
+        } md:hidden items-center cursor-pointer`}
+        onClick={() => {
+          navigate(location.state?.previousPath || '/');
+        }}
+      >
+        <span className="w-8 h-8">
+          <HiChevronLeft size={'100%'} />
+        </span>
+      </div>
+
+      <div
+        className="search flex flex-grow items-center border-2 py-2 px-4 rounded-full gap-2"
+        onClick={() => {
+          if (!location.pathname.includes('category')) navigate('/category');
+        }}
+      >
         <input
           type="search"
           placeholder="Search for products"
           className=" flex-grow outline-none bg-transparent text-sm font-semibold"
+          defaultValue={searchParams.get('q')}
+          onChange={(e) => {
+            setTimeout(() => {
+              setSearchParams((value) => {
+                if (!e.target.value) {
+                  value.delete('q');
+                } else {
+                  value.set('q', e.target.value);
+                }
+                return value;
+              });
+            }, 1000);
+          }}
         />
         <span className="w-6 h-6">
           <HiOutlineMagnifyingGlass size={'100%'} />
         </span>
       </div>
+
       <div className="hidden lg:flex items-center gap-6 text-base font-semibold">
         <div
           className={`menuList flex flex-col justify-center items-center p-2 cursor-pointer ${
