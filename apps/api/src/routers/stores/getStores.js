@@ -1,19 +1,18 @@
-import { findAllUserAddress } from '../../controllers/address.controller';
+import { findAllStores } from '../../controllers/store.controller';
 import cities from '../../models/cities.model';
 import districts from '../../models/districts.model';
 import provinces from '../../models/provinces.model';
+import users from '../../models/users.model';
 
 export default async function (req, res, next) {
   try {
-    const result = await findAllUserAddress({
-      where: {
-        userId: req.tokenData.id,
-      },
-      order: [['isDefault', 'DESC']],
+    const result = await findAllStores({
+      order: [['isMain', 'DESC']],
       attributes: {
-        exclude: ['id', 'userId', 'createdAt', 'updatedAt', 'deletedAt'],
+        exclude: ['id', 'createdAt', 'updatedAt', 'deletedAt'],
       },
       include: [
+        { model: users, attributes: ['name'] },
         { model: districts, attributes: ['districtName'] },
         { model: cities, attributes: ['cityName'] },
         { model: provinces, attributes: ['provinceName'] },
@@ -23,7 +22,7 @@ export default async function (req, res, next) {
     return res.status(201).json({
       rc: 201,
       success: true,
-      message: 'Success get all address',
+      message: 'Success get all stores',
       result: result,
     });
   } catch (error) {

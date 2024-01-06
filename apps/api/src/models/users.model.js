@@ -3,6 +3,7 @@
 import { Model, DataTypes } from 'sequelize';
 import stores from './stores.model';
 import user_addresses from './user-addresses.model';
+import { nanoid } from 'nanoid';
 
 export default class users extends Model {
   /**
@@ -20,6 +21,10 @@ export default class users extends Model {
 export const init = (sequelize) => {
   users.init(
     {
+      UUID: {
+        type: DataTypes.STRING,
+        defaultValue: nanoid(),
+      },
       name: DataTypes.STRING,
       email: DataTypes.STRING,
       password: DataTypes.STRING,

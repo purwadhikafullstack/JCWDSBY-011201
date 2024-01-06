@@ -1,6 +1,6 @@
 import { Op, Sequelize } from 'sequelize';
 import { APP_URL } from '../../config';
-import { updateUser } from '../../controllers/auth.controller';
+import { updateUser } from '../../controllers/user.controller';
 import { hashPassword } from '../../helper/hash';
 import transporter from '../../helper/mailer';
 import { DB } from '../../db';
@@ -20,12 +20,7 @@ export default async function verifyAccount(req, res, next) {
       },
       {
         where: {
-          [Op.and]: [
-            { id: req.tokenData.id },
-            { email: req.tokenData.email },
-            { name: req.tokenData.name },
-            { type: 'regular' },
-          ],
+          [Op.and]: [{ id: req.tokenData.id }, { email: req.tokenData.email }],
         },
         transaction: t,
       },

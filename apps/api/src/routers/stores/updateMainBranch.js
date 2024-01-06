@@ -1,45 +1,42 @@
-import {
-  findOneUserAddress,
-  updateUserAddress,
-} from '../../controllers/address.controller';
+import { findOneStore, updateStore } from '../../controllers/store.controller';
 import { DB } from '../../db';
 
 export default async function (req, res, next) {
   await DB.initialize();
   const t = await DB.db.sequelize.transaction();
   try {
-    const currDefault = await findOneUserAddress({
-      where: { userId: req.tokenData.id, isDefault: true },
+    const currDefault = await findOneStore({
+      where: { isMain: true },
     });
 
     if (currDefault) {
-      await updateUserAddress(
-        { isDefault: false },
+      await updateStore(
+        { isMain: false },
         {
           where: {
-            id: currDefault.dataValues.id,
+            UUID: currDefault.dataValues.id,
           },
           transaction: t,
         },
       );
     }
 
-    const result = await updateUserAddress(
+    const result = await updateStore(
       { isDefault: true },
       {
-        where: { UUID: req.params.id, userId: req.tokenData.id },
+        where: { UUID: req.params.id },
         transaction: t,
       },
     );
 
     if (!result[0]) {
-      throw { rc: 404, message: 'Address not found' };
+      throw { rc: 404, message: 'Store not found' };
     }
     await t.commit();
     return res.status(201).json({
       rc: 201,
       success: true,
-      message: 'Success edit address',
+      message: 'Success edit store',
       result: null,
     });
   } catch (error) {

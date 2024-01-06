@@ -3,11 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import customToast from '../utils/toast';
 import API_CALL from '../helpers/API';
 import { replace } from 'formik';
+import { useDispatch } from 'react-redux';
+import { login } from '../redux/slice/userSlice';
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 const SignUpWithGoogle = () => {
   const navigate = useNavigate();
   const logOut = useGoogleLogout({ clientId: clientId });
+  const dispatch = useDispatch();
 
   const onSuccess = async (res) => {
     try {
@@ -18,6 +21,7 @@ const SignUpWithGoogle = () => {
       });
       if (result.data.success) {
         customToast('success', result.data.message);
+        dispatch(login(result.data.result));
         localStorage.setItem('authToken', result.data.result.token);
         navigate('/', { replace: true });
       }
