@@ -38,11 +38,17 @@ const globalAPIErrorHandler = (app) => {
   // error
   app.use((err, req, res, next) => {
     if (req.path.includes('/api/')) {
-      console.error('Error : ', err.stack);
+      console.error('Error : ', err.stack || err.message);
       if (err.code === 'LIMIT_FILE_SIZE') {
         res.status(413).send('File size exceeds the limit!');
       }
-      res.status(500).send('Error !');
+      // res.status(500).send('Error !'); //! Change response with template
+      res.status(err.rc || 500).json({
+        rc: err.rc || 500,
+        success: false,
+        message: err.message,
+        result: null,
+      });
     } else {
       next();
     }
@@ -59,9 +65,9 @@ const main = () => {
   app.use(cors());
   app.use(json());
   app.use('/api', router);
-  app.use('/category', express.static(__dirname + '/assets/category')); //! To be discussed
-  app.use('/product', express.static(__dirname + '/assets/product')); //! To be discussed
-  app.use('/avatar', express.static(__dirname + '/assets/avatar')); //! To be discussed
+  app.use('/category', express.static(__dirname + '/assets/category'));
+  app.use('/product', express.static(__dirname + '/assets/product'));
+  app.use('/avatar', express.static(__dirname + '/assets/avatar'));
 
   globalAPIErrorHandler(app);
   serveWebProjectBuildResult(app);
