@@ -85,7 +85,6 @@ const EditProduct = () => {
     const previewImage = () => {
         if (file.length > 0) {
             return file.map((image, index) => {
-                // console.log(image);
                 if (image.id) {
                     return <div className='border border-black h-24 w-24 overflow-hidden rounded relative' key={index}>
                         <img src={`${import.meta.env.VITE_IMG_URL}/product/${image.image}`} className='h-24 w-24 rounded object-cover' />

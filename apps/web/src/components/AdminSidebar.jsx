@@ -46,7 +46,7 @@ const AdminSidebar = () => {
     ]
 
     return <>
-        <div className='h-screen sticky top-0 z-10'>
+        <div className='h-screen sticky top-0 z-40'>
             <Sidebar collapsed={true}>
                 <Sidebar.Items className='grid content-between h-full'>
                     <Sidebar.ItemGroup>

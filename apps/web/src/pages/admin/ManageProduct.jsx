@@ -5,19 +5,23 @@ import { useNavigate } from "react-router-dom";
 import CardManage from "../../components/CardManage";
 import { useEffect, useState } from "react";
 import API_CALL from "../../helpers/API";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 const ManageProduct = () => {
     const navigate = useNavigate();
     const [product, setProduct] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         getProduct();
     }, []);
 
     const getProduct = async () => {
+        setIsLoading(true);
         const res = await API_CALL.get('product');
         if(res){
             setProduct(res.data);
+            setIsLoading(false);
         }
     };
 
@@ -29,6 +33,7 @@ const ManageProduct = () => {
     return <>
         <div className='flex flex-row container bg-slate-200 min-w-[360px] h-max min-h-screen'>
             <AdminSidebar />
+            <LoadingSpinner isLoading={isLoading} size={16}/>
             <LayoutPageAdmin title='Manage Product'>
                 <div className='flex flex-wrap justify-between gap-y-5'>
                     <BoxAddItem title='Add Product' onClick={() => navigate('/manage/product/create')} />
