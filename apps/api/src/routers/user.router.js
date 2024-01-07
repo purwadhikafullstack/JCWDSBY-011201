@@ -3,7 +3,7 @@ import { validateToken, validateUser } from '../middleware/tokenValidation';
 import uploader from '../helper/uploader';
 import updateUserUser from './user/updateUserUser';
 import changePassword from './user/changePasswordUser';
-import { getAllUser } from '../controllers/admin.controller';
+import getAllUser from './admin/getAllUser';
 
 const userRouter = Router();
 
@@ -21,14 +21,7 @@ userRouter.patch(
   validateUser,
   changePassword,
 );
-userRouter.get('/', async (req, res, next) => {
-  try {
-    const result = await getAllUser();
-    res.status(200).json(result);
-  } catch (error) {
-    next(error);
-  }
-});
+userRouter.get('/', getAllUser);
 
 // For admin use ('/admin')
 // For super use ('/super')
