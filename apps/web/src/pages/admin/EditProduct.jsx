@@ -134,7 +134,7 @@ const EditProduct = () => {
     }
 
     return <>
-        <div className='flex flex-col container bg-slate-200 min-w-[360px] h-max min-h-screen'>
+        <div className='flex flex-col container bg-blue-100 min-w-[360px] h-max min-h-screen'>
             <TopBar title='Edit Product' prevPage={() => navigate('/manage/product')} />
             <LoadingSpinner size={16} isLoading={isLoading} />
             <form className={`p-3 ${isLoading && 'hidden'}`}>
