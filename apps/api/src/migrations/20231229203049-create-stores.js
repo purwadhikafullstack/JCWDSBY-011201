@@ -9,6 +9,10 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
+      UUID: {
+        allowNull: false,
+        type: Sequelize.STRING,
+      },
       name: {
         allowNull: false,
         type: Sequelize.STRING,
@@ -44,6 +48,11 @@ module.exports = {
       lon: {
         allowNull: false,
         type: Sequelize.STRING,
+      },
+      isMain: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
       },
       createdAt: {
         allowNull: false,

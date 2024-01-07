@@ -30,7 +30,7 @@ export default async function (req, res, next) {
       lon: latLon.lng,
     };
     const result = await updateUserAddress(data, {
-      where: { id: req.params.id, userId: req.tokenData.id },
+      where: { UUID: req.params.id, userId: req.tokenData.id },
       transaction: t,
     });
 

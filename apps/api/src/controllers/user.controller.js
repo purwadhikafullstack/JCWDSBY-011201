@@ -15,3 +15,7 @@ export const findAllUser = async (pointer) => {
 export const updateUser = async (data, pointer) => {
   return await users.update(data, pointer);
 };
+
+export const deleteUser = async (pointer) => {
+  return await users.destroy(pointer);
+};

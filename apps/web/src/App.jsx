@@ -20,6 +20,13 @@ import PrivateRoute from './utils/PrivateRoute';
 import Loader from './components/Loader';
 import { login, logout } from './redux/slice/userSlice';
 import API_CALL from './helpers/API';
+import UserProfileDetail from './pages/UserProfileDetail';
+import UserChangePassword from './pages/UserChangePassword';
+import UserAddressList from './pages/UserAddressList';
+import UserAddAddress from './pages/UserAddAddress';
+import UserEditAddress from './pages/UserEditAddress';
+import UserFindCategory from './pages/UserFIndCategory';
+import UserProductDetail from './pages/UserProductDetail';
 import ManageProduct from './pages/admin/ManageProduct';
 import CreateProduct from './pages/admin/CreateProduct';
 import EditProduct from './pages/admin/EditProduct';
@@ -93,6 +100,52 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route
+          path="/profile/detail"
+          element={
+            <PrivateRoute role={'user'} navigate={'/login'}>
+              <UserProfileDetail />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/profile/change-password"
+          element={
+            <PrivateRoute role={'user'} navigate={'/login'}>
+              <UserChangePassword />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/profile/address"
+          element={
+            <PrivateRoute role={'user'} navigate={'/login'}>
+              <UserAddressList />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/profile/address/create"
+          element={
+            <PrivateRoute role={'user'} navigate={'/login'}>
+              <UserAddAddress />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/profile/address/:id"
+          element={
+            <PrivateRoute role={'user'} navigate={'/login'}>
+              <UserEditAddress />
+            </PrivateRoute>
+          }
+        />
+        <Route path="/category" element={<UserFindCategory />} />
+        <Route
+          path="/product/sjddahGkasJSNx-672nSjdskak"
+          element={<UserProductDetail />}
+        />
+
         {/* Afra */}
         <Route
           path="/cart"
@@ -114,49 +167,72 @@ function App() {
           }
         />
         {/* Fahmi */}
-        <Route path="/manage/category" element={
-          <PrivateRoute role={['admin', 'super']}>
-            <ManageCategories />
-          </PrivateRoute>
-        } />
-        <Route path="/manage/product" element={
-          <PrivateRoute role={['admin', 'super']}>
-            <ManageProduct />
-          </PrivateRoute>
-        } />
-        <Route path="/manage/product/create" element={
-          <PrivateRoute role={['admin', 'super']}>
-            <CreateProduct />
-          </PrivateRoute>
-        } />
-        <Route path="/manage/product/edit/:id" element={
-          <PrivateRoute role={['admin', 'super']}>
-            <EditProduct />
-          </PrivateRoute>
-        } />
-        <Route path="/manage/inventory" element={
-          <PrivateRoute role={['admin', 'super']}>
-            <Inventory />
-          </PrivateRoute>
-        } />
-        <Route path="/manage/admin" element={
-          <PrivateRoute role={'super'}>
-            <ManageAdmin />
-          </PrivateRoute>
-        } />
-        <Route path="/manage/user" element={
-          <PrivateRoute role={'super'}>
-            <RegisteredUser />
-          </PrivateRoute>
-        } />
-        <Route path="/manage/store" element={
-          <PrivateRoute role={['admin', 'super']}>
-            <ManageStore />
-          </PrivateRoute>
-        } />
+        <Route
+          path="/manage/category"
+          element={
+            <PrivateRoute role={['admin', 'super']}>
+              <ManageCategories />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/product"
+          element={
+            <PrivateRoute role={['admin', 'super']}>
+              <ManageProduct />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/product/create"
+          element={
+            <PrivateRoute role={['admin', 'super']}>
+              <CreateProduct />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/product/edit/:id"
+          element={
+            <PrivateRoute role={['admin', 'super']}>
+              <EditProduct />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/inventory"
+          element={
+            <PrivateRoute role={['admin', 'super']}>
+              <Inventory />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/admin"
+          element={
+            <PrivateRoute role={'super'}>
+              <ManageAdmin />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/user"
+          element={
+            <PrivateRoute role={'super'}>
+              <RegisteredUser />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/store"
+          element={
+            <PrivateRoute role={['admin', 'super']}>
+              <ManageStore />
+            </PrivateRoute>
+          }
+        />
         {/* Afra */}
         <Route path="/cart" element={<Cart />} />
-
       </Routes>
       <ToastContainer
         position="top-right"

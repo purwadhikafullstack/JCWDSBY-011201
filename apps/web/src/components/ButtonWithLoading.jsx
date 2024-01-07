@@ -3,7 +3,9 @@ const ButtonWithLoading = (props) => {
     <button
       disabled={props.isLoading || false}
       type="button"
-      className="text-white w-full bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-lg px-5 py-2.5 mb-1 text-center inline-flex justify-center items-center"
+      className={`text-white w-full bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-lg px-5 py-2.5 mb-1 text-center inline-flex justify-center items-center ${
+        props.isLoading ? 'cursor-wait' : ''
+      }`}
       onClick={props.func}
     >
       {props.isLoading ? (

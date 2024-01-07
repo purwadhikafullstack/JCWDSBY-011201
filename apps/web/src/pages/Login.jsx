@@ -8,12 +8,14 @@ import * as Yup from 'yup';
 import customToast from '../utils/toast';
 import LoginWithGoogle from '../components/LoginWithGoogle';
 import Container from '../components/Container';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { login } from '../redux/slice/userSlice';
 
 const Login = () => {
   const navigate = useNavigate();
   const [isLoading, setIsloading] = useState(false);
   const location = useLocation();
+  const dispatch = useDispatch();
   const globalUserRole = useSelector((reducer) => reducer.userReducer.role);
 
   if (globalUserRole) {
@@ -29,6 +31,7 @@ const Login = () => {
       setIsloading(true);
       const result = await API_CALL.post('/auth/login', data);
       if (result.data.success) {
+        dispatch(login(result.data.result));
         localStorage.setItem('authToken', result.data.result.token);
         customToast('success', `Welcome ${result.data.result.name}`);
         navigate(location.state?.previousPath || '/', { replace: true });
