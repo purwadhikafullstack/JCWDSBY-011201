@@ -14,9 +14,11 @@ const RegisteredUser = () => {
     },[]);
 
     const getUsers = async () => {
+        setIsLoading(true);
         const res = await API_CALL.get('/user')
         if(res){
             setUsers(res.data);
+            setIsLoading(false);
         }
     };
 
@@ -37,7 +39,7 @@ const RegisteredUser = () => {
     }
 
     return <>
-    <div className='flex flex-row container bg-slate-200 min-w-[360px] h-max min-h-screen'>
+    <div className='flex flex-row container bg-blue-100 min-w-[360px] h-max min-h-screen'>
         <AdminSidebar />
             <LoadingSpinner isLoading={isLoading} size={16}/>
         <LayoutPageAdmin title='Registered User'>
@@ -51,18 +53,6 @@ const RegisteredUser = () => {
                 </TableHead>
                 <TableBody className='divide-y divide-solid divide-slate-400'>
                     {printUser()}
-                    {/* <TableRow>
-                        <TableCell>1</TableCell>
-                        <TableCell>Fahmi Ardiansyah</TableCell>
-                        <TableCell>ardiansyah@cosmo.com</TableCell>
-                        <TableCell><Badge color={'success'} className='w-fit'>VERIFIED</Badge></TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell>2</TableCell>
-                        <TableCell>Wahyu Widiantoro</TableCell>
-                        <TableCell>wahyu@cosmo.com</TableCell>
-                        <TableCell><Badge color={'failure'} className='w-fit'>UNVERIFIED</Badge></TableCell>
-                    </TableRow> */}
                 </TableBody>
             </Table>
         </div>

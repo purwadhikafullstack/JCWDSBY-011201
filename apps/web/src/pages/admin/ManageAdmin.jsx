@@ -6,7 +6,7 @@ import ModalAdminStore from '../../components/ModalAdminStore';
 
 const ManageAdmin = () => {
     return <>
-        <div className='flex flex-row container bg-slate-200 min-w-[360px] h-max min-h-screen'>
+        <div className='flex flex-row container bg-blue-100 min-w-[360px] h-max min-h-screen'>
             <AdminSidebar />
             <LayoutPageAdmin title='Manage Admin'>
                 <div className='mb-3 mt-3'>
