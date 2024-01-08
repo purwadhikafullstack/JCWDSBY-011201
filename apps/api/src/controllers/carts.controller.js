@@ -1,5 +1,5 @@
 import carts from '../models/carts.model';
-import inventory from "../models/inventory.model";
+import inventory from '../models/inventory.model';
 
 export const addCarts = async (req, res, t) => {
   return await carts.create(
@@ -16,7 +16,19 @@ export const updateCartsAmount = async (req, t) => {
 };
 
 export const getCarts = async (req) => {
-  return await carts.get({ where: { userId: req.tokenData.id }, raw: true });
+  return await carts.findAll({
+    where: { userId: req.tokenData.id },
+    raw: true,
+    include: [
+      {
+        model: inventory,
+        as: 'inventory',
+        required: true,
+        where:{storeId:req.body.storeId},
+        attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
+      },
+    ],attributes:{exclude: ['createdAt', 'updatedAt', 'deletedAt',"userId"]}
+  });
 };
 
 export const deleteOneProductInCart = async (req, t) =>

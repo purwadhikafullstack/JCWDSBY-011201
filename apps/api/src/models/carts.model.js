@@ -7,6 +7,7 @@ export default class carts extends Model {
    * The `models/index` file will call this method automatically.
    */
   static associate(models) {
+    carts.belongsTo(models.inventory)
     // define association here
   }
 }

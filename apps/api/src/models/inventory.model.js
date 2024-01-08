@@ -14,6 +14,7 @@ export default class inventory extends Model {
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE',
     });
+    inventory.hasMany(models.cart)
   }
 };
 export const init = (sequelize) => {
