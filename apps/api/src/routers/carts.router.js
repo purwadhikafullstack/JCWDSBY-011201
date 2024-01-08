@@ -1,5 +1,7 @@
 import { Router } from 'express';
-import { addCarts, getCarts, updateCartsAmount } from '../controllers/carts.controller';
+import { DB } from '../db';
+import { addCarts, deleteOneProductInCart, getCarts, updateCartsAmount } from '../controllers/carts.controller';
+import { validateToken } from '../middleware/tokenValidation';
 
 const cartRouter = Router();
 
@@ -20,10 +22,12 @@ cartRouter.get('/', async (req, res, next) => {
   }
 });
 //POST
-cartRouter.post('/', async (req, res, next) => {
+cartRouter.post('/',validateToken, async (req, res, next) => {
+  await DB.initialize();
+  const t = await DB.db.sequelize.transaction()
   try {
-    await addCarts(req, res);
-    res.status(200).send({ success: true, message: 'adding to cart success' });
+    await addCarts(req, res,t);
+    res.status(200).send({ success: true, message: 'Product added to cart' });
   } catch (error) {
     console.log(error);
     next(error);
@@ -31,16 +35,34 @@ cartRouter.post('/', async (req, res, next) => {
 });
 
 //PATCH
-cartRouter.patch('/id', async (req, res, next) => {
+cartRouter.patch('/:id',validateToken, async (req, res, next) => {
+  await DB.initialize();
+  const t = await DB.db.sequelize.transaction()
   try {
-    await updateCartsAmount(req);
+    await updateCartsAmount(req,t);
     res
       .status(200)
-      .send({ success: true, message: 'Updated cart Amount success' });
+      .send({ success: true, message: 'Update cart Amount success' });
   } catch (error) {
     console.log(error);
     next(error);
   }
 });
+//Delete 
+cartRouter.delete("/:id",validateToken,async (req,res,next) => {
+  await DB.initialize();
+  const t = await DB.db.sequelize.transaction()
+  try {
+    await deleteOneProductInCart(req,t)
+  } catch (error) {
+    console.log(error)
+    next(error);
+  }
+})
 
+cartRouter.delete("/:id",validateToken,async () => {
+  await DB.initialize();
+  const t = await DB.db.sequelize.transaction()
+}
+)
 export { cartRouter };
