@@ -1,7 +1,7 @@
 import React from 'react';
 import { MdOutlineArrowBackIos } from 'react-icons/md';
 import { CartProductLists } from '../components/CartProductLists';
-
+import UserLayout from '../components/UserLayout';
 
 const Cart = () => {
   const product = [
@@ -24,19 +24,19 @@ const Cart = () => {
   ];
 
   return (
-    <div className="container mx-auto max-w-sm h-[100svh] font-roboto">
-      <div className="flex tracking-tight justify-between mb-3 ">
-        <MdOutlineArrowBackIos size={25} className={'hover:cursor-pointer'} />
-        <h1 className="text-xl font-bold">Keranjang</h1>
-        <div></div>
-      </div>
-      <div>
-        <div className="flex flex-col items-center mb-3">
-          <hr className="h-px w-full sm:w-11/12 bg-black border-0 dark:bg-gray-700"></hr>
+    <UserLayout>
+      <div className="container mx-auto max-w-sm h-[100svh] font-roboto">
+        <div className="flex tracking-tight justify-center mb-3 ">
+          <h1 className="text-xl font-bold">Cart</h1>
         </div>
-       <CartProductLists  arrays={product}  />
+        <div>
+          <div className="flex flex-col items-center mb-3">
+            <hr className="h-px w-full sm:w-11/12 bg-black border-0 dark:bg-gray-700"></hr>
+          </div>
+          <CartProductLists arrays={product} />
+        </div>
       </div>
-    </div>
+    </UserLayout>
   );
 };
 export default Cart;

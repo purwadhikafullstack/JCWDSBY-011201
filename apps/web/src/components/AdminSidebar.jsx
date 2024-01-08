@@ -41,7 +41,7 @@ const AdminSidebar = () => {
         {
             title: 'Store',
             icon: MdStore,
-            page: '/manage/store'0
+            page: '/manage/store'
         },
     ]
 

@@ -9,7 +9,6 @@ import NewPassword from './pages/NewPassword';
 import VerifyAccount from './pages/VerifyAccount';
 import LoginAdmin from './pages/LoginAdmin';
 import Landing from './pages/Landing';
-import Cart from './pages/Cart';
 import { gapi } from 'gapi-script';
 import { useEffect, useState } from 'react';
 import AdminDashboard from './pages/AdminDashboard';
@@ -34,6 +33,7 @@ import Inventory from './pages/admin/Inventory';
 import ManageAdmin from './pages/admin/ManageAdmin';
 import RegisteredUser from './pages/admin/RegisteredUser';
 import ManageStore from './pages/admin/ManageStore';
+import Cart from './pages/cart';
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 function App() {
