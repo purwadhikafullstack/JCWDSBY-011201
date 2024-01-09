@@ -34,6 +34,9 @@ import Inventory from './pages/admin/Inventory';
 import ManageAdmin from './pages/admin/ManageAdmin';
 import RegisteredUser from './pages/admin/RegisteredUser';
 import ManageStore from './pages/admin/ManageStore';
+import ChangePassword from './pages/admin/ChangePassword';
+import { Form, Formik } from 'formik';
+import EditAdmin from './pages/admin/EditAdmin';
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 function App() {
@@ -212,6 +215,22 @@ function App() {
           element={
             <PrivateRoute role={'super'}>
               <ManageAdmin />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/admin/password"
+          element={
+            <PrivateRoute role={'super'}>
+                  <ChangePassword />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/admin/profile"
+          element={
+            <PrivateRoute role={'super'}>
+                  <EditAdmin />
             </PrivateRoute>
           }
         />
