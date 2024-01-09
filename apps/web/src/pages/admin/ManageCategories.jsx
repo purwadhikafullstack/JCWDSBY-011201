@@ -7,6 +7,7 @@ import API_CALL from '../../helpers/API';
 import ModalCategory from '../../components/ModalCategory';
 import { MAX_SIZE, REGEX_FILE_TYPE } from '../../constants/file';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import { useSelector } from 'react-redux';
 
 const ManageCategories = () => {
     const [openModal, setOpenModal] = useState(false);
@@ -19,6 +20,7 @@ const ManageCategories = () => {
     const [onEdit, setOnEdit] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const hiddenFileInput = useRef(null);
+    const currentUserRole = useSelector((reducer) => reducer.userReducer.role);
 
     useEffect(() => {
         getCategory();
@@ -134,7 +136,7 @@ const ManageCategories = () => {
             <LoadingSpinner size={16} isLoading={isLoading} />
             <LayoutPageAdmin title='Manage Categories'>
                 <div className='grid grid-cols-2 lg:grid-cols-6 justify-between gap-y-5'>
-                    <BoxAddItem title='Add Category' onClick={() => setOpenModal(true)} />
+                    {currentUserRole === 'super' && <BoxAddItem title='Add Category' onClick={() => setOpenModal(true)} />}
                     <ModalCategory
                         show={openModal}
                         onClose={onCloseModal}

@@ -189,7 +189,7 @@ function App() {
         <Route
           path="/manage/product/create"
           element={
-            <PrivateRoute role={['admin', 'super']}>
+            <PrivateRoute role={['super']}>
               <CreateProduct />
             </PrivateRoute>
           }
@@ -197,7 +197,7 @@ function App() {
         <Route
           path="/manage/product/edit/:id"
           element={
-            <PrivateRoute role={['admin', 'super']}>
+            <PrivateRoute role={['super']}>
               <EditProduct />
             </PrivateRoute>
           }
