@@ -38,11 +38,17 @@ const globalAPIErrorHandler = (app) => {
   // error
   app.use((err, req, res, next) => {
     if (req.path.includes('/api/')) {
-      console.error('Error : ', err.stack);
+      console.error('Error : ', err.stack || err.message);
       if (err.code === 'LIMIT_FILE_SIZE') {
         res.status(413).send('File size exceeds the limit!');
       }
-      res.status(500).send('Error !');
+      // res.status(500).send('Error !'); //! Change response with template
+      res.status(err.rc || 500).json({
+        rc: err.rc || 500,
+        success: false,
+        message: err.message,
+        result: null,
+      });
     } else {
       next();
     }

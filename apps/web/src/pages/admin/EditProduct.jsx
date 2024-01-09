@@ -85,7 +85,6 @@ const EditProduct = () => {
     const previewImage = () => {
         if (file.length > 0) {
             return file.map((image, index) => {
-                // console.log(image);
                 if (image.id) {
                     return <div className='border border-black h-24 w-24 overflow-hidden rounded relative' key={index}>
                         <img src={`${import.meta.env.VITE_IMG_URL}/product/${image.image}`} className='h-24 w-24 rounded object-cover' />
@@ -135,7 +134,7 @@ const EditProduct = () => {
     }
 
     return <>
-        <div className='flex flex-col container bg-slate-200 min-w-[360px] h-max min-h-screen'>
+        <div className='flex flex-col container bg-blue-100 min-w-[360px] h-max min-h-screen'>
             <TopBar title='Edit Product' prevPage={() => navigate('/manage/product')} />
             <LoadingSpinner size={16} isLoading={isLoading} />
             <form className={`p-3 ${isLoading && 'hidden'}`}>

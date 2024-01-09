@@ -47,7 +47,7 @@ const AdminSidebar = () => {
 
   return (
     <>
-      <div className="h-screen sticky top-0 z-10">
+      <div className="h-screen sticky top-0 z-40">
         <Sidebar collapsed={true}>
           <Sidebar.Items className="grid content-between h-full">
             <Sidebar.ItemGroup>
@@ -88,13 +88,6 @@ const AdminSidebar = () => {
                   </Sidebar.Item>
                 );
               })}
-              {/* <Sidebar.Collapse icon={FaUser} label='tes'>
-                            <Sidebar.Item>user</Sidebar.Item>
-                            <Sidebar.Item>admin store</Sidebar.Item>
-                        </Sidebar.Collapse> */}
-            </Sidebar.ItemGroup>
-            <Sidebar.ItemGroup className="mb-5">
-              <Avatar rounded />
             </Sidebar.ItemGroup>
             <Sidebar.ItemGroup className="mb-5">
               <Avatar rounded />

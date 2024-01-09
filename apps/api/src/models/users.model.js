@@ -36,6 +36,7 @@ export const init = (sequelize) => {
     {
       sequelize,
       modelName: 'users',
+      paranoid: true,
     },
   );
 };
