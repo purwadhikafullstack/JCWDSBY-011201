@@ -52,7 +52,7 @@ export const sendWelcomeEmail = async (to, link, name) => {
     );
     await transporter.sendMail({
       to: to,
-      subject: 'Reset Password',
+      subject: 'Welcome to COSMO',
       sender: 'COSMO',
       html: mustache.render(templateHtml, {
         productImage: APP_URL + '/cosmo.png',

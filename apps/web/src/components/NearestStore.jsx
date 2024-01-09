@@ -21,7 +21,9 @@ const NearestSTore = ({ storeData }) => {
             storeData.distance ? `bg-green-500` : `bg-red-500`
           }`}
         >
-          {storeData.distance ? `${storeData.distance}` : `Out of Range`}
+          {storeData.distance
+            ? `${(Number(storeData.distance) / 1000).toFixed(2)} KM`
+            : `Out of Range`}
         </span>
       </div>
       <span className="font-semibold text-xs">{`${storeData.storeName}`}</span>

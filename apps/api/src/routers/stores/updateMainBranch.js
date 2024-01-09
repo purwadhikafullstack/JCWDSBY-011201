@@ -14,7 +14,7 @@ export default async function (req, res, next) {
         { isMain: false },
         {
           where: {
-            UUID: currDefault.dataValues.id,
+            UUID: currDefault.dataValues.UUID,
           },
           transaction: t,
         },
@@ -22,7 +22,7 @@ export default async function (req, res, next) {
     }
 
     const result = await updateStore(
-      { isDefault: true },
+      { isMain: true },
       {
         where: { UUID: req.params.id },
         transaction: t,

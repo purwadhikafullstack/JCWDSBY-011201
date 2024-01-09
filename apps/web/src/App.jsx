@@ -38,6 +38,8 @@ import CheckAuth from './helpers/CheckAuth';
 import getNearestStore from './helpers/GetNearestStore';
 import { setStore } from './redux/slice/storeSlice';
 import customToast from './utils/toast';
+import ManageStoreAdd from './pages/admin/ManageStoreAdd';
+import ManageStoreUpdate from './pages/admin/ManageStoreUpdate';
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 function App() {
@@ -89,19 +91,21 @@ function App() {
               loc.coords.longitude,
             );
             dispatch(setStore(result.payload));
-          } catch (error) {}
+          } catch (error) {
+            console.log(err);
+          }
         },
         async (error) => {
           try {
             const result = await getNearestStore();
             dispatch(setStore(result.payload));
-          } catch (err) {}
+          } catch (err) {
+            console.log(err);
+          }
         },
       );
     }
   }, [currStore]);
-
-  console.log(currStore.storeName);
 
   if (isLoading) {
     return <Loader isLoading={isLoading} />;
@@ -192,6 +196,14 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route
+          path="/manage/store/create"
+          element={
+            <PrivateRoute role={'super'}>
+              <ManageStoreAdd />
+            </PrivateRoute>
+          }
+        />
         {/* Fahmi */}
         <Route
           path="/manage/category"
@@ -257,8 +269,17 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route
+          path="/manage/store/:id"
+          element={
+            <PrivateRoute role={['admin', 'super']}>
+              <ManageStoreUpdate />
+            </PrivateRoute>
+          }
+        />
         {/* Afra */}
         <Route path="/cart" element={<Cart />} />
+        <Route path="/*" element={<NotFound />} />
       </Routes>
       <ToastContainer
         position="top-right"
