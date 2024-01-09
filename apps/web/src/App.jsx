@@ -34,6 +34,10 @@ import Inventory from './pages/admin/Inventory';
 import ManageAdmin from './pages/admin/ManageAdmin';
 import RegisteredUser from './pages/admin/RegisteredUser';
 import ManageStore from './pages/admin/ManageStore';
+import CheckAuth from './helpers/CheckAuth';
+import getNearestStore from './helpers/GetNearestStore';
+import { setStore } from './redux/slice/storeSlice';
+import customToast from './utils/toast';
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 function App() {
@@ -41,6 +45,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
   const globalUser = useSelector((reducer) => reducer.userReducer);
+  const currStore = useSelector((reducer) => reducer.storeReducer);
 
   useEffect(() => {
     function start() {
@@ -53,29 +58,50 @@ function App() {
   });
 
   useEffect(() => {
-    async function checkAuth() {
+    async function validateAuth() {
       try {
-        console.log(!localStorage.getItem('authToken'));
-        if (!localStorage.getItem('authToken')) {
-          throw 'Token Not Found';
+        if (globalUser.name === '') {
+          const authResult = await CheckAuth();
+          if (!authResult) {
+            throw 'Authentication failed';
+          }
+          dispatch(login(authResult));
+          localStorage.setItem('authToken', authResult.token);
         }
-        const token = localStorage.getItem('authToken');
-        const result = await API_CALL.get('/auth/keep-login', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        dispatch(login(result.data.result));
-        localStorage.setItem('authToken', result.data.result.token);
         setIsLoading(false);
       } catch (error) {
         console.log(error);
-        console.log('Lah sini');
         dispatch(logout());
         localStorage.removeItem('authToken');
         setIsLoading(false);
       }
     }
-    checkAuth();
+    validateAuth();
   }, []);
+
+  useEffect(() => {
+    if (currStore.storeName === undefined) {
+      navigator.geolocation.getCurrentPosition(
+        async (loc) => {
+          try {
+            const result = await getNearestStore(
+              loc.coords.latitude,
+              loc.coords.longitude,
+            );
+            dispatch(setStore(result.payload));
+          } catch (error) {}
+        },
+        async (error) => {
+          try {
+            const result = await getNearestStore();
+            dispatch(setStore(result.payload));
+          } catch (err) {}
+        },
+      );
+    }
+  }, [currStore]);
+
+  console.log(currStore.storeName);
 
   if (isLoading) {
     return <Loader isLoading={isLoading} />;

@@ -3,6 +3,7 @@ import transporter from '../../helper/mailer';
 import jwt from 'jsonwebtoken';
 import { APP_URL, SCRT_KEY } from '../../config';
 import { Op } from 'sequelize';
+import { sendResetPasswordEmail } from '../../helper/sendTemplateEmail';
 
 export default async function forgotPassword(req, res, next) {
   try {
@@ -25,14 +26,10 @@ export default async function forgotPassword(req, res, next) {
       SCRT_KEY,
       { expiresIn: '1h' },
     );
-    await transporter.sendMail({
-      to: isExist.dataValues.email,
-      subject: 'Forgot Password',
-      sender: 'COSMO',
-      html: `<h1>Forgot Password</h1><p>Reset your account password by clicking link below</p><br><a href="${
-        APP_URL + `/forgot/reset-password?key=` + token
-      }" target="__blank">Reset Password</a><br><p>This token only valid for 1 hour</p><br><p>Note: If you are not request this just ignore it</p>`,
-    });
+    await sendResetPasswordEmail(
+      isExist.dataValues.email,
+      APP_URL + `/forgot/reset-password?key=` + token,
+    );
     return res.status(201).json({
       rc: 201,
       success: true,
