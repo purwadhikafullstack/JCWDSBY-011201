@@ -37,9 +37,11 @@ import ManageStore from './pages/admin/ManageStore';
 import CheckAuth from './helpers/CheckAuth';
 import getNearestStore from './helpers/GetNearestStore';
 import { setStore } from './redux/slice/storeSlice';
-import customToast from './utils/toast';
 import ManageStoreAdd from './pages/admin/ManageStoreAdd';
 import ManageStoreUpdate from './pages/admin/ManageStoreUpdate';
+import ChangePassword from './pages/admin/ChangePassword';
+import { Form, Formik } from 'formik';
+import EditAdmin from './pages/admin/EditAdmin';
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 function App() {
@@ -224,7 +226,7 @@ function App() {
         <Route
           path="/manage/product/create"
           element={
-            <PrivateRoute role={['admin', 'super']}>
+            <PrivateRoute role={['super']}>
               <CreateProduct />
             </PrivateRoute>
           }
@@ -232,7 +234,7 @@ function App() {
         <Route
           path="/manage/product/edit/:id"
           element={
-            <PrivateRoute role={['admin', 'super']}>
+            <PrivateRoute role={['super']}>
               <EditProduct />
             </PrivateRoute>
           }
@@ -250,6 +252,22 @@ function App() {
           element={
             <PrivateRoute role={'super'}>
               <ManageAdmin />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/admin/password"
+          element={
+            <PrivateRoute role={'super'}>
+              <ChangePassword />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/admin/profile"
+          element={
+            <PrivateRoute role={'super'}>
+              <EditAdmin />
             </PrivateRoute>
           }
         />
