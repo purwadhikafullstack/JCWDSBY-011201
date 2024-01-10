@@ -1,28 +1,27 @@
 import { Button, Label, Modal, TextInput, ModalBody, ModalFooter, ModalHeader } from 'flowbite-react'
-import { Formik, Form, Field, useFormik } from 'formik'
+import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+
+const validationSchema = Yup.object().shape({
+    name: Yup.string()
+        .matches(/^([a-zA-Z]|\.| |-|')+$/, 'Invalid name format')
+        .required('Required'),
+    email: Yup.string()
+        .email('Invalid email address')
+        .required('Required'),
+    password: Yup.string()
+        .min(8, 'Minimum password length is 8')
+        .matches(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/,
+            'Password must contain uppercase letter, lowercase letter, number, and no space',
+        )
+        .required('Required'),
+    confirmPassword: Yup.string()
+        .oneOf([Yup.ref('password')], 'Password confirmation not match')
+        .required('Required'),
+});
 
 const ModalAdminStore = (props) => {
-    const validationSchema = Yup.object().shape({
-        name: Yup.string()
-            .matches(/^[A-Z]([a-zA-Z]|\.| |-|')+$/, 'Invalid name format')
-            .required('Required'),
-        email: Yup.string()
-            .email('Invalid email address')
-            .required('Required'),
-        password: Yup.string()
-            .min(8, 'Minimum password length is 8')
-            .matches(
-                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/,
-                'Password must contain uppercase letter, lowercase letter, number, and no space',
-            )
-            .required('Required'),
-        confirmPassword: Yup.string()
-            .oneOf([Yup.ref('password')], 'Password confirmation not match')
-            .required('Required'),
-    });
-
     const formik = useFormik({
         initialValues: {
             name: '',
@@ -31,62 +30,82 @@ const ModalAdminStore = (props) => {
             confirmPassword: '',
         },
         validationSchema: validationSchema,
-        onSubmit: (values) => {
+        onSubmit: (values, {resetForm}) => {
             props.onSubmit(values);
+            resetForm({
+                name: '',
+                email: '',
+                password: '',
+                confirmPassword: '',
+            });
         },
     });
 
     return <>
         <Modal show={props.show} onClose={props.onClose} size='sm' dismissible>
             <ModalHeader>{props.onEdit ? 'Edit Admin Store' : 'Add Admin Store'}</ModalHeader>
+            <form onSubmit={formik.handleSubmit}>
             <ModalBody>
                 <div className='space-y-4'>
                     <div>
-                        <Label>Name</Label>
+                        <Label className='font-bold'>Name</Label>
                         <TextInput
+                            placeholder='name'
                             name='name'
                             type='text'
+                            autoComplete='name'
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             value={formik.values.name}
                         />
+                        {formik.touched.name && formik.errors.name && <span className='text-red-500'>{formik.errors.name}</span>}
                     </div>
                     <div>
-                        <Label>Email</Label>
+                        <Label className='font-bold'>Email</Label>
                         <TextInput
+                            placeholder='email'
                             name='email'
                             type='email'
+                            autoComplete='username'
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             value={formik.values.email}
                         />
+                        {formik.touched.email && formik.errors.email && <span className='text-red-500'>{formik.errors.email}</span>}
                     </div>
                     <div>
-                        <Label>Password</Label>
+                        <Label className='font-bold'>Password</Label>
                         <TextInput
+                            placeholder='password'
                             name='password'
                             type='password'
+                            autoComplete='new-password'
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             value={formik.values.password}
                         />
+                        {formik.touched.password && formik.errors.password && <span className='text-red-500'>{formik.errors.password}</span>}
                     </div>
                     <div>
-                        <Label>Confirm Password</Label>
+                        <Label className='font-bold'>Confirm Password</Label>
                         <TextInput
+                            placeholder='confirm password'
                             name='confirmPassword'
                             type='password'
+                            autoComplete='new-password'
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             value={formik.values.confirmPassword}
                         />
+                        {formik.touched.confirmPassword && formik.errors.confirmPassword && <span className='text-red-500'>{formik.errors.confirmPassword}</span>}
                     </div>
                 </div>
             </ModalBody>
             <ModalFooter className='justify-end'>
-                <Button onClick={props.onEdit ? props.onSave : props.onAdd} color='blue'>{props.onEdit ? 'Save' : 'Add'}</Button>
+                <Button type='submit' color='blue'>{props.onEdit ? 'Save' : 'Add'}</Button>
                 <Button onClick={props.onClose} color='blue'>{props.onEdit ? 'Cancel' : 'Close'}</Button>
             </ModalFooter>
+            </form>
         </Modal>
     </>
 }

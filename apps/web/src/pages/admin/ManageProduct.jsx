@@ -6,12 +6,14 @@ import CardManage from "../../components/CardManage";
 import { useEffect, useState } from "react";
 import API_CALL from "../../helpers/API";
 import LoadingSpinner from "../../components/LoadingSpinner";
+import { useSelector } from "react-redux";
 
 const ManageProduct = () => {
     const navigate = useNavigate();
     const [product, setProduct] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-
+    const currentUserRole = useSelector((reducer) => reducer.userReducer.role);
+    
     useEffect(() => {
         getProduct();
     }, []);
@@ -35,8 +37,8 @@ const ManageProduct = () => {
             <AdminSidebar />
             <LoadingSpinner isLoading={isLoading} size={16}/>
             <LayoutPageAdmin title='Manage Product'>
-                <div className='flex flex-wrap justify-between gap-y-5'>
-                    <BoxAddItem title='Add Product' onClick={() => navigate('/manage/product/create')} />
+                <div className='grid grid-cols-2'>
+                    {currentUserRole === 'super' && <BoxAddItem title='Add Product' onClick={() => navigate('/manage/product/create')} />}
                     {product && product.map((item, index) => {
                         return (
                             <CardManage
