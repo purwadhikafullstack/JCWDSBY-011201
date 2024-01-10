@@ -37,7 +37,7 @@ const ManageProduct = () => {
             <AdminSidebar />
             <LoadingSpinner isLoading={isLoading} size={16}/>
             <LayoutPageAdmin title='Manage Product'>
-                <div className='grid grid-cols-2'>
+                <div className='grid grid-cols-2 gap-y-10'>
                     {currentUserRole === 'super' && <BoxAddItem title='Add Product' onClick={() => navigate('/manage/product/create')} />}
                     {product && product.map((item, index) => {
                         return (

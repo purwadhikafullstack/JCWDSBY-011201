@@ -17,9 +17,10 @@ export const getProductData = async () => {
             {
                 model: productImage,
                 required: true,
-                attributes: ['id', 'productId', 'image'],
-            }
-        ]
+                attributes: ['id', 'image'],
+            },
+        ],
+        attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
     },);
 };
 
@@ -49,22 +50,49 @@ export const getInventoryData = async () => {
                 model: product,
                 as: 'product',
                 required: true,
-                attributes: {exclude: ['createdAt', 'updatedAt', 'deletedAt']},
+                attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt', 'categoryId'] },
                 include: [
                     {
                         model: categories,
                         as: 'category',
                         required: true,
-                        attributes: ['name'],
-                    }
+                        attributes: ['id', 'name'],
+                    },
+                    {
+                        model: productImage,
+                        required: true,
+                        attributes: ['id', 'image'],
+                    },
                 ],
             }
         ],
-        attributes: ['id', 'storeId','discountId', 'stock'],
+        attributes: ['id', 'storeId', 'discountId', 'stock'],
     });
 };
 
 export const createProduct = async (storeId, data) => {
+    const checkProduct = await inventory.findOne({
+        where: {
+            storeId,
+        },
+        include: [
+            {
+                model: product,
+                required: true,
+                where: {
+                    name: data.name,
+                }
+            }
+        ]
+    });
+    if (checkProduct) {
+        throw {
+            rc: 409,
+            success: false,
+            message: 'Product already exists',
+            result: null,
+        }
+    }
     const result = await product.create(data);
     if (result) {
         await inventory.create({
@@ -93,10 +121,10 @@ export const updateInventory = async (id, stock) => {
 };
 
 export const deleteProduct = async (id) => {
-    const deleteProduct = await product.destroy({ 
+    const deleteProduct = await product.destroy({
         where: { id }
     })
-    
+
     if (deleteProduct) {
         await inventory.destroy({
             where: { productId: id }
@@ -106,7 +134,7 @@ export const deleteProduct = async (id) => {
         });
         if (image.length > 0) {
             image.forEach(image => {
-                if(existsSync(assetsDir + image.image)) {
+                if (existsSync(assetsDir + image.image)) {
                     return unlink(assetsDir + image.image, (err) => {
                         if (err) throw err;
                     });

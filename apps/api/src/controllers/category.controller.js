@@ -1,5 +1,5 @@
 import category from "../models/categories.model";
-import { unlink } from "fs";
+import { unlink, existsSync } from "fs";
 
 const dir = './src/assets/category/';
 
@@ -28,9 +28,11 @@ export const updateCategory = async (id, data, image) => {
       { where: { id } 
     });
 
-    unlink(dir + prevData.image, (err) => {
-      if (err) throw Error(err);
-    });
+    if(existsSync(dir + prevData.image)){
+      unlink(dir + prevData.image, (err) => {
+        if (err) throw Error(err);
+      });
+    }
   }
 
   await category.update(
@@ -46,7 +48,9 @@ export const deleteCategory = async (id) => {
 
   await category.destroy({ where: { id } });
 
-  unlink(dir + prevData.image, (err) => {
-    if (err) throw Error(err);
-  });
+  if(existsSync(dir + prevData.image)){
+    unlink(dir + prevData.image, (err) => {
+      if (err) throw Error(err);
+    });
+  }
 };

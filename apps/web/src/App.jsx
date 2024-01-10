@@ -145,7 +145,7 @@ function App() {
         />
         <Route path="/category" element={<UserFindCategory />} />
         <Route
-          path="/product/sjddahGkasJSNx-672nSjdskak"
+          path="/product/:name"
           element={<UserProductDetail />}
         />
 

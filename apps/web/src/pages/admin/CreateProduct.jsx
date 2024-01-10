@@ -7,6 +7,7 @@ import { MAX_SIZE, REGEX_FILE_TYPE } from "../../constants/file";
 import { MdDelete } from "react-icons/md";
 import API_CALL from "../../helpers/API";
 import LoadingSpinner from "../../components/LoadingSpinner";
+import { toast } from "react-toastify";
 
 const CreateProduct = () => {
     const navigate = useNavigate();
@@ -15,7 +16,7 @@ const CreateProduct = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [category, setCategory] = useState(null);
     const [error, setError] = useState({ size: false, type: false, requiredFieldFile: false });
-    const [requiredField, setRequiredField] = useState({name: false, weight: false, price: false});
+    const [requiredField, setRequiredField] = useState({ name: false, weight: false, price: false });
     const [data, setData] = useState({
         name: null,
         price: null,
@@ -82,17 +83,30 @@ const CreateProduct = () => {
     };
 
     const handleCreateButton = async () => {
-        if(file.length === 0) return setError({...error, requiredFieldFile: true });
-        if(!data.name) return setRequiredField({...requiredField, name: true });
-        if(!data.weight) return setRequiredField({...requiredField, weight: true });
-        if(!data.price) return setRequiredField({...requiredField, price: true });
-        const postProduct = await API_CALL.post('product', { name: data.name, price: parseInt(data.price), description: data.description, weight: parseInt(data.weight), categoryId: parseInt(data.categoryId) });
-        if (postProduct) {
-            const formData = new FormData();
-            formData.append('productId', postProduct.data.id);
-            file.forEach((image) => formData.append(`productUpload`, image) );
-            const postImage = await API_CALL.post('product/image', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
-            if (postImage) navigate('/manage/product');
+        if (file.length === 0) return setError({ ...error, requiredFieldFile: true });
+        if (!data.name) return setRequiredField({ ...requiredField, name: true });
+        if (!data.weight) return setRequiredField({ ...requiredField, weight: true });
+        if (!data.price) return setRequiredField({ ...requiredField, price: true });
+        try {
+            const postProduct = await API_CALL.post('product', { name: data.name, price: parseInt(data.price), description: data.description, weight: parseInt(data.weight), categoryId: parseInt(data.categoryId) });
+            if (postProduct) {
+                const formData = new FormData();
+                formData.append('productId', postProduct.data.id);
+                file.forEach((image) => formData.append(`productUpload`, image));
+                const postImage = await API_CALL.post('product/image', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+                if (postImage) navigate('/manage/product');
+            }
+        } catch (error) {
+            if (error.response.status === 409) return toast.error('Product already exists', {
+                position: "bottom-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
         }
     };
 
@@ -104,7 +118,7 @@ const CreateProduct = () => {
             <form className={`p-3 ${isLoading && 'hidden'}`}>
                 <div className='grid gap-2 mb-3'>
                     <Label value='Product Name' />
-                    <TextInput placeholder='Product Name' onChange={(e) => {setData({ ...data, name: e.target.value }); setRequiredField({...requiredField, name: false}) }} color={requiredField.name && 'failure'} helperText={requiredField.name && 'Name is required'} required />
+                    <TextInput placeholder='Product Name' onChange={(e) => { setData({ ...data, name: e.target.value }); setRequiredField({ ...requiredField, name: false }) }} color={requiredField.name && 'failure'} helperText={requiredField.name && 'Name is required'} required />
                 </div>
                 <div className='grid gap-2 mb-3'>
                     <Label value='Category' />
@@ -114,11 +128,18 @@ const CreateProduct = () => {
                 </div>
                 <div className='grid gap-2 mb-3'>
                     <Label value='Weight' />
-                    <TextInput type='number' placeholder='100g' onChange={(e) => {setData({ ...data, weight: e.target.value }); setRequiredField({...requiredField, weight: false}) }} color={requiredField.weight && 'failure'} helperText={requiredField.weight && 'Weight is required'} required />
+                    <div className='flex disabled:cursor-not-allowed disabled:opacity-50 ' >
+                        <input className='block w-full border rounded-l-md p-2.5 text-sm bg-gray-50 border-gray-300 text-gray-900 focus:border-cyan-500 focus:ring-cyan-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-cyan-500 dark:focus:ring-cyan-500'/>
+                        <select className='rounded-r-md bg-gray-400 p-2'>
+                            <option value={'g'}>g</option>
+                            <option value={'ml'}>ml</option>
+                        </select>
+                    </div>
+                    {/* <TextInput type='number' placeholder='100g' onChange={(e) => {setData({ ...data, weight: e.target.value }); setRequiredField({...requiredField, weight: false}) }} color={requiredField.weight && 'failure'} helperText={requiredField.weight && 'Weight is required'} required /> */}
                 </div>
                 <div className='grid gap-2 mb-3'>
                     <Label value='Price' />
-                    <TextInput type='number' placeholder='Rp.10.000' onChange={(e) => {setData({ ...data, price: e.target.value }); setRequiredField({...requiredField, price: false}) }} color={requiredField.price && 'failure'} helperText={requiredField.price && 'Price is required'} required />
+                    <TextInput type='number' placeholder='Rp.10.000' onChange={(e) => { setData({ ...data, price: e.target.value }); setRequiredField({ ...requiredField, price: false }) }} color={requiredField.price && 'failure'} helperText={requiredField.price && 'Price is required'} required />
                 </div>
                 <div className='grid gap-2 mb-3'>
                     <Label value='Description' />
