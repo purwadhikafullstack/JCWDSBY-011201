@@ -2,6 +2,7 @@ import { findOneCity } from '../../controllers/city.controller';
 import { findOneDistrict } from '../../controllers/district.controller';
 import { findOneProvince } from '../../controllers/province.controller';
 import { updateStore } from '../../controllers/store.controller';
+import { findOneUser } from '../../controllers/user.controller';
 import { DB } from '../../db';
 import geocode from '../../helper/geocode';
 
@@ -20,13 +21,18 @@ export default async function (req, res, next) {
     if (!latLon) {
       throw { rc: 404, message: 'Address not found' };
     }
+    const user = await findOneUser({ where: { UUID: req.body.user } });
+    if (!user) {
+      throw { rc: 404, message: 'User not found' };
+    }
     const data = {
+      name: req.body.storeName,
       address: req.body.address,
       districtId: req.body.district,
       cityId: req.body.city,
       provinceId: req.body.province,
       postalCode: req.body.postalCode,
-      userId: req.body.user,
+      userId: user.dataValues.id,
       lat: latLon.lat,
       lon: latLon.lng,
     };
