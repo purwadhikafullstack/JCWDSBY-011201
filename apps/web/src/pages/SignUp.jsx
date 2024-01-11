@@ -39,7 +39,10 @@ const SignUp = () => {
   const signUpScheme = Yup.object({
     email: Yup.string().email('Invalid email address').required('Required'),
     name: Yup.string()
-      .matches(/^[A-Z]([a-zA-Z]|\.| |-|')+$/, 'Invalid name format')
+      .matches(
+        /^(([a-zA-Z\u00C0-\u00FF]{2,})+( [a-zA-Z\u00C0-\u00FF]+)+)$/,
+        'Invalid name format',
+      )
       .required('Required'),
   });
 
@@ -65,7 +68,7 @@ const SignUp = () => {
               </div>
               <div className="mb-2">
                 <label
-                  for="name"
+                  htmlFor="name"
                   className="block font-semibold text-gray-900 text-sm mb-1"
                 >
                   Full Name
@@ -90,7 +93,7 @@ const SignUp = () => {
               </div>
               <div className="mb-1">
                 <label
-                  for="email"
+                  htmlFor="email"
                   className="block font-semibold text-gray-900 text-sm mb-1"
                 >
                   Email Address

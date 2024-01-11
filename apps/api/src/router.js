@@ -11,6 +11,9 @@ import { cityRouter } from './routers/city.router';
 import { districtRouter } from './routers/district.router';
 import { userRouter } from './routers/user.router';
 import { storesRouter } from './routers/stores.router';
+import { utilsRouter } from './routers/utils.router';
+import { eventRouter } from './routers/event.router';
+import { adminRouter } from './routers/admin.router';
 
 const router = Router();
 
@@ -29,11 +32,14 @@ router.use('/city', cityRouter);
 router.use('/district', districtRouter);
 router.use('/user', userRouter);
 router.use('/store', storesRouter);
+router.use('/utils', utilsRouter);
+router.use('/event', eventRouter);
 
 //Fahmi Ardiansyah
 router.use('/category', categoryRouter);
 router.use('/product', productRouter);
 router.use('/product/image', productImageRouter);
+router.use('/admin', adminRouter);
 
 //Afra
 router.use('/cart', cartRouter);
