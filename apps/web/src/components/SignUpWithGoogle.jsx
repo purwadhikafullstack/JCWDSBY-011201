@@ -15,12 +15,15 @@ const SignUpWithGoogle = () => {
   const onSuccess = async (res) => {
     try {
       const result = await API_CALL.post('/auth/signup/google', {
-        name: `${res.profileObj.givenName} ${res.profileObj.familyName}`,
+        name: `${res.profileObj.givenName} ${
+          res.profileObj.familyName ? res.profileObj.familyName : ''
+        }`,
         email: res.profileObj.email,
         password: `${res.profileObj.googleId}${res.profileObj.givenName}`,
       });
       if (result.data.success) {
         customToast('success', result.data.message);
+        console.log(result.data.result);
         dispatch(login(result.data.result));
         localStorage.setItem('authToken', result.data.result.token);
         navigate('/', { replace: true });

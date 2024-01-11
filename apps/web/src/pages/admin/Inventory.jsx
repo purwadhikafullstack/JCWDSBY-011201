@@ -62,12 +62,10 @@ const Inventory = () => {
     const printData = (data) => {
         if (data) {
             return data.map((item, index) => {
-                // console.log('ITEM ID>>>', item.id);
                 return <TableRow key={index}>
                     <TableCell>{`${item.product.name}`}</TableCell>
                     <TableCell>{`${item.product.category.name}`}</TableCell>
                     <TableCell>{`${item.stock}`}</TableCell>
-                    {/* <TableCell>{`${item.product.price}`}</TableCell> */}
                     <TableCell className='space-y-1'>
                         <p className='text-blue-600' onClick={() => handleEdit(item.id)}>Edit</p>
                         <p className='text-red-600' onClick={() => handleDelete(item.id)}>Delete</p>
@@ -78,12 +76,12 @@ const Inventory = () => {
     };
 
     return <>
-        <div className='flex flex-row container bg-slate-200 min-w-[360px] h-max min-h-screen'>
+        <div className='flex flex-row container bg-blue-100 min-w-[360px] h-max min-h-screen'>
             <AdminSidebar />
             <LoadingSpinner isLoading={isLoading} size={20}/>
             <LayoutPageAdmin title='Manage Inventory'>
                 <div className='relative w-[255px] max-w-full overflow-x-auto '>
-                    <Table className='border boder-black'>
+                    <Table>
                         <TableHead>
                             <TableHeadCell>Product Name</TableHeadCell>
                             <TableHeadCell>Category</TableHeadCell>

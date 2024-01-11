@@ -6,7 +6,7 @@ const UserCategoryButton = ({ image, categoryName, onClick, isSelected }) => {
       } rounded-md overflow-hidden bg-slate-100 cursor-pointer`}
       onClick={onClick}
     >
-      <div className="flex-grow w-full">
+      <div className="h-[60%] w-full">
         <img
           className="w-full h-full object-cover "
           src={image}

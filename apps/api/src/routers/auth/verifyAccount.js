@@ -4,6 +4,7 @@ import { updateUser } from '../../controllers/user.controller';
 import { hashPassword } from '../../helper/hash';
 import transporter from '../../helper/mailer';
 import { DB } from '../../db';
+import { sendWelcomeEmail } from '../../helper/sendTemplateEmail';
 
 export default async function verifyAccount(req, res, next) {
   await DB.initialize();
@@ -28,14 +29,11 @@ export default async function verifyAccount(req, res, next) {
     if (!result[0]) {
       throw { rc: 404, message: 'Account not found' };
     }
-    await transporter.sendMail({
-      to: req.tokenData.email,
-      subject: `Welcome to Cosmo ${req.tokenData.name}`,
-      sender: 'COSMO',
-      html: `<h1>Welcome to Cosmo</h1><p>Start your journey by clicking link below</p><br><a href="${
-        APP_URL + `/login`
-      }">Go to Cosmo</a><br><p>Hope you find the best experience</p><br>`,
-    });
+    await sendWelcomeEmail(
+      req.tokenData.email,
+      APP_URL + '/login',
+      req.tokenData.name,
+    );
     await t.commit();
     return res.status(201).json({
       rc: 201,
