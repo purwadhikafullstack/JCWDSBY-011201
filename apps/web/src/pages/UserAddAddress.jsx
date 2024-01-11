@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import API_CALL from '../helpers/API';
 import customToast from '../utils/toast';
-import FormAddress from '../components/Form/FormAddAddress';
+import FormAddress from '../components/form/formAddress';
 
 const UserAddAddress = (props) => {
   const location = useLocation();

@@ -24,22 +24,59 @@ export const getProductData = async () => {
     },);
 };
 
-export const findProductById = async (id) => {
-    return await product.findOne({
-        where: { id },
+export const findProductByName = async (name) => {
+    return await inventory.findOne({
         include: [
             {
-                model: categories,
-                as: 'category',
+                model: product,
+                as: 'product',
+                where: { name },
                 required: true,
-                attributes: ['id', 'name'],
-            },
-            {
-                model: productImage,
-                required: true,
-                attributes: ['id', 'productId', 'image'],
+                attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt', 'categoryId'] },
+                include: [
+                    {
+                        model: categories,
+                        as: 'category',
+                        required: true,
+                        attributes: ['id', 'name'],
+                    },
+                    {
+                        model: productImage,
+                        required: true,
+                        attributes: ['id', 'image'],
+                    },
+                ],
             }
-        ]
+        ],
+        attributes: ['id', 'storeId', 'discountId', 'stock'],
+    });
+};
+
+export const findProductByCategory = async (category) => {
+    return await inventory.findAll({
+        include: [
+            {
+                model: product,
+                as: 'product',
+                required: true,
+                attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt', 'categoryId'] },
+                include: [
+                    {
+                        model: categories,
+                        as: 'category',
+                        where: { name: category },
+                        required: true,
+                        attributes: ['id', 'name'],
+                    },
+                    {
+                        model: productImage,
+                        required: true,
+                        attributes: ['id', 'image'],
+                    },
+                ],
+            }
+        ],
+        attributes: ['id', 'storeId', 'discountId', 'stock'],
     });
 };
 

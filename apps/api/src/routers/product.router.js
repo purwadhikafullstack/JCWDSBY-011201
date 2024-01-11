@@ -2,12 +2,13 @@ import { Router } from "express";
 import {
     getProductData,
     getInventoryData,
-    findProductById, 
     createProduct,
     updateProduct,
     updateInventory, 
     deleteProduct,
     deleteInventory,
+    findProductByName,
+    findProductByCategory,
 } from "../controllers/product.controller";
 
 const productRouter = Router();
@@ -29,9 +30,18 @@ productRouter.get('/inventory', async (req, res, next) => {
     }
 });
 
-productRouter.get('/:id', async (req, res, next) => {
+productRouter.get('/:name', async (req, res, next) => {
     try {
-        const result = await findProductById(req.params.id);
+        const result = await findProductByName(req.params.name);
+        res.status(200).json(result);
+    } catch (error) {
+        next(error);
+    }
+});
+
+productRouter.get('/category/:name', async (req, res, next) => {
+    try {
+        const result = await findProductByCategory(req.params.name);
         res.status(200).json(result);
     } catch (error) {
         next(error);

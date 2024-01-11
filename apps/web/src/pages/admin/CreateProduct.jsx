@@ -22,6 +22,7 @@ const CreateProduct = () => {
         price: null,
         description: null,
         weight: null,
+        unit: 'g',
         categoryId: null,
         image: null
     });
@@ -88,7 +89,8 @@ const CreateProduct = () => {
         if (!data.weight) return setRequiredField({ ...requiredField, weight: true });
         if (!data.price) return setRequiredField({ ...requiredField, price: true });
         try {
-            const postProduct = await API_CALL.post('product', { name: data.name, price: parseInt(data.price), description: data.description, weight: parseInt(data.weight), categoryId: parseInt(data.categoryId) });
+            console.log('UNIT DATA >>>>', data.unit);
+            const postProduct = await API_CALL.post('product', { name: data.name, price: parseInt(data.price), description: data.description, weight: parseInt(data.weight), categoryId: parseInt(data.categoryId), unit: data.unit, image: file[0] });
             if (postProduct) {
                 const formData = new FormData();
                 formData.append('productId', postProduct.data.id);
@@ -129,13 +131,16 @@ const CreateProduct = () => {
                 <div className='grid gap-2 mb-3'>
                     <Label value='Weight' />
                     <div className='flex disabled:cursor-not-allowed disabled:opacity-50 ' >
-                        <input className='block w-full border rounded-l-md p-2.5 text-sm bg-gray-50 border-gray-300 text-gray-900 focus:border-cyan-500 focus:ring-cyan-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-cyan-500 dark:focus:ring-cyan-500'/>
-                        <select className='rounded-r-md bg-gray-400 p-2'>
+                        {/* <input
+                            type='number' placeholder='100g'
+                            className='block w-full border rounded-l-md p-2.5 text-sm bg-gray-50 border-gray-300 text-gray-900 focus:border-cyan-500 focus:ring-cyan-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-cyan-500 dark:focus:ring-cyan-500'
+                        /> */}
+                        <TextInput type='number' placeholder='100g' onChange={(e) => { setData({ ...data, weight: e.target.value }); setRequiredField({ ...requiredField, weight: false }) }} color={requiredField.weight && 'failure'} helperText={requiredField.weight && 'Weight is required'} required />
+                        <select className='rounded-r-md bg-gray-400 p-2' onChange={(e) => setData({ ...data, unit: e.target.value })}>
                             <option value={'g'}>g</option>
                             <option value={'ml'}>ml</option>
                         </select>
                     </div>
-                    {/* <TextInput type='number' placeholder='100g' onChange={(e) => {setData({ ...data, weight: e.target.value }); setRequiredField({...requiredField, weight: false}) }} color={requiredField.weight && 'failure'} helperText={requiredField.weight && 'Weight is required'} required /> */}
                 </div>
                 <div className='grid gap-2 mb-3'>
                     <Label value='Price' />

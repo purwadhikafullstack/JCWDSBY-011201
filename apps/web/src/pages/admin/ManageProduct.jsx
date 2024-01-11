@@ -45,7 +45,7 @@ const ManageProduct = () => {
                                 key={index}
                                 src={item.product_images[0].image? `${import.meta.env.VITE_IMG_URL}/product/${item.product_images[0].image}` : '/defaultImage.jpg'}
                                 name={item.name}
-                                onEdit={() => navigate(`/manage/product/edit/${item.id}`)}
+                                onEdit={() => navigate(`/manage/product/edit/${item.name}`)}
                                 onDelete={() => handleDeleteButton(item.id)}
                             />
                         )

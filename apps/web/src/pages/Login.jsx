@@ -47,10 +47,6 @@ const Login = () => {
     email: Yup.string().email('Invalid email address').required('Required'),
     password: Yup.string()
       .min(8, 'Minimum password length is 8')
-      .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/,
-        'Password must contain uppercase letter, lowercase letter, number, and no space',
-      )
       .required('Required'),
   });
 

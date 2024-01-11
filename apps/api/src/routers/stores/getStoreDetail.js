@@ -1,4 +1,5 @@
 import { findOneStore } from '../../controllers/store.controller';
+import users from '../../models/users.model';
 
 export default async function (req, res, next) {
   try {
@@ -6,8 +7,14 @@ export default async function (req, res, next) {
       where: {
         UUID: req.params.id,
       },
+      include: [
+        {
+          model: users,
+          attributes: ['UUID'],
+        },
+      ],
       attributes: {
-        exclude: ['id', 'createdAt', 'updatedAt', 'deletedAt'],
+        exclude: ['id', 'createdAt', 'userId', 'updatedAt', 'deletedAt'],
       },
     });
 
