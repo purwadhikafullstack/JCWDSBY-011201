@@ -7,22 +7,24 @@ import { useEffect, useState } from "react";
 import API_CALL from "../../helpers/API";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import { useSelector } from "react-redux";
+import { IMG_URL_PRODUCT } from "../../constants/imageURL";
+import CardManageProduct from "../../components/CardManageProduct";
 
 const ManageProduct = () => {
     const navigate = useNavigate();
-    const [product, setProduct] = useState(null);
+    const [data, setData] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const currentUserRole = useSelector((reducer) => reducer.userReducer.role);
-    
+
     useEffect(() => {
         getProduct();
     }, []);
 
     const getProduct = async () => {
         setIsLoading(true);
-        const res = await API_CALL.get('product');
-        if(res){
-            setProduct(res.data);
+        const res = await API_CALL.get('product/inventory');
+        if (res) {
+            setData(res.data);
             setIsLoading(false);
         }
     };
@@ -35,19 +37,29 @@ const ManageProduct = () => {
     return <>
         <div className='flex flex-row container bg-blue-100 min-w-[360px] h-max min-h-screen'>
             <AdminSidebar />
-            <LoadingSpinner isLoading={isLoading} size={16}/>
+            <LoadingSpinner isLoading={isLoading} size={16} />
             <LayoutPageAdmin title='Manage Product'>
-                <div className='grid grid-cols-2 gap-y-10'>
+                <div className='grid grid-cols-2 gap-5 lg:grid-cols-7'>
                     {currentUserRole === 'super' && <BoxAddItem title='Add Product' onClick={() => navigate('/manage/product/create')} />}
-                    {product && product.map((item, index) => {
+                    {data && data.map((item, index) => {
                         return (
-                            <CardManage
+                            <CardManageProduct
                                 key={index}
-                                src={item.product_images[0].image? `${import.meta.env.VITE_IMG_URL}/product/${item.product_images[0].image}` : '/defaultImage.jpg'}
-                                name={item.name}
-                                onEdit={() => navigate(`/manage/product/edit/${item.name}`)}
-                                onDelete={() => handleDeleteButton(item.id)}
+                                image={item.product.product_images[0].image && IMG_URL_PRODUCT + item.product.product_images[0].image}
+                                productName={item.product.name}
+                                productUnit={item.product.weight + item.product.unit}
+                                price={item.product.price}
+                                stock={item.stock}
+                                onEdit={() => navigate(`/manage/product/edit/${item.product.name}`)}
+                                onDelete={() => handleDeleteButton(item.product.id)}
                             />
+                            // <CardManage
+                            //     key={index}
+                            //     src={item.product_images[0].image? IMG_URL_PRODUCT + item.product_images[0].image : '/defaultImage.jpg'}
+                            //     name={item.name}
+                            //     onEdit={() => navigate(`/manage/product/edit/${item.name}`)}
+                            //     onDelete={() => handleDeleteButton(item.id)}
+                            // />
                         )
                     })}
                 </div>

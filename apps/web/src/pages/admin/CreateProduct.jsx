@@ -8,6 +8,7 @@ import { MdDelete } from "react-icons/md";
 import API_CALL from "../../helpers/API";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import { toast } from "react-toastify";
+import { customTextInputTheme } from "../../constants/flowbiteCustomTheme";
 
 const CreateProduct = () => {
     const navigate = useNavigate();
@@ -16,7 +17,7 @@ const CreateProduct = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [category, setCategory] = useState(null);
     const [error, setError] = useState({ size: false, type: false, requiredFieldFile: false });
-    const [requiredField, setRequiredField] = useState({ name: false, weight: false, price: false });
+    const [requiredField, setRequiredField] = useState({ name: false, weight: false, price: false, description: false });
     const [data, setData] = useState({
         name: null,
         price: null,
@@ -52,10 +53,10 @@ const CreateProduct = () => {
         if (event) {
             const value = event.target.files[0];
             if (!value.type.match(REGEX_FILE_TYPE)) {
-                return setError({ ...error, type: true });
+                return setError({ ...error, type: true, size: false });
             }
             if (value.size > MAX_SIZE) {
-                return setError({ ...error, size: true });
+                return setError({ ...error, size: true, type: false });
             }
             setError({ size: false, type: false, requiredFieldFile: false });
             return setFile([...file, value])
@@ -88,9 +89,18 @@ const CreateProduct = () => {
         if (!data.name) return setRequiredField({ ...requiredField, name: true });
         if (!data.weight) return setRequiredField({ ...requiredField, weight: true });
         if (!data.price) return setRequiredField({ ...requiredField, price: true });
+        if (!data.description) return setRequiredField({ ...requiredField, description: true });
         try {
-            console.log('UNIT DATA >>>>', data.unit);
-            const postProduct = await API_CALL.post('product', { name: data.name, price: parseInt(data.price), description: data.description, weight: parseInt(data.weight), categoryId: parseInt(data.categoryId), unit: data.unit, image: file[0] });
+            const postProduct = await API_CALL.post('product', { 
+                name: data.name, 
+                price: parseInt(data.price.replace(/[^0-9]/g, '')), 
+                description: data.description, 
+                weight: parseInt(data.weight), 
+                categoryId: parseInt(data.categoryId), 
+                unit: data.unit, 
+                image: file[0] 
+            });
+
             if (postProduct) {
                 const formData = new FormData();
                 formData.append('productId', postProduct.data.id);
@@ -131,15 +141,15 @@ const CreateProduct = () => {
                 <div className='grid gap-2 mb-3'>
                     <Label value='Weight' />
                     <div className='flex disabled:cursor-not-allowed disabled:opacity-50 ' >
-                        {/* <input
-                            type='number' placeholder='100g'
-                            className='block w-full border rounded-l-md p-2.5 text-sm bg-gray-50 border-gray-300 text-gray-900 focus:border-cyan-500 focus:ring-cyan-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-cyan-500 dark:focus:ring-cyan-500'
-                        /> */}
-                        <TextInput type='number' placeholder='100g' onChange={(e) => { setData({ ...data, weight: e.target.value }); setRequiredField({ ...requiredField, weight: false }) }} color={requiredField.weight && 'failure'} helperText={requiredField.weight && 'Weight is required'} required />
-                        <select className='rounded-r-md bg-gray-400 p-2' onChange={(e) => setData({ ...data, unit: e.target.value })}>
-                            <option value={'g'}>g</option>
-                            <option value={'ml'}>ml</option>
-                        </select>
+                        <div>
+                            <TextInput theme={customTextInputTheme} type='number' placeholder='100g' onChange={(e) => { setData({ ...data, weight: e.target.value }); setRequiredField({ ...requiredField, weight: false }) }} color={requiredField.weight && 'failure'} helperText={requiredField.weight && 'Weight is required'} required />
+                        </div>
+                        <div>
+                            <select className='border rounded-r-lg bg-gray-400 p-2.5' onChange={(e) => setData({ ...data, unit: e.target.value })}>
+                                <option value={'g'}>g</option>
+                                <option value={'ml'}>ml</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <div className='grid gap-2 mb-3'>
@@ -148,7 +158,7 @@ const CreateProduct = () => {
                 </div>
                 <div className='grid gap-2 mb-3'>
                     <Label value='Description' />
-                    <Textarea placeholder='Description' className='p-2' rows={4} onChange={(e) => setData({ ...data, description: e.target.value })} />
+                    <Textarea placeholder='Description' className='p-2' rows={4} onChange={(e) => {setData({ ...data, description: e.target.value }); setRequiredField({...requiredField, description: false}) }} color={requiredField.description && 'failure'} helperText={requiredField.description && 'Description is required'} required />
                 </div>
                 {/* IMAGE */}
                 <div className='grid gap-2 mb-3'>

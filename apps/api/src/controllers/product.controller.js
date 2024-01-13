@@ -142,6 +142,19 @@ export const createProduct = async (storeId, data) => {
 };
 
 export const updateProduct = async (id, data) => {
+    if (Object.hasOwn(data, 'name')) {
+        const checkProductName = await product.findOne({
+            where: { name: data.name },
+        });
+        if (checkProductName) {
+            throw {
+                rc: 409,
+                success: false,
+                message: 'Product already exists',
+                result: null,
+            }
+        }
+    }
     return await product.update(
         data,
         {

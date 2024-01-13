@@ -33,8 +33,7 @@ const EditAdmin = () => {
             resetForm({
                 name: '',
                 email: '',
-            });
-            navigate('/manage/admin')
+            });            
         },
     });
 
@@ -57,6 +56,7 @@ const EditAdmin = () => {
         setIsLoading(true);
         await API_CALL.patch(`/admin/profile/${profileUuid}`, { name: val.name, email: val.email });
         setIsLoading(false);
+        navigate('/manage/admin', { replace: true });
     };
 
     const handleSaveButton = () => {

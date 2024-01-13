@@ -8,14 +8,16 @@ import ModalCategory from '../../components/ModalCategory';
 import { MAX_SIZE, REGEX_FILE_TYPE } from '../../constants/file';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { useSelector } from 'react-redux';
+import { IMG_URL_CATEGORY } from '../../constants/imageURL';
 
 const ManageCategories = () => {
     const [openModal, setOpenModal] = useState(false);
     const [categoryName, setCategoryName] = useState('');
+    const [prevCategoryName, setPrevCategoryName] = useState('');
     const [imageSrc, setImageSrc] = useState(null);
     const [categoryId, setCategoryId] = useState(null);
     const [file, setFile] = useState(null);
-    const [error, setError] = useState({ size: false, requiredName: false, requiredFile: false, ext: false });
+    const [error, setError] = useState({ size: false, requiredName: false, requiredFile: false, ext: false, duplicate: false });
     const [category, setCategory] = useState(null);
     const [onEdit, setOnEdit] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -39,61 +41,83 @@ const ManageCategories = () => {
         setOpenModal(false);
         setOnEdit(false);
         setCategoryName('');
+        setPrevCategoryName('');
         setCategoryId(null);
         setFile(null);
-        setError({ size: false, requiredName: false, requiredFile: false, ext: false });
+        setError({ size: false, requiredName: false, requiredFile: false, ext: false, duplicate: false });
     };
 
     const handleSaveButton = async () => {
-        if (!categoryName) {
-            setError({ ...error, requiredName: true });
-            return;
-        }
-        if (file) {
-            if (file.size > MAX_SIZE) {
-                setError({ ...error, size: true });
+        try {
+            if (!categoryName) {
+                setError({ ...error, requiredName: true });
                 return;
             }
-            if (!file.type.match(REGEX_FILE_TYPE)) {
-                setError({ ...error, ext: true });
-                return;
+            if (file) {
+                if (file.size > MAX_SIZE) {
+                    setError({ ...error, size: true, ext: false });
+                    return;
+                }
+                if (!file.type.match(REGEX_FILE_TYPE)) {
+                    setError({ ...error, ext: true, size: false });
+                    return;
+                }
+                if (prevCategoryName == categoryName) {
+                    console.log('Duplicate category name');
+                    const formData = new FormData();
+                    formData.append('categoryUpload', file);
+                    await API_CALL.patch('category/' + categoryId, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+                } else {
+                    const formData = new FormData();
+                    formData.append('name', categoryName);
+                    formData.append('categoryUpload', file);
+                    await API_CALL.patch('category/' + categoryId, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+                }
+            } else {
+                await API_CALL.patch('category/' + categoryId, { name: categoryName });
             }
-            const formData = new FormData();
-            formData.append('name', categoryName);
-            formData.append('categoryUpload', file);
-            await API_CALL.patch('category/' + categoryId, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+            setOpenModal(false);
+            setCategoryName('');
+            setFile(null);
+            setError({ ...error, size: false, requiredName: false, ext: false, duplicate: false });
+            getCategory();
+        } catch (error) {
+            if (error.response.status === 409) {
+                return setError({ ...error, duplicate: true });
+            }
         }
-        await API_CALL.patch('category/' + categoryId, { name: categoryName });
-        setOpenModal(false);
-        setCategoryName('');
-        setFile(null);
-        setError({ ...error, size: false, requiredName: false, ext: false });
-        getCategory();
+
     };
 
     const handleAddButton = async () => {
-        if (categoryName === '') {
-            return setError({ ...error, requiredName: true });
-        }
-        if (file) {
-            if (file.size > MAX_SIZE) {
-                return setError({ ...error, size: true, requiredName: false });
+        try {
+            if (categoryName === '') {
+                return setError({ ...error, requiredName: true });
             }
-            if (!file.type.match(REGEX_FILE_TYPE)) {
-                return setError({ ...error, ext: true, requiredName: false });
+            if (file) {
+                if (file.size > MAX_SIZE) {
+                    return setError({ ...error, size: true, requiredName: false });
+                }
+                if (!file.type.match(REGEX_FILE_TYPE)) {
+                    return setError({ ...error, ext: true, requiredName: false });
+                }
+                const formData = new FormData();
+                formData.append('name', categoryName);
+                formData.append('categoryUpload', file);
+                await API_CALL.post('category', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+            } else {
+                return setError({ ...error, requiredFile: true });
             }
-            const formData = new FormData();
-            formData.append('name', categoryName);
-            formData.append('categoryUpload', file);
-            await API_CALL.post('category', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
-        } else {
-            return setError({ ...error, requiredFile: true });
+            setOpenModal(false);
+            setCategoryName('');
+            setFile(null);
+            setError({ size: false, requiredName: false, requiredFile: false, ext: false, duplicate: false });
+            getCategory();
+        } catch (error) {
+            if (error.response.status === 409) {
+                return setError({ ...error, duplicate: true, requiredName: false });
+            }
         }
-        setOpenModal(false);
-        setCategoryName('');
-        setFile(null);
-        setError({ size: false, requiredName: false, requiredFile: false, ext: false });
-        getCategory();
     };
 
     const handleDeleteButton = async (id) => {
@@ -106,8 +130,9 @@ const ManageCategories = () => {
         if (res) {
             setOnEdit(true);
             setCategoryName(res.data.name);
+            setPrevCategoryName(res.data.name);
             setCategoryId(res.data.id);
-            setImageSrc(res.data.image ? `${import.meta.env.VITE_IMG_URL}/category/${res.data.image}` : '/defaultImage.jpg');
+            setImageSrc(res.data.image ? IMG_URL_CATEGORY + res.data.image : '/defaultImage.jpg');
             setOpenModal(true);
         }
     };
@@ -115,10 +140,10 @@ const ManageCategories = () => {
     const handleOnChangeFile = (event) => {
         const value = event.target.files[0];
         if (!value.type.match(REGEX_FILE_TYPE)) {
-            return setError({ ...error, ext: true });
+            return setError({ ...error, ext: true, size: false });
         }
         if (value.size > MAX_SIZE) {
-            return setError({ ...error, size: true });
+            return setError({ ...error, size: true, ext: false });
         }
         if (onEdit) {
             setFile(value);
@@ -126,7 +151,7 @@ const ManageCategories = () => {
             setError({ ...error, size: false, ext: false });
             return;
         }
-        setError({ ...error, size: false, ext: false });
+        setError({ ...error, size: false, ext: false, requiredFile: false });
         setFile(value)
     };
 
@@ -148,8 +173,9 @@ const ManageCategories = () => {
                         errorRequiredFile={error.requiredFile}
                         errorSize={error.size}
                         errorExt={error.ext}
+                        errorDuplicate={error.duplicate}
                         categoryName={categoryName}
-                        onChangeCategory={(event) => setCategoryName(event.target.value)}
+                        onChangeCategory={(event) => { setCategoryName(event.target.value); setError({ ...error, requiredName: false }) }}
                         onChangeFile={handleOnChangeFile}
                         onAdd={handleAddButton}
                         onSave={handleSaveButton}
@@ -158,7 +184,7 @@ const ManageCategories = () => {
                         return (
                             <CardManage
                                 key={index}
-                                src={item.image ? `${import.meta.env.VITE_IMG_URL}/category/${item.image}` : '/defaultImage.jpg'}
+                                src={item.image ? IMG_URL_CATEGORY + item.image : '/defaultImage.jpg'}
                                 name={item.name}
                                 onEdit={() => handleEditButton(item.id)}
                                 onDelete={() => handleDeleteButton(item.id)}

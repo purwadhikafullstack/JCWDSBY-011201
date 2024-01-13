@@ -20,11 +20,10 @@ const ManageAdmin = () => {
         delete: false,
     });
 
-    useEffect(() => {
-        getAdmin();
-    }, []);
+    
 
     const getAdmin = async () => {
+        console.log('Getting Admin Information');
         setIsLoading(true);
         const response = await API_CALL.get('/admin');
         if (response) {
@@ -44,7 +43,6 @@ const ManageAdmin = () => {
                         <TableCell className='space-y-1'>
                             <p className='text-blue-600' onClick={() => navigate(`/manage/admin/profile?key=${item.uuid}`)}>Edit</p>
                             <p className='text-blue-600' onClick={() => navigate(`/manage/admin/password?key=${item.uuid}`)}>Change Password</p>
-                            {/* <p className='text-red-600' onClick={() => handleDelete(item.uuid)}>Delete</p> */}
                             <p className='text-red-600' onClick={() => {setOpenModal({...openModal, delete: true});  setUUID(item.uuid) }}>Delete</p>
                         </TableCell>
                     </TableRow>
@@ -89,6 +87,10 @@ const ManageAdmin = () => {
             });
         }
     };
+
+    useEffect(() => {
+        getAdmin();
+    }, []);
 
     return <>
         <div className='flex flex-row container bg-blue-100 min-w-[360px] h-max min-h-screen'>
