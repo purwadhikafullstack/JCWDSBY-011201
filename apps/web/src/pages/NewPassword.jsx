@@ -7,6 +7,7 @@ import customToast from '../utils/toast';
 import ButtonWithLoading from '../components/ButtonWithLoading';
 import { useDispatch } from 'react-redux';
 import { logout } from '../redux/slice/userSlice';
+import InputPassword from '../components/InputPassword';
 
 const NewPassword = () => {
   const [searchParams] = useSearchParams();
@@ -80,25 +81,25 @@ const NewPassword = () => {
                 >
                   Create New Password
                 </label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
+                <InputPassword
+                  id={'password'}
+                  name={'password'}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.password}
-                  placeholder="Input new password"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  placeholder="Input your password"
+                  HelperText={
+                    <span
+                      className={`${
+                        formik.touched.password && formik.errors.password
+                          ? ''
+                          : 'invisible'
+                      } text-xs text-red-500`}
+                    >
+                      {formik.errors.password || 'Correct'}
+                    </span>
+                  }
                 />
-                <span
-                  className={`${
-                    formik.touched.password && formik.errors.password
-                      ? ''
-                      : 'invisible'
-                  } text-xs text-red-500`}
-                >
-                  {formik.errors.password || 'Correct'}
-                </span>
               </div>
               <div className="mb-1">
                 <label
@@ -107,25 +108,25 @@ const NewPassword = () => {
                 >
                   Confirm Password
                 </label>
-                <input
-                  type="password"
-                  id="confPass"
-                  name="confPass"
+                <InputPassword
+                  id={'confPass'}
+                  name={'confPass'}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.confPass}
                   placeholder="Input new password again"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  HelperText={
+                    <span
+                      className={`${
+                        formik.touched.confPass && formik.errors.confPass
+                          ? ''
+                          : 'invisible'
+                      } text-xs text-red-500`}
+                    >
+                      {formik.errors.confPass || 'Correct'}
+                    </span>
+                  }
                 />
-                <span
-                  className={`${
-                    formik.touched.confPass && formik.errors.confPass
-                      ? ''
-                      : 'invisible'
-                  } text-xs text-red-500`}
-                >
-                  {formik.errors.confPass || 'Correct'}
-                </span>
               </div>
               <ButtonWithLoading
                 isLoading={isLoading}

@@ -15,24 +15,6 @@ const Landing = () => {
   const [categoryData, setCategoryData] = useState(null);
   const [heroData, setHeroData] = useState(null);
 
-  const hero = [
-    {
-      eventName: 'Event 1',
-      image:
-        'https://www.astronauts.id/blog/wp-content/uploads/2023/12/Spesial-Akhir-Tahun-Belanja-di-Astro-Pakai-Kartu-Kredit-BRI-Dapat-Diskon-1.jpg',
-    },
-    {
-      eventName: 'Event 2',
-      image:
-        'https://www.astronauts.id/blog/wp-content/uploads/2023/10/Serbu-Promo-Tanggal-Kembar-di-Astro.png',
-    },
-    {
-      eventName: 'Event 3',
-      image:
-        'https://www.astronauts.id/blog/wp-content/uploads/2023/12/Super-Brand-Day-Colgate-Palmolive-Hadir-di-Astro-dengan-Berbagai-Hadiah-Menarik.jpg',
-    },
-  ];
-
   const product = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 23, 212, 231];
 
   const getCategoryData = async () => {

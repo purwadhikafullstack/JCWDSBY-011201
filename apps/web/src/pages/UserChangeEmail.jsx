@@ -12,56 +12,54 @@ import customToast from '../utils/toast';
 import { logout } from '../redux/slice/userSlice';
 import InputPassword from '../components/InputPassword';
 
-const UserChangePassword = (props) => {
+const UserChangeEmail = (props) => {
+  const globalUser = useSelector((reducer) => reducer.userReducer);
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [openModal, setOpenModal] = useState(false);
 
-  const changePasswordSchema = Yup.object({
-    currPassword: Yup.string()
-      .min(8, 'Minimum password length is 8')
-      .required('Required'),
-    newPassword: Yup.string()
-      .min(8, 'Minimum password length is 8')
-      .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/,
-        'Password must contain uppercase letter, lowercase letter, number, and no space',
-      )
+  const changeEmailSchema = Yup.object({
+    newEmail: Yup.string()
+      .email('Invalid email address')
+      .required('Required')
       .notOneOf(
-        [Yup.ref('currPassword')],
-        'New password must different from current password',
-      )
-      .required('Required'),
+        [globalUser.email],
+        'New email must been different from the old ones',
+      ),
   });
 
-  const handleChangePassword = async (data) => {
+  const handleChangeEmail = async (data) => {
     try {
       setIsLoading(true);
-      const result = await API_CALL.patch('/user/user/change-password', data, {
+      const result = await API_CALL.patch('/user/user/change-email', data, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('authToken')}`,
         },
       });
       if (result.data.success) {
-        customToast('success', 'Password has been changed');
-        formik.handleReset();
+        customToast('success', 'Verify link is sent to your new email');
+        localStorage.removeItem('authToken');
+        dispatch(logout());
+        navigate('/login', { replace: true });
       }
     } catch (error) {
-      customToast('error', error.response.data.message);
+      customToast(
+        'error',
+        error.response.data.message || 'Failed to change email',
+      );
     }
     setIsLoading(false);
   };
 
   const formik = useFormik({
     initialValues: {
-      currPassword: '',
-      newPassword: '',
+      newEmail: globalUser.email,
     },
-    validationSchema: changePasswordSchema,
+    validationSchema: changeEmailSchema,
     onSubmit: (values) => {
-      handleChangePassword(values);
+      handleChangeEmail(values);
     },
   });
 
@@ -82,55 +80,32 @@ const UserChangePassword = (props) => {
               <HiChevronLeft size={'100%'} />
             </span>
             <span className="font-bold text-3xl line-clamp-2 py-2">
-              Change Password
+              Change Email
             </span>
           </div>
         </div>
         <div className="flex flex-col items-center py-8 px-4 gap-4">
           <div className="w-full">
             <div className="mb-2 block">
-              <Label htmlFor="currPassword" value="Current Password" />
+              <Label htmlFor="newEmail" value="Email" />
             </div>
-            <InputPassword
-              id={'currPassword'}
-              name={'currPassword'}
+            <TextInput
+              type={'email'}
+              id={'newEmail'}
+              name={'newEmail'}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              value={formik.values.currPassword}
-              placeholder="Input your current password"
-              HelperText={
+              value={formik.values.newEmail}
+              placeholder="Input your new email"
+              helperText={
                 <span
                   className={`${
-                    formik.touched.currPassword && formik.errors.currPassword
+                    formik.touched.newEmail && formik.errors.newEmail
                       ? ''
                       : 'invisible'
                   } text-xs text-red-500`}
                 >
-                  {formik.errors.currPassword || 'Correct'}
-                </span>
-              }
-            />
-          </div>
-          <div className="w-full">
-            <div className="mb-2 block">
-              <Label htmlFor="newPassword" value="New Password" />
-            </div>
-            <InputPassword
-              id={'newPassword'}
-              name={'newPassword'}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.newPassword}
-              placeholder="Input your new password"
-              HelperText={
-                <span
-                  className={`${
-                    formik.touched.newPassword && formik.errors.newPassword
-                      ? ''
-                      : 'invisible'
-                  } text-xs text-red-500`}
-                >
-                  {formik.errors.newPassword || 'Correct'}
+                  {formik.errors.newEmail || 'Correct'}
                 </span>
               }
             />
@@ -156,7 +131,9 @@ const UserChangePassword = (props) => {
               <div className="text-center">
                 <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
                 <h3 className="mb-5 text-sm font-normal text-gray-500 dark:text-gray-400">
-                  Are you sure you want change your password?
+                  Are you sure you want change your email?. After changing your
+                  email you will be logged out, and you need to verify your
+                  email again.
                 </h3>
                 <div className="flex justify-center gap-4">
                   <Button
@@ -164,8 +141,8 @@ const UserChangePassword = (props) => {
                     isProcessing={isLoading}
                     color="blue"
                     onClick={(e) => {
-                      setOpenModal(false);
                       formik.handleSubmit(e);
+                      setOpenModal(false);
                     }}
                   >
                     {"Yes, I'm sure"}
@@ -180,4 +157,4 @@ const UserChangePassword = (props) => {
   );
 };
 
-export default UserChangePassword;
+export default UserChangeEmail;

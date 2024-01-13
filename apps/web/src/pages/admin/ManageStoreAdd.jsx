@@ -34,7 +34,9 @@ const ManageStoreAdd = () => {
 
   const getAdminList = async () => {
     try {
-      const result = await API_CALL.get('/admin');
+      const result = await API_CALL.get('/admin', {
+        params: { store: 'false' },
+      });
       setAdminList(result.data);
     } catch (error) {
       console.log(error);

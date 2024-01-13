@@ -6,6 +6,7 @@ import * as Yup from 'yup';
 import customToast from '../utils/toast';
 import ButtonWithLoading from '../components/ButtonWithLoading';
 import { useSelector } from 'react-redux';
+import InputPassword from '../components/InputPassword';
 
 const VerifyAccount = () => {
   const [searchParams] = useSearchParams();
@@ -26,11 +27,15 @@ const VerifyAccount = () => {
       setIsLoading(true);
       if (searchParams.get('key')) {
         const token = searchParams.get('key');
-        const result = await API_CALL.patch('/auth/verify-account', data, {
-          headers: {
-            Authorization: `Bearer ${token}`,
+        const result = await API_CALL.patch(
+          '/auth/signup/verify-account',
+          data,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           },
-        });
+        );
         if (result.data.success) {
           customToast('success', result.data.message);
           navigate('/login', { replace: true });
@@ -85,25 +90,25 @@ const VerifyAccount = () => {
                 >
                   Create New Password
                 </label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
+                <InputPassword
+                  id={'password'}
+                  name={'password'}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.password}
-                  placeholder="Input new password"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  placeholder="Input your password"
+                  HelperText={
+                    <span
+                      className={`${
+                        formik.touched.password && formik.errors.password
+                          ? ''
+                          : 'invisible'
+                      } text-xs text-red-500`}
+                    >
+                      {formik.errors.password || 'Correct'}
+                    </span>
+                  }
                 />
-                <span
-                  className={`${
-                    formik.touched.password && formik.errors.password
-                      ? ''
-                      : 'invisible'
-                  } text-xs text-red-500`}
-                >
-                  {formik.errors.password || 'Correct'}
-                </span>
               </div>
               <div className="mb-1">
                 <label
@@ -112,25 +117,25 @@ const VerifyAccount = () => {
                 >
                   Confirm Password
                 </label>
-                <input
-                  type="password"
-                  id="confPass"
-                  name="confPass"
+                <InputPassword
+                  id={'confPass'}
+                  name={'confPass'}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.confPass}
                   placeholder="Input new password again"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  HelperText={
+                    <span
+                      className={`${
+                        formik.touched.confPass && formik.errors.confPass
+                          ? ''
+                          : 'invisible'
+                      } text-xs text-red-500`}
+                    >
+                      {formik.errors.confPass || 'Correct'}
+                    </span>
+                  }
                 />
-                <span
-                  className={`${
-                    formik.touched.confPass && formik.errors.confPass
-                      ? ''
-                      : 'invisible'
-                  } text-xs text-red-500`}
-                >
-                  {formik.errors.confPass || 'Correct'}
-                </span>
               </div>
               <ButtonWithLoading
                 isLoading={isLoading}

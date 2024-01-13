@@ -1,5 +1,6 @@
 import { Avatar, Sidebar } from 'flowbite-react';
 import { HiHome } from 'react-icons/hi';
+import { HiMiniPower } from 'react-icons/hi2';
 import { MdInventory, MdStore } from 'react-icons/md';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { IoMdListBox } from 'react-icons/io';
