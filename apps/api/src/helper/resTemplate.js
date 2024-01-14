@@ -1,6 +1,6 @@
-export default function (res, success, message, result) {
+export default function (rc, success, message, result) {
     return {
-        res,
+        rc,
         success,
         message,
         result,
