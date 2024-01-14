@@ -7,6 +7,9 @@ import API_CALL from "../../helpers/API";
 import { MdDelete } from "react-icons/md";
 import BoxAddImage from "../../components/BoxAddImage";
 import { MAX_SIZE, REGEX_FILE_TYPE } from "../../constants/file";
+import { IMG_URL_PRODUCT } from "../../constants/imageURL";
+import { toast } from "react-toastify";
+import { customTextInputTheme } from "../../constants/flowbiteCustomTheme";
 
 const EditProduct = () => {
     const navigate = useNavigate();
@@ -16,21 +19,24 @@ const EditProduct = () => {
     const [category, setCategory] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState({ size: false, type: false, requiredFieldFile: false });
-    const [requiredField, setRequiredField] = useState({ name: false, weight: false, price: false });
+    const [requiredField, setRequiredField] = useState({ name: false, weight: false, price: false, description: false });
     const [deletedImage, setDeletedImage] = useState(null);
     const [uploadImage, setUploadImage] = useState([]);
+    const [prevName, setPrevName] = useState('');
     const [data, setData] = useState({
+        id: null,
         name: '',
         price: '',
         description: '',
         weight: '',
+        unit: '',
         categoryId: '',
         image: null
     });
 
     useEffect(() => {
         getCategory();
-        getProduct(params.id);
+        getProduct(params.name);
     }, [])
 
     const getCategory = async () => {
@@ -42,13 +48,14 @@ const EditProduct = () => {
         }
     };
 
-    const getProduct = async (id) => {
+    const getProduct = async (name) => {
         setIsLoading(true);
-        const res = await API_CALL.get(`product/${id}`);
+        const res = await API_CALL.get(`product/${name}`);
         if (res) {
             setIsLoading(false);
-            setData({ ...data, name: res.data.name, price: res.data.price, description: res.data.description, weight: res.data.weight, categoryId: res.data.categoryId });
-            setFile(res.data.product_images);
+            setPrevName(res.data.product.name);
+            setData({ ...data, id: res.data.id, name: res.data.product.name, price: res.data.product.price, description: res.data.product.description, weight: res.data.product.weight, unit: res.data.product.unit, categoryId: res.data.product.category.id });
+            setFile(res.data.product.product_images);
         }
     }
 
@@ -71,10 +78,10 @@ const EditProduct = () => {
         if (event) {
             const value = event.target.files[0];
             if (!value.type.match(REGEX_FILE_TYPE)) {
-                return setError({ ...error, type: true });
+                return setError({ ...error, type: true, size: false });
             }
             if (value.size > MAX_SIZE) {
-                return setError({ ...error, size: true });
+                return setError({ ...error, size: true, type: false });
             }
             setError({ size: false, type: false, requiredFieldFile: false });
             setUploadImage([...uploadImage, value])
@@ -87,9 +94,9 @@ const EditProduct = () => {
             return file.map((image, index) => {
                 if (image.id) {
                     return <div className='border border-black h-24 w-24 overflow-hidden rounded relative' key={index}>
-                        <img src={`${import.meta.env.VITE_IMG_URL}/product/${image.image}`} className='h-24 w-24 rounded object-cover' />
+                        <img src={IMG_URL_PRODUCT + image.image} className='h-24 w-24 rounded object-cover' />
                         <div className='absolute bottom-0 right-0 p-1'>
-                            <MdDelete color='red' onClick={() => {setDeletedImage(image) ;setFile(file.filter((item, idx) => idx !== index))}} />
+                            <MdDelete color='red' onClick={() => { setDeletedImage(image); setFile(file.filter((item, idx) => idx !== index)) }} />
                         </div>
                     </div>
                 }
@@ -106,26 +113,47 @@ const EditProduct = () => {
     }
 
     const handleSaveButton = async () => {
-        if(file.length === 0) return setError({...error, requiredFieldFile: true });
-        if(!data.name) return setRequiredField({...requiredField, name: true });
-        if(!data.weight) return setRequiredField({...requiredField, weight: true });
-        if(!data.price) return setRequiredField({...requiredField, price: true });
+        if (file.length === 0) return setError({ ...error, requiredFieldFile: true });
+        if (!data.name) return setRequiredField({ ...requiredField, name: true });
+        if (!data.weight) return setRequiredField({ ...requiredField, weight: true });
+        if (!data.price) return setRequiredField({ ...requiredField, price: true });
+        if (!data.description) return setRequiredField({ ...requiredField, description: true });
         setIsLoading(true);
         const product = {
-            name : data.name,
-            price: parseInt(data.price),
+            name: data.name,
+            price: parseInt(data.price.replace(/[^0-9]/g, '')),
             description: data.description,
             weight: parseInt(data.weight),
+            unit: data.unit,
             categoryId: parseInt(data.categoryId)
         }
-        await API_CALL.patch(`product/${params.id}`, product)
-        if(deletedImage){
+
+        if (prevName === data.name) { 
+            delete product.name;
+        }
+        
+        try {
+            await API_CALL.patch(`product/${data.id}`, product)
+        } catch (error) {
+            setIsLoading(false);
+            if (error.response.status === 409) return toast.error('Product already exists', {
+                position: "bottom-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        }
+        if (deletedImage) {
             await API_CALL.delete(`product/image/${deletedImage.id}`);
         }
-        if(uploadImage.length){
+        if (uploadImage.length) {
             const formdata = new FormData();
-            formdata.append('productId', params.id);
-            uploadImage.forEach((image) => formdata.append(`productUpload`, image) );
+            formdata.append('productId', data.id);
+            uploadImage.forEach((image) => formdata.append(`productUpload`, image));
             await API_CALL.post('product/image', formdata);
         }
         navigate('/manage/product');
@@ -150,7 +178,18 @@ const EditProduct = () => {
                 </div>
                 <div className='grid gap-2 mb-3'>
                     <Label value='Weight' />
-                    <TextInput type='number' value={data.weight} placeholder='100g' onChange={(e) => { setData({ ...data, weight: e.target.value }); setRequiredField({ ...requiredField, weight: false }) }} color={requiredField.weight && 'failure'} helperText={requiredField.weight && 'Weight is required'} required />
+                    {/* <TextInput type='number' value={data.weight} placeholder='100g' onChange={(e) => { setData({ ...data, weight: e.target.value }); setRequiredField({ ...requiredField, weight: false }) }} color={requiredField.weight && 'failure'} helperText={requiredField.weight && 'Weight is required'} required /> */}
+                    <div className='flex disabled:cursor-not-allowed disabled:opacity-50 ' >
+                        <div>
+                            <TextInput theme={customTextInputTheme} type='number' value={data.weight} placeholder='100g' onChange={(e) => { setData({ ...data, weight: e.target.value }); setRequiredField({ ...requiredField, weight: false }) }} color={requiredField.weight && 'failure'} helperText={requiredField.weight && 'Weight is required'} required />
+                        </div>
+                        <div>
+                            <select className='border rounded-r-lg bg-gray-400 p-2.5' value={data.unit} onChange={(e) => setData({ ...data, unit: e.target.value })}>
+                                <option value={'g'}>g</option>
+                                <option value={'ml'}>ml</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 <div className='grid gap-2 mb-3'>
                     <Label value='Price' />
@@ -158,7 +197,7 @@ const EditProduct = () => {
                 </div>
                 <div className='grid gap-2 mb-3'>
                     <Label value='Description' />
-                    <Textarea placeholder='Description' value={data.description} className='p-2' rows={4} onChange={(e) => setData({ ...data, description: e.target.value })} />
+                    <Textarea placeholder='Description' value={data.description} className='p-2' rows={4} onChange={(e) => {setData({ ...data, description: e.target.value }); setRequiredField({...requiredField, description: false}) }} color={requiredField.description && 'failure'} helperText={requiredField.description && 'Description is required'} required />
                 </div>
                 {/* IMAGE */}
                 <div className='grid gap-2 mb-3'>

@@ -1,4 +1,4 @@
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ManageCategories from './pages/admin/ManageCategories';
@@ -19,7 +19,6 @@ import UserProfile from './pages/UserProfile';
 import PrivateRoute from './utils/PrivateRoute';
 import Loader from './components/Loader';
 import { login, logout } from './redux/slice/userSlice';
-import API_CALL from './helpers/API';
 import UserProfileDetail from './pages/UserProfileDetail';
 import UserChangePassword from './pages/UserChangePassword';
 import UserAddressList from './pages/UserAddressList';
@@ -34,13 +33,12 @@ import Inventory from './pages/admin/Inventory';
 import ManageAdmin from './pages/admin/ManageAdmin';
 import RegisteredUser from './pages/admin/RegisteredUser';
 import ManageStore from './pages/admin/ManageStore';
-import CheckAuth from './helpers/CheckAuth';
-import getNearestStore from './helpers/GetNearestStore';
+import CheckAuth from './helpers/checkAuth';
+import getNearestStore from './helpers/getNearestStore';
 import { setStore } from './redux/slice/storeSlice';
 import ManageStoreAdd from './pages/admin/ManageStoreAdd';
 import ManageStoreUpdate from './pages/admin/ManageStoreUpdate';
 import ChangePassword from './pages/admin/ChangePassword';
-import { Form, Formik } from 'formik';
 import EditAdmin from './pages/admin/EditAdmin';
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
@@ -94,7 +92,7 @@ function App() {
             );
             dispatch(setStore(result.payload));
           } catch (error) {
-            console.log(err);
+            console.log(error);
           }
         },
         async (error) => {
@@ -174,7 +172,7 @@ function App() {
         />
         <Route path="/category" element={<UserFindCategory />} />
         <Route
-          path="/product/sjddahGkasJSNx-672nSjdskak"
+          path="/product/:name"
           element={<UserProductDetail />}
         />
 
@@ -232,7 +230,7 @@ function App() {
           }
         />
         <Route
-          path="/manage/product/edit/:id"
+          path="/manage/product/edit/:name"
           element={
             <PrivateRoute role={['super']}>
               <EditProduct />
@@ -252,6 +250,22 @@ function App() {
           element={
             <PrivateRoute role={'super'}>
               <ManageAdmin />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/admin/password"
+          element={
+            <PrivateRoute role={'super'}>
+              <ChangePassword />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/admin/profile"
+          element={
+            <PrivateRoute role={'super'}>
+              <EditAdmin />
             </PrivateRoute>
           }
         />

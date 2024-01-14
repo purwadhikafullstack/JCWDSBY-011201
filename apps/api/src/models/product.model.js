@@ -30,6 +30,7 @@ export const init = (sequelize) => {
     price: DataTypes.INTEGER,
     description: DataTypes.STRING,
     weight: DataTypes.INTEGER,
+    unit: DataTypes.ENUM(['g', 'ml']),
     deletedAt: DataTypes.DATE
   }, {
     sequelize,

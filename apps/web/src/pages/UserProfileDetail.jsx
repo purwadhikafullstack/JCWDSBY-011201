@@ -14,7 +14,7 @@ import { useFormik } from 'formik';
 import API_CALL from '../helpers/API';
 import customToast from '../utils/toast';
 import { login } from '../redux/slice/userSlice';
-import { MAX_SIZE } from '../constant/file';
+import { MAX_SIZE } from '../constants/file';
 
 const UserProfileDetail = (props) => {
   const dispatch = useDispatch();
