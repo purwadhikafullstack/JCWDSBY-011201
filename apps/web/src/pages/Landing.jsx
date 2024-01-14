@@ -43,7 +43,7 @@ const Landing = () => {
     const res = await API_CALL.get('product/inventory');
     // console.log('RES >>>', res.data);
     if (res) {
-      setProductData(res.data);
+      setProductData(res.data.result.data);
     }
   };
 
@@ -67,7 +67,7 @@ const Landing = () => {
                   key={index}
                   image={`${import.meta.env.VITE_IMG_URL}/product/${value.product.product_images[0].image}`}
                   productName={value.product.name}
-                  productUnit={'250ML/Pcs'}
+                  productUnit={value.product.weight + value.product.unit}
                   price={value.product.price}
                   discountPrice={7400}
                   stock={value.stock}

@@ -5,24 +5,28 @@ import productImage from "../models/product-image.model";
 import { assetsDir } from "../constants/assets";
 import { unlink, existsSync } from "fs";
 
-export const getProductData = async () => {
-    return await product.findAll({
-        include: [
-            {
-                model: categories,
-                as: 'category',
-                required: true,
-                attributes: ['id', 'name'],
-            },
-            {
-                model: productImage,
-                required: true,
-                attributes: ['id', 'image'],
-            },
-        ],
-        attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
-    },);
-};
+export const findAllProducts = async (pointer) => {
+    return await product.findAll(pointer);
+}; 
+
+// export const getProductData = async () => {
+//     return await product.findAll({
+//         include: [
+//             {
+//                 model: categories,
+//                 as: 'category',
+//                 required: true,
+//                 attributes: ['id', 'name'],
+//             },
+//             {
+//                 model: productImage,
+//                 required: true,
+//                 attributes: ['id', 'image'],
+//             },
+//         ],
+//         attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
+//     },);
+// };
 
 export const findProductByName = async (name) => {
     return await inventory.findOne({

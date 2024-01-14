@@ -10,25 +10,14 @@ import {
     findProductByName,
     findProductByCategory,
 } from "../controllers/product.controller";
+import getAllProduct from "./product/getAllProduct";
+import getAllInventory from "./inventory/getAllInventory";
 
 const productRouter = Router();
 
-productRouter.get('/', async (req, res, next) => {
-    try {
-        const result = await getProductData();
-        res.status(200).json(result);
-    } catch (error) {
-        next(error);
-    }
-});
-productRouter.get('/inventory', async (req, res, next) => {
-    try {
-        const result = await getInventoryData();
-        res.status(200).json(result);
-    } catch (error) {
-        next(error);
-    }
-});
+productRouter.get('/', getAllProduct);
+
+productRouter.get('/inventory', getAllInventory);
 
 productRouter.get('/:name', async (req, res, next) => {
     try {

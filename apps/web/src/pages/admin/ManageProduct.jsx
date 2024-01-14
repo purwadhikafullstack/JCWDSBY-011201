@@ -24,7 +24,7 @@ const ManageProduct = () => {
         setIsLoading(true);
         const res = await API_CALL.get('product/inventory');
         if (res) {
-            setData(res.data);
+            setData(res.data.result.data);
             setIsLoading(false);
         }
     };
