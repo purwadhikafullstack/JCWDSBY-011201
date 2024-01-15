@@ -33,13 +33,15 @@ import Inventory from './pages/admin/Inventory';
 import ManageAdmin from './pages/admin/ManageAdmin';
 import RegisteredUser from './pages/admin/RegisteredUser';
 import ManageStore from './pages/admin/ManageStore';
-import CheckAuth from './helpers/checkAuth';
-import getNearestStore from './helpers/getNearestStore';
+import CheckAuth from './helpers/CheckAuth';
 import { setStore } from './redux/slice/storeSlice';
 import ManageStoreAdd from './pages/admin/ManageStoreAdd';
 import ManageStoreUpdate from './pages/admin/ManageStoreUpdate';
 import ChangePassword from './pages/admin/ChangePassword';
 import EditAdmin from './pages/admin/EditAdmin';
+import getNearestStore from './helpers/getNearestStore';
+import UserChangeEmail from './pages/UserChangeEmail';
+import VerifyEmail from './pages/VerifyEmail';
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 function App() {
@@ -53,7 +55,8 @@ function App() {
     function start() {
       gapi.client.init({
         clientId: clientId,
-        scope: '',
+        scope:
+          'email profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile openid',
       });
     }
     gapi.load('client:auth2', start);
@@ -122,6 +125,7 @@ function App() {
         <Route path="/forgot" element={<Forgot />} />
         <Route path="/forgot/reset-password" element={<NewPassword />} />
         <Route path="/signup/verify-account" element={<VerifyAccount />} />
+        <Route path="/login/verify-email" element={<VerifyEmail />} />
         <Route
           path="/profile"
           element={
@@ -143,6 +147,14 @@ function App() {
           element={
             <PrivateRoute role={'user'} navigate={'/login'}>
               <UserChangePassword />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/profile/change-email"
+          element={
+            <PrivateRoute role={'user'} navigate={'/login'}>
+              <UserChangeEmail />
             </PrivateRoute>
           }
         />
@@ -171,10 +183,7 @@ function App() {
           }
         />
         <Route path="/category" element={<UserFindCategory />} />
-        <Route
-          path="/product/:name"
-          element={<UserProductDetail />}
-        />
+        <Route path="/product/:name" element={<UserProductDetail />} />
 
         {/* Afra */}
         <Route

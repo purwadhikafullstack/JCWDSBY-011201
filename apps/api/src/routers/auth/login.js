@@ -13,12 +13,14 @@ export default async function login(req, res, next) {
   try {
     const isExist = await findOneUser({
       where: {
-        [Op.and]: [{ email: req.body.email }, { type: 'regular' }],
+        [Op.and]: [{ email: req.body.email }],
       },
     });
-    if (!isExist) {
-      throw { rc: 404, message: 'User not found' };
-    }
+    if (!isExist) throw { rc: 404, message: 'User not found' };
+    if (isExist.dataValues.type === 'google')
+      throw { rc: 401, message: 'Account is registered with google' };
+    if (!isExist.dataValues.isVerified)
+      throw { rc: 401, message: 'Please verify your account first' };
     const { id, email, name, role, image, type, password } = isExist.dataValues;
     const compare = await verifyPassword(req.body.password, password);
     if (!compare) {

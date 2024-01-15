@@ -24,6 +24,26 @@ export const sendSignUpEmailVerification = async (to, link) => {
   }
 };
 
+export const sendSuccessResetPasswordEmail = async (to, link) => {
+  try {
+    const templateHtml = fs.readFileSync(
+      path.join(__dirname, '../templates/emails/emailResetSuccess.html'),
+      'UTF-8',
+    );
+    await transporter.sendMail({
+      to: to,
+      subject: 'Reset Password Success',
+      sender: 'COSMO',
+      html: mustache.render(templateHtml, {
+        productImage: APP_URL + '/cosmo.png',
+        loginLink: link,
+      }),
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const sendResetPasswordEmail = async (to, link) => {
   try {
     const templateHtml = fs.readFileSync(

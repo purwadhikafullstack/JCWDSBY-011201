@@ -4,6 +4,9 @@ import uploader from '../helper/uploader';
 import updateUserUser from './user/updateUserUser';
 import changePassword from './user/changePasswordUser';
 import getAllUser from './admin/getAllUser';
+import changeEmail from './user/changeEmail';
+import verifyEmail from './user/verifyEmail';
+import { specialTokenValidation } from '../middleware/specialTokenValidation';
 
 const userRouter = Router();
 
@@ -21,6 +24,13 @@ userRouter.patch(
   validateUser,
   changePassword,
 );
+userRouter.patch(
+  '/user/change-email',
+  validateToken,
+  validateUser,
+  changeEmail,
+);
+userRouter.patch('/user/verify-email', specialTokenValidation, verifyEmail);
 userRouter.get('/', getAllUser);
 
 // For admin use ('/admin')

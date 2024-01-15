@@ -2,8 +2,9 @@ import {
   HiOutlineExclamationCircle,
   HiOutlineTrash,
   HiPencilSquare,
+  HiMiniEllipsisHorizontal,
 } from 'react-icons/hi2';
-import { Button, Modal, Pagination, Table } from 'flowbite-react';
+import { Badge, Button, Modal, Dropdown, Table } from 'flowbite-react';
 
 const ManageStoreTable = ({
   storeData,
@@ -37,13 +38,14 @@ const ManageStoreTable = ({
               >
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 ">
                   {value.name}
-                  <span
-                    className={`${
-                      !value.isMain && 'hidden'
-                    } bg-blue-800 ml-2 rounded-full text-white px-1 py-0.5`}
-                  >
-                    Main Branch
-                  </span>
+                  {value.isMain && (
+                    <Badge
+                      color={'indigo'}
+                      className="ml-2 w-fit inline font-bold"
+                    >
+                      Main Branch
+                    </Badge>
+                  )}
                 </Table.Cell>
                 <Table.Cell>{value.user.name}</Table.Cell>
                 <Table.Cell className="line-clamp-2">
@@ -51,28 +53,40 @@ const ManageStoreTable = ({
                   {value.city.cityName}, {value.province.provinceName}
                 </Table.Cell>
                 <Table.Cell>
-                  <Button.Group>
-                    <Button color="success" onClick={onClickEdit}>
-                      <HiPencilSquare />
-                    </Button>
-                    <Button
+                  <Dropdown
+                    label=""
+                    renderTrigger={() => (
+                      <span className="hover:cursor-pointer">
+                        <HiMiniEllipsisHorizontal className="w-6 h-6" />
+                      </span>
+                    )}
+                  >
+                    <Dropdown.Item
+                      onClick={() => {
+                        onClickEdit(value.UUID);
+                      }}
+                      icon={HiPencilSquare}
+                    >
+                      Edit Branch
+                    </Dropdown.Item>
+                    <Dropdown.Item
                       disabled={value.isMain ? true : false}
-                      color="info"
                       onClick={() => {
                         onClickSetMain(value.UUID);
                       }}
+                      icon={HiPencilSquare}
                     >
-                      {value.isMain ? 'Main' : 'Set Main'}
-                    </Button>
-                    <Button
-                      color="failure"
+                      Set Main
+                    </Dropdown.Item>
+                    <Dropdown.Item
                       onClick={() => {
                         onClickDelete(value.UUID);
                       }}
+                      icon={HiOutlineTrash}
                     >
-                      <HiOutlineTrash />
-                    </Button>
-                  </Button.Group>
+                      Delete Branch
+                    </Dropdown.Item>
+                  </Dropdown>
                 </Table.Cell>
               </Table.Row>
             ))}
