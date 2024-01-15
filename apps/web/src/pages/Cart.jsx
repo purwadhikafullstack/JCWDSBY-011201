@@ -2,6 +2,7 @@ import React from 'react';
 import { MdOutlineArrowBackIos } from 'react-icons/md';
 import { CartProductLists } from '../components/CartProductLists';
 import UserLayout from '../components/UserLayout';
+import CartContainer from '../components/cart/CartContainer';
 
 const Cart = () => {
   const product = [
@@ -34,6 +35,17 @@ const Cart = () => {
             <hr className="h-px w-full sm:w-11/12 bg-black border-0 dark:bg-gray-700"></hr>
           </div>
           <CartProductLists arrays={product} />
+          <CartContainer className="mt-3 p-3 flex-col text-sm">
+            <div className=''>
+              <p>Subtotal</p>
+            </div>
+            <div className=''>
+              <p>Biaya Pengiriman</p>
+            </div>
+            <div className=''>
+              <p>Biaya Layanan</p>
+            </div>
+          </CartContainer>
         </div>
       </div>
     </UserLayout>

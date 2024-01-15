@@ -44,7 +44,7 @@ export const updateChecks = async (req, t) => {
   if (result) {
     return await carts.update(
       { checked: !result.checked },
-      { where: { id: req.params.id },transaction:t },
+      { where: { id: req.params.id }, transaction: t },
     );
   }
 };

@@ -21,8 +21,8 @@ const cartRouter = Router();
 cartRouter.get('/', validateToken, async (req, res, next) => {
   try {
     const result = await getCarts(req);
+    console.log('🚀 ~ file: carts.router.js:20 ~ trueRes ~ trueRes:', result[0].inventory.product);
     const trueRes = processedCartGetData(result)
-    console.log('🚀 ~ file: carts.router.js:20 ~ trueRes ~ trueRes:', result);
     res.status(200).json({
       success: true,
       message: 'cart fetched successfully',
@@ -64,7 +64,7 @@ cartRouter.patch('/:id', validateToken, async (req, res, next) => {
   await DB.initialize();
   const t = await DB.db.sequelize.transaction();
   try {
-    if (req.body.checked !== undefined) {
+    if (req.query.checker) {
       await updateChecks(req,t)
       await t.commit()
       return res
