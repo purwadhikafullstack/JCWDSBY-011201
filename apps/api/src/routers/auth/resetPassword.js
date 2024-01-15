@@ -5,6 +5,7 @@ import { hashPassword } from '../../helper/hash';
 import transporter from '../../helper/mailer';
 import { DB } from '../../db';
 import { sendSuccessResetPasswordEmail } from '../../helper/sendTemplateEmail';
+import { updateToken } from '../../controllers/token.controller';
 
 export default async function resetPassword(req, res, next) {
   await DB.initialize();
@@ -29,10 +30,16 @@ export default async function resetPassword(req, res, next) {
       throw { rc: 404, message: 'Account not found' };
     }
 
+    await updateToken(
+      { isValid: false },
+      { where: { userId: req.tokenData.id, method: 'FORGOT_PASSWORD' } },
+    );
+
     await sendSuccessResetPasswordEmail(
       req.tokenData.email,
       APP_URL + `/login`,
     );
+
     await t.commit();
     return res.status(201).json({
       rc: 201,

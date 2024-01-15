@@ -3,12 +3,13 @@ import { findOneUser, updateUser } from '../../controllers/user.controller';
 import { DB } from '../../db';
 import jwt from 'jsonwebtoken';
 import { sendSignUpEmailVerification } from '../../helper/sendTemplateEmail';
+import { updateToken } from '../../controllers/token.controller';
 
 export default async function verifyEmail(req, res, next) {
   await DB.initialize();
   const t = await DB.sequelize.transaction();
   try {
-    if (req.tokenData.method !== 'VERIFY_ACCOUNT') {
+    if (req.tokenData.method !== 'VERIFY_EMAIL') {
       throw { rc: 401, message: 'Unauthorized token' };
     }
     const result = await updateUser(
@@ -22,6 +23,13 @@ export default async function verifyEmail(req, res, next) {
       },
     );
     if (result[0] < 1) throw { rc: 404, message: 'Account not found' };
+    await updateToken(
+      { isValid: false },
+      {
+        where: { userId: req.tokenData.id, method: req.tokenData.method },
+        transaction: t,
+      },
+    );
     await t.commit();
     return res.status(201).json({
       rc: 201,

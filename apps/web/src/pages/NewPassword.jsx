@@ -20,11 +20,15 @@ const NewPassword = () => {
       setIsLoading(true);
       if (searchParams.get('key')) {
         const token = searchParams.get('key');
-        const result = await API_CALL.patch('/auth/reset-password', data, {
-          headers: {
-            Authorization: `Bearer ${token}`,
+        const result = await API_CALL.patch(
+          '/auth/forgot/reset-password',
+          data,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           },
-        });
+        );
         if (result.data.success) {
           localStorage.removeItem('authToken');
           dispatch(logout());

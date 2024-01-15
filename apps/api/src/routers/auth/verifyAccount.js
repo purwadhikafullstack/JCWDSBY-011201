@@ -5,6 +5,7 @@ import { hashPassword } from '../../helper/hash';
 import transporter from '../../helper/mailer';
 import { DB } from '../../db';
 import { sendWelcomeEmail } from '../../helper/sendTemplateEmail';
+import { updateToken } from '../../controllers/token.controller';
 
 export default async function verifyAccount(req, res, next) {
   await DB.initialize();
@@ -29,6 +30,13 @@ export default async function verifyAccount(req, res, next) {
     if (!result[0]) {
       throw { rc: 404, message: 'Account not found' };
     }
+    await updateToken(
+      { isValid: false },
+      {
+        where: { userId: req.tokenData.id, method: req.tokenData.method },
+        transaction: t,
+      },
+    );
     await sendWelcomeEmail(
       req.tokenData.email,
       APP_URL + '/login',

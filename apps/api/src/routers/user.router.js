@@ -6,6 +6,7 @@ import changePassword from './user/changePasswordUser';
 import getAllUser from './admin/getAllUser';
 import changeEmail from './user/changeEmail';
 import verifyEmail from './user/verifyEmail';
+import { specialTokenValidation } from '../middleware/specialTokenValidation';
 
 const userRouter = Router();
 
@@ -29,12 +30,7 @@ userRouter.patch(
   validateUser,
   changeEmail,
 );
-userRouter.patch(
-  '/user/verify-email',
-  validateToken,
-  validateUser,
-  verifyEmail,
-);
+userRouter.patch('/user/verify-email', specialTokenValidation, verifyEmail);
 userRouter.get('/', getAllUser);
 
 // For admin use ('/admin')

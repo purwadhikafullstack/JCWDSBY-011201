@@ -4,6 +4,7 @@ import { DB } from '../../db';
 import { verifyPassword } from '../../helper/hash';
 import jwt from 'jsonwebtoken';
 import { sendSignUpEmailVerification } from '../../helper/sendTemplateEmail';
+import { createToken } from '../../controllers/token.controller';
 
 export default async function changeEmail(req, res, next) {
   await DB.initialize();
@@ -25,25 +26,24 @@ export default async function changeEmail(req, res, next) {
       { email: req.body.newEmail, isVerified: false },
       {
         where: {
-          id: req.tokenData.id,
+          id: userData.dataValues.id,
         },
         transaction: t,
       },
     );
-    console.log(req.tokenData);
-    const { id, name, role, type } = req.tokenData;
     const token = jwt.sign(
       {
-        id,
-        name,
-        role,
-        type,
+        id: userData.dataValues.id,
+        name: userData.dataValues.name,
+        role: userData.dataValues.role,
+        type: userData.dataValues.type,
         email: req.body.newEmail,
-        method: 'VERIFY_ACCOUNT',
+        method: 'VERIFY_EMAIL',
       },
       SCRT_KEY,
-      { expiresIn: '3h' },
+      { expiresIn: '1h' },
     );
+    await createToken(token, userData.dataValues.id, 'VERIFY_EMAIL', t);
     await sendSignUpEmailVerification(
       req.body.newEmail,
       APP_URL + '/login/verify-email?key=' + token,
