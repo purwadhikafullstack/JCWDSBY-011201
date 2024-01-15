@@ -4,18 +4,49 @@ import UserLayout from '../components/UserLayout';
 import { Carousel } from 'flowbite-react';
 import UserProductCard from '../components/UserProductCard';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import API_CALL from '../helpers/API';
+import { useEffect, useState } from 'react';
+import { IMG_URL_CATEGORY, IMG_URL_PRODUCT } from '../constants/imageURL';
 
 const UserFindCategory = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+  const [categoryData, setCategoryData] = useState(null);
+  const [productData, setProductData] = useState([]);
   const sort = [
     { sortName: 'Lowest Price', value: 'lowest' },
     { sortName: 'Highest Price', value: 'highest' },
     { sortName: 'Name A-Z', value: 'nameasc' },
     { sortName: 'Name Z-A', value: 'namedesc' },
   ];
-  const category = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-  const product = [1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 6, 5, 67, 8, 9];
+
+  useEffect(() => {
+    getCategoryData();
+    getProductData();
+  }, [])
+
+  useEffect(() => {
+    getProductData();
+  }, [searchParams])
+
+  const getCategoryData = async () => {
+    const res = await API_CALL.get('category');
+    // console.log('RES >>>', res.data);
+    if (res) {
+      setCategoryData(res.data);
+    }
+  };
+
+  const getProductData = async () => {
+    const res = await API_CALL.get('product/inventory', {
+      params: { q: searchParams.get('q'), category: searchParams.get('category'), sort: searchParams.get('sort')},
+    });
+    // console.log('RES >>>', res.data);
+    if (res) {
+      setProductData(res.data.result.data);
+    }
+  };
+
   return (
     <UserLayout>
       <div className="flex flex-col w-full flex-grow p-4 gap-4">
@@ -23,24 +54,22 @@ const UserFindCategory = () => {
           <span className="font-bold text-base">Categories</span>
           <div className="flex w-full border-2 p-2 md:p-4 overflow-auto rounded-xl bg-blue-50">
             <div className="grid grid-rows-1 grid-flow-col gap-4">
-              {category.map((value) => (
+              {categoryData && categoryData.map((value, index) => (
                 <UserCategoryButton
-                  key={value}
-                  image={
-                    'https://media.post.rvohealth.io/wp-content/uploads/2020/08/fruits-and-vegetables-thumb-1-732x549.jpg'
-                  }
-                  categoryName={'Vegetables'}
+                  key={index}
+                  image={IMG_URL_CATEGORY + value.image}
+                  categoryName={value.name}
                   isSelected={
-                    searchParams.get('category') === value.toString()
+                    searchParams.get('category') === value.name.toString()
                       ? true
                       : false
                   }
                   onClick={() => {
                     setSearchParams((prev) => {
-                      if (prev.get('category') === value.toString()) {
+                      if (prev.get('category') === value.name.toString()) {
                         prev.delete('category');
                       } else {
-                        prev.set('category', value);
+                        prev.set('category', value.name);
                       }
                       return prev;
                     });
@@ -85,18 +114,17 @@ const UserFindCategory = () => {
           </span>
           <div className="flex w-full">
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 grid-flow-row w-full place-items-center gap-4">
-              {product.map((value) => (
+              {productData && productData.map((value, index) => (
                 <UserProductCard
-                  image={
-                    'https://pppcoffee.com/cdn/shop/products/Chocolate_b22e9ffc-1fd7-41f9-8b88-6bac76eaf35d_1200x1200.jpg?v=1646977345'
-                  }
-                  productName={'Oatside Chocolate Barista Brew 250ML'}
-                  productUnit={'250ML/Pcs'}
-                  price={9000}
-                  discountPrice={7400}
-                  stock={49}
+                  key={index}
+                  image={IMG_URL_PRODUCT + value.product.product_images[0].image}
+                  productName={value.product.name}
+                  productUnit={value.product.weight + value.product.unit}
+                  price={value.product.price}
+                  // discountPrice={7400}
+                  stock={value.stock}
                   onClickProduct={() =>
-                    navigate('/product/sjddahGkasJSNx-672nSjdskak')
+                    navigate(`/product/${value.product.name}`)
                   }
                 />
               ))}

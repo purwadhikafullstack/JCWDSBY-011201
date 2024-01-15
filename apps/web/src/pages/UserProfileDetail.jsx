@@ -14,7 +14,7 @@ import { useFormik } from 'formik';
 import API_CALL from '../helpers/API';
 import customToast from '../utils/toast';
 import { login } from '../redux/slice/userSlice';
-import { MAX_SIZE } from '../constant/file';
+import { MAX_SIZE } from '../constants/file';
 import { REGEX_FILE_TYPE } from '../constants/file';
 
 const UserProfileDetail = (props) => {
@@ -40,7 +40,7 @@ const UserProfileDetail = (props) => {
     try {
       if (avatarUpload?.size > MAX_SIZE)
         throw { detail: 'Avatar size is too big' };
-      if (!avatarUpload.type.match(REGEX_FILE_TYPE))
+      if (avatarUpload && !avatarUpload.type.match(REGEX_FILE_TYPE))
         throw { detail: 'File is not image' };
       setIsLoading(true);
       const formData = new FormData();
