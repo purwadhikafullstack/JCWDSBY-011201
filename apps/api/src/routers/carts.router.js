@@ -21,8 +21,8 @@ const cartRouter = Router();
 cartRouter.get('/', validateToken, async (req, res, next) => {
   try {
     const result = await getCarts(req);
-    console.log('🚀 ~ file: carts.router.js:20 ~ trueRes ~ trueRes:', result[0].inventory.product);
     const trueRes = processedCartGetData(result)
+    console.log("🚀 ~ cartRouter.get ~ trueRes:", trueRes)
     res.status(200).json({
       success: true,
       message: 'cart fetched successfully',
@@ -90,6 +90,15 @@ cartRouter.patch('/:id', validateToken, async (req, res, next) => {
     next(error);
   }
 });
+cartRouter.patch('/checkall',validateToken,async(req,res,next)=>{
+  await DB.initialize()
+  const t = await DB.db.sequelize.transaction()
+  try {
+    
+  } catch (error) {
+    
+  }
+})
 //Delete
 cartRouter.delete('/:id', validateToken, async (req, res, next) => {
   await DB.initialize();

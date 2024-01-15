@@ -20,16 +20,18 @@ export function CartProductLists(props) {
           <div className="flex">
             <Checkbox
               className="!w-4 !h-4"
-              defaultChecked={val.selected ? true : false}
+              defaultChecked={val.checked ? true : false}
             />
           </div>
           <div className="justify-start items-start gap-1 flex">
             <div className=" rounded justify-center items-center flex">
-              <img className="w-16 h-10 object-cover" src={val.image} />
+              <img className="w-16 h-10 object-cover" src={val.imageLink} />
             </div>
-            <div className="flex-col justify-start items-start text-start gap-4 flex w-full">
+            <div className="flex-col justify-start items-start text-start gap-2 flex w-full">
               <div className="flex-col flex">
-                <div className="text-black text-sm  ">{val.name}</div>
+                <div className="text-black text-sm capitalize  ">
+                  {val.productName}
+                </div>
               </div>
               <div className="flex justify-start items-start gap-1 w-full ">
                 <div className="p-1 bg-rose-500 rounded justify-center items-center gap-1 flex">
@@ -39,13 +41,13 @@ export function CartProductLists(props) {
                   Rp5.500
                 </div>
                 <div className="text-black text-sm font-bold ">
-                  Rp{val.price.toLocaleString('id-ID')}
+                  Rp{val.productPrice.toLocaleString('id-ID')}
                 </div>
               </div>
             </div>
           </div>
           <div className="sm:ml-12">
-            <CartPlusMinus amount={val.amount} />
+            <CartPlusMinus amount={val.amount} cartId={val.id} />
           </div>
         </div>
       ))}

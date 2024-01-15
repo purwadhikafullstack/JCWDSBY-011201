@@ -59,7 +59,7 @@ export const getCarts = async (req) => {
         model: inventory,
         as: 'inventory',
         required: true,
-        where: { storeId: req.body.storeId },
+        where: { storeId: req.query.storeId },
         attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
         include: [
           {
