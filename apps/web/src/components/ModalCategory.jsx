@@ -15,6 +15,15 @@ const ModalCategory = (props) => {
         return 'JPG, JPEG, PNG or GIF (MAX. 1MB)'
     }
 
+    const handleErrorName = () => {
+        if(props.errorRequiredName){
+            return 'Name is required'
+        }
+        if (props.errorDuplicate){
+            return 'Category already exists'
+        }
+    };
+
     const handleImage = () => {
         if (props.onEdit) {
             return <div className='h-48 w-full m-auto rounded relative'>
@@ -50,8 +59,8 @@ const ModalCategory = (props) => {
                             <Label value='Category Name' />
                         </div>
                         <TextInput
-                            color={props.errorRequiredName ? 'failure' : 'gray'}
-                            helperText={props.errorRequiredName && 'Category name is required'}
+                            color={props.errorRequiredName || props.errorDuplicate ? 'failure' : 'gray'}
+                            helperText={handleErrorName()}
                             placeholder='Snack'
                             value={props.categoryName}
                             onChange={props.onChangeCategory}

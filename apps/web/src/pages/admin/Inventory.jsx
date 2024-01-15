@@ -80,7 +80,7 @@ const Inventory = () => {
             <AdminSidebar />
             <LoadingSpinner isLoading={isLoading} size={20}/>
             <LayoutPageAdmin title='Manage Inventory'>
-                <div className='relative w-[255px] max-w-full overflow-x-auto '>
+                <div className='grid grid-cols-1 max-w-full overflow-x-auto '>
                     <Table>
                         <TableHead>
                             <TableHeadCell>Product Name</TableHeadCell>
