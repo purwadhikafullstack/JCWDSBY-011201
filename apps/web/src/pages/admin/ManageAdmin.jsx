@@ -23,7 +23,6 @@ const ManageAdmin = () => {
     
 
     const getAdmin = async () => {
-        console.log('Getting Admin Information');
         setIsLoading(true);
         const response = await API_CALL.get('/admin');
         if (response) {

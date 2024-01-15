@@ -98,12 +98,14 @@ const CreateProduct = () => {
                 weight: parseInt(data.weight), 
                 categoryId: parseInt(data.categoryId), 
                 unit: data.unit, 
-                image: file[0] 
+            },
+            {
+                headers: {Authorization: `Bearer ${localStorage.getItem('authToken')}`,}
             });
 
             if (postProduct) {
                 const formData = new FormData();
-                formData.append('productId', postProduct.data.id);
+                formData.append('productId', postProduct.data.result.id);
                 file.forEach((image) => formData.append(`productUpload`, image));
                 const postImage = await API_CALL.post('product/image', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
                 if (postImage) navigate('/manage/product');

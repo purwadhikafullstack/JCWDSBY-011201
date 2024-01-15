@@ -4,6 +4,7 @@ import LayoutPageAdmin from "../../components/LayoutPageAdmin";
 import { useEffect, useState } from "react";
 import API_CALL from "../../helpers/API";
 import LoadingSpinner from "../../components/LoadingSpinner";
+import { FaPlus } from "react-icons/fa6";
 
 const Inventory = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -20,9 +21,8 @@ const Inventory = () => {
     const getData = async () => {
         setIsLoading(true);
         const res = await API_CALL.get('/product/inventory');
-        // console.log('res', res);
         if (res) {
-            setItems(res.data);
+            setItems(res.data.result.data);
             setIsLoading(false);
         }
     };
@@ -37,7 +37,6 @@ const Inventory = () => {
     const handleDelete = async (id) => {
         setIsLoading(true);
         const res = await API_CALL.delete(`/product/inventory/${id}`);
-        // console.log('res', res);
         if (res) {
             getData();
             setIsLoading(false);
@@ -81,6 +80,9 @@ const Inventory = () => {
             <LoadingSpinner isLoading={isLoading} size={20}/>
             <LayoutPageAdmin title='Manage Inventory'>
                 <div className='grid grid-cols-1 max-w-full overflow-x-auto '>
+                    <div className='mb-2'>
+                        <Button size={'xs'} color='blue'><FaPlus className='mr-1'/> Add Inventory</Button>
+                    </div>
                     <Table>
                         <TableHead>
                             <TableHeadCell>Product Name</TableHeadCell>
