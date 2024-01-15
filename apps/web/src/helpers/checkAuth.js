@@ -6,12 +6,11 @@ export default async function () {
       throw 'Token Not Found';
     }
     const token = localStorage.getItem('authToken');
-    const result = await API_CALL.get('/auth/keep-login', {
+    const result = await API_CALL.get('/auth/login/keep-login', {
       headers: { Authorization: `Bearer ${token}` },
     });
     return result.data.result;
   } catch (error) {
-    console.log(error);
     return false;
   }
 }

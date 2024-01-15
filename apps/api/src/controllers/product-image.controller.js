@@ -1,6 +1,6 @@
 import { assetsDir } from "../constants/assets";
 import productImage from "../models/product-image.model";
-import { unlink } from "fs";
+import { unlink, existsSync } from "fs";
 
 export const getProductImage = async (id) => {
     return await productImage.findAll({
@@ -21,7 +21,6 @@ export const createProductImage = async (productId, image) => {
 
 export const updateProductImage = async (id, image) => {
     const prevData = await productImage.findByPk(id);
-    // console.log('prevData', prevData.image);
     const result = await productImage.update(
         {
             image: image.filename
@@ -33,7 +32,7 @@ export const updateProductImage = async (id, image) => {
         }
     );
 
-    if (result) {
+    if (result && existsSync(assetsDir + prevData.image)) {
         unlink(assetsDir + prevData.image, (err) => {
             if (err) throw Error(err);
         });
@@ -42,14 +41,13 @@ export const updateProductImage = async (id, image) => {
 
 export const deleteProductImage = async (id) => {
     const prevData = await productImage.findByPk(id);
-    // console.log('prevData', prevData.image);
     const result = await productImage.destroy({
         where: {
             id
         }
     });
 
-    if (result) {
+    if (result && existsSync(assetsDir + prevData.image)) {
         unlink(assetsDir + prevData.image, (err) => {
             if (err) throw Error(err);
         });

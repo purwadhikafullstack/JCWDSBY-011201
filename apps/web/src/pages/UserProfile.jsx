@@ -66,6 +66,18 @@ const UserProfile = (props) => {
               <span
                 className="font-semibold text-lg cursor-pointer text-blue-500 hover:underline underline-offset-2"
                 onClick={() => {
+                  navigate('/profile/change-email', {
+                    state: { previousPath: location.pathname },
+                  });
+                }}
+              >
+                Change Email
+              </span>
+            ) : null}
+            {globalUser.type === 'regular' ? (
+              <span
+                className="font-semibold text-lg cursor-pointer text-blue-500 hover:underline underline-offset-2"
+                onClick={() => {
                   navigate('/profile/change-password', {
                     state: { previousPath: location.pathname },
                   });

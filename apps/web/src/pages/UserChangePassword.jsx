@@ -10,6 +10,7 @@ import { useFormik } from 'formik';
 import API_CALL from '../helpers/API';
 import customToast from '../utils/toast';
 import { logout } from '../redux/slice/userSlice';
+import InputPassword from '../components/InputPassword';
 
 const UserChangePassword = (props) => {
   const dispatch = useDispatch();
@@ -44,15 +45,11 @@ const UserChangePassword = (props) => {
         },
       });
       if (result.data.success) {
-        setOpenModal(false);
         customToast('success', 'Password has been changed');
-        dispatch(logout());
-        localStorage.removeItem('authToken');
-        navigate('/login', { replace: true });
+        formik.handleReset();
       }
     } catch (error) {
       customToast('error', error.response.data.message);
-      setOpenModal(false);
     }
     setIsLoading(false);
   };
@@ -94,16 +91,14 @@ const UserChangePassword = (props) => {
             <div className="mb-2 block">
               <Label htmlFor="currPassword" value="Current Password" />
             </div>
-            <TextInput
-              type="password"
-              id="currPassword"
-              name="currPassword"
+            <InputPassword
+              id={'currPassword'}
+              name={'currPassword'}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.currPassword}
               placeholder="Input your current password"
-              required
-              helperText={
+              HelperText={
                 <span
                   className={`${
                     formik.touched.currPassword && formik.errors.currPassword
@@ -120,16 +115,14 @@ const UserChangePassword = (props) => {
             <div className="mb-2 block">
               <Label htmlFor="newPassword" value="New Password" />
             </div>
-            <TextInput
-              type="password"
-              id="newPassword"
-              name="newPassword"
+            <InputPassword
+              id={'newPassword'}
+              name={'newPassword'}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.newPassword}
-              placeholder="Input your new Password"
-              required
-              helperText={
+              placeholder="Input your new password"
+              HelperText={
                 <span
                   className={`${
                     formik.touched.newPassword && formik.errors.newPassword
@@ -144,6 +137,7 @@ const UserChangePassword = (props) => {
           </div>
           <div className="w-full">
             <ButtonWithLoading
+              isLoading={isLoading}
               func={() => {
                 setOpenModal(true);
               }}
@@ -162,9 +156,7 @@ const UserChangePassword = (props) => {
               <div className="text-center">
                 <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
                 <h3 className="mb-5 text-sm font-normal text-gray-500 dark:text-gray-400">
-                  Are you sure you want change your password?. After
-                  successfully change your password you will be logged out and
-                  you need to login again.
+                  Are you sure you want change your password?
                 </h3>
                 <div className="flex justify-center gap-4">
                   <Button
@@ -172,6 +164,7 @@ const UserChangePassword = (props) => {
                     isProcessing={isLoading}
                     color="blue"
                     onClick={(e) => {
+                      setOpenModal(false);
                       formik.handleSubmit(e);
                     }}
                   >

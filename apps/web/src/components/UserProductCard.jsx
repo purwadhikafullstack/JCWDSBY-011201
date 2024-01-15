@@ -15,7 +15,7 @@ const UserProductCard = ({
       <div className="flex flex-col w-full h-full" onClick={onClickProduct}>
         <div className="flex w-full h-[60%]">
           <img
-            className="w-full h-full objext-cover"
+            className="w-full h-full object-cover"
             src={image}
             alt={productName}
           />
@@ -59,8 +59,9 @@ const UserProductCard = ({
         </div>
       </div>
       <button
-        className="absolute flex justify-center items-center w-8 h-8 bg-blue-700 rounded-full bottom-2 right-2 hover:scale-[1.2] transition-all duration-300"
+        className={`${stock ? 'bg-blue-700 hover:scale-[1.2] transition-all duration-300' : 'bg-gray-200'} absolute flex justify-center items-center w-8 h-8 rounded-full bottom-2 right-2`}
         type="button"
+        disabled={stock ? false : true}
         onClick={onAddCart}
       >
         <HiOutlinePlus className="text-white w-6 h-6" />

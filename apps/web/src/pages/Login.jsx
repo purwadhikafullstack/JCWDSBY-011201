@@ -10,6 +10,7 @@ import LoginWithGoogle from '../components/LoginWithGoogle';
 import Container from '../components/Container';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../redux/slice/userSlice';
+import InputPassword from '../components/InputPassword';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -112,25 +113,25 @@ const Login = () => {
                 >
                   Password
                 </label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
+                <InputPassword
+                  id={'password'}
+                  name={'password'}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.password}
                   placeholder="Input your password"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  HelperText={
+                    <span
+                      className={`${
+                        formik.touched.password && formik.errors.password
+                          ? ''
+                          : 'invisible'
+                      } text-xs text-red-500`}
+                    >
+                      {formik.errors.password || 'Correct'}
+                    </span>
+                  }
                 />
-                <span
-                  className={`${
-                    formik.touched.password && formik.errors.password
-                      ? ''
-                      : 'invisible'
-                  } text-xs text-red-500`}
-                >
-                  {formik.errors.password || 'Correct'}
-                </span>
               </div>
               <div className="flex justify-between mb-3">
                 <span className=" text-gray-500 text-sm">

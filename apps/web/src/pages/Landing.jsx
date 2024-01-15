@@ -1,46 +1,32 @@
 import Footer from '../components/Footer';
-import UserCategoryButton from '../components/UserCategoryButton';
 import UserLayout from '../components/UserLayout';
-import { Carousel } from 'flowbite-react';
 import UserProductCard from '../components/UserProductCard';
 import { useSelector } from 'react-redux';
 import NearestSTore from '../components/NearestStore';
 import API_CALL from '../helpers/API';
 import { useEffect, useState } from 'react';
-import HeroViews from '../components/views/heroViews';
+import HeroViews from '../components/views/HeroViews';
 import LandingCategoryViews from '../components/views/LandingCategoryViews';
+import { useNavigate } from 'react-router-dom';
 
 const Landing = () => {
   const currStore = useSelector((reducer) => reducer.storeReducer);
   const [categoryData, setCategoryData] = useState(null);
   const [heroData, setHeroData] = useState(null);
+  const navigate = useNavigate();
+  const [productData, setProductData] = useState([]);
 
-  const hero = [
-    {
-      eventName: 'Event 1',
-      image:
-        'https://www.astronauts.id/blog/wp-content/uploads/2023/12/Spesial-Akhir-Tahun-Belanja-di-Astro-Pakai-Kartu-Kredit-BRI-Dapat-Diskon-1.jpg',
-    },
-    {
-      eventName: 'Event 2',
-      image:
-        'https://www.astronauts.id/blog/wp-content/uploads/2023/10/Serbu-Promo-Tanggal-Kembar-di-Astro.png',
-    },
-    {
-      eventName: 'Event 3',
-      image:
-        'https://www.astronauts.id/blog/wp-content/uploads/2023/12/Super-Brand-Day-Colgate-Palmolive-Hadir-di-Astro-dengan-Berbagai-Hadiah-Menarik.jpg',
-    },
-  ];
-
-  const product = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 23, 212, 231];
+  useEffect(() => {
+    getCategoryData();
+    getProductData();
+    getHeroData();
+  }, []);
 
   const getCategoryData = async () => {
-    try {
-      const category = await API_CALL.get('/category');
-      setCategoryData(category.data);
-    } catch (error) {
-      console.log(error);
+    const res = await API_CALL.get('category');
+    // console.log('RES >>>', res.data);
+    if (res) {
+      setCategoryData(res.data);
     }
   };
 
@@ -53,10 +39,13 @@ const Landing = () => {
     }
   };
 
-  useEffect(() => {
-    getCategoryData();
-    getHeroData();
-  }, []);
+  const getProductData = async () => {
+    const res = await API_CALL.get('product/inventory');
+    // console.log('RES >>>', res.data);
+    if (res) {
+      setProductData(res.data.result.data);
+    }
+  };
 
   return (
     <UserLayout>
@@ -73,7 +62,23 @@ const Landing = () => {
           <span className="font-bold text-base">Special Promos</span>
           <div className="flex w-full">
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 grid-flow-row w-full place-items-center gap-4">
-              {product.map((value) => (
+              {productData.map((value, index) => (
+                <UserProductCard
+                  key={index}
+                  image={`${import.meta.env.VITE_IMG_URL}/product/${
+                    value.product.product_images[0].image
+                  }`}
+                  productName={value.product.name}
+                  productUnit={value.product.weight + value.product.unit}
+                  price={value.product.price}
+                  discountPrice={7400}
+                  stock={value.stock}
+                  onClickProduct={() => {
+                    navigate(`/product/${value.product.name}`);
+                  }}
+                />
+              ))}
+              {/* {product.map((value) => (
                 <UserProductCard
                   key={value}
                   image={
@@ -85,7 +90,7 @@ const Landing = () => {
                   discountPrice={7400}
                   stock={49}
                 />
-              ))}
+              ))} */}
             </div>
           </div>
         </div>
