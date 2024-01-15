@@ -1,12 +1,9 @@
 import { createUser, findOneUser } from '../../controllers/user.controller';
-import transporter from '../../helper/mailer';
 import jwt from 'jsonwebtoken';
 import { APP_URL, SCRT_KEY } from '../../config';
 import { DB } from '../../db';
-import fs from 'fs';
-import path from 'path';
-import mustache from 'mustache';
 import { sendSignUpEmailVerification } from '../../helper/sendTemplateEmail';
+import { createToken } from '../../controllers/token.controller';
 
 export default async function signUp(req, res, next) {
   await DB.initialize();
@@ -37,7 +34,7 @@ export default async function signUp(req, res, next) {
       SCRT_KEY,
       { expiresIn: '1h' },
     );
-
+    await createToken(token, result.dataValues.id, 'VERIFY_ACCOUNT', t);
     await sendSignUpEmailVerification(
       result.dataValues.email,
       APP_URL + '/signup/verify-account?key=' + token,

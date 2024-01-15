@@ -92,44 +92,44 @@ const ManageStore = () => {
         <AdminSidebar />
         <LoadingSpinner isLoading={isLoading} size={16} />
         <LayoutPageAdmin title="Manage Store">
-          <div className="grid grid-cols-1 overflow-x-auto gap-2">
-            <div className="flex flex-col md:flex-row justify-between gap-2 mb-2">
-              <Button
-                color="blue"
-                size={'sm'}
-                onClick={() => {
-                  navigate('/manage/store/create');
+          <div className="flex flex-col md:flex-row justify-between gap-2 mb-3">
+            <Button
+              color="blue"
+              size={'sm'}
+              onClick={() => {
+                navigate('/manage/store/create');
+              }}
+            >
+              Add Branch
+            </Button>
+            <div className="flex rounded-xl border-2 border-gray-500 focus-within:border-gray-700 p-1 overflow-hidden items-center gap-1">
+              <span className="w-6 h-6">
+                <HiMagnifyingGlass size={'100%'} />
+              </span>
+              <input
+                type="search"
+                defaultValue={searchParams.get('q')}
+                placeholder="Search store name"
+                onChange={(e) => {
+                  setTimeout(() => {
+                    setSearchParams((prev) => {
+                      if (e.target.value) {
+                        prev.set('q', e.target.value);
+                      } else {
+                        prev.delete('q');
+                      }
+                      return prev;
+                    });
+                  }, 1000);
                 }}
-              >
-                Add Branch
-              </Button>
-              <div className="flex rounded-xl border-2 border-gray-500 focus-within:border-gray-700 p-1 overflow-hidden items-center gap-1">
-                <span className="w-6 h-6">
-                  <HiMagnifyingGlass size={'100%'} />
-                </span>
-                <input
-                  type="search"
-                  defaultValue={searchParams.get('q')}
-                  placeholder="Search store name"
-                  onChange={(e) => {
-                    setTimeout(() => {
-                      setSearchParams((prev) => {
-                        if (e.target.value) {
-                          prev.set('q', e.target.value);
-                        } else {
-                          prev.delete('q');
-                        }
-                        return prev;
-                      });
-                    }, 1000);
-                  }}
-                  className=" outline-none bg-transparent"
-                />
-              </div>
+                className=" outline-none bg-transparent"
+              />
             </div>
+          </div>
+          <div className="grid grid-cols-1 overflow-x-auto gap-2">
             <ManageStoreTable
               storeData={storeData}
-              onClickEdit={() => navigate('/manage/store/create')}
+              onClickEdit={(value) => navigate('/manage/store/' + value)}
               onClickSetMain={(value) => {
                 setSelectedBranch(value);
                 setOpenModalMain(true);

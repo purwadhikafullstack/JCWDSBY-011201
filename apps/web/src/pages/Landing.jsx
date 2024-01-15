@@ -1,4 +1,4 @@
-  import Footer from '../components/Footer';
+import Footer from '../components/Footer';
 import UserLayout from '../components/UserLayout';
 import UserProductCard from '../components/UserProductCard';
 import { useSelector } from 'react-redux';
@@ -20,7 +20,7 @@ const Landing = () => {
     getCategoryData();
     getProductData();
     getHeroData();
-  }, [])
+  }, []);
 
   const getCategoryData = async () => {
     const res = await API_CALL.get('category');
@@ -62,18 +62,22 @@ const Landing = () => {
           <span className="font-bold text-base">Special Promos</span>
           <div className="flex w-full">
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 grid-flow-row w-full place-items-center gap-4">
-            {productData.map((value, index) => (
+              {productData.map((value, index) => (
                 <UserProductCard
                   key={index}
-                  image={`${import.meta.env.VITE_IMG_URL}/product/${value.product.product_images[0].image}`}
+                  image={`${import.meta.env.VITE_IMG_URL}/product/${
+                    value.product.product_images[0].image
+                  }`}
                   productName={value.product.name}
                   productUnit={value.product.weight + value.product.unit}
                   price={value.product.price}
                   discountPrice={7400}
                   stock={value.stock}
-                  onClickProduct={() => {navigate(`/product/${value.product.name}`)}}
+                  onClickProduct={() => {
+                    navigate(`/product/${value.product.name}`);
+                  }}
                 />
-              ))} 
+              ))}
               {/* {product.map((value) => (
                 <UserProductCard
                   key={value}

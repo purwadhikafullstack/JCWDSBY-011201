@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import API_CALL from '../helpers/API';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../redux/slice/userSlice';
+import InputPassword from '../components/InputPassword';
 
 const LoginAdmin = () => {
   const navigate = useNavigate();
@@ -44,10 +45,6 @@ const LoginAdmin = () => {
     username: Yup.string().required('Required'),
     password: Yup.string()
       .min(8, 'Minimum password length is 8')
-      .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/,
-        'Password must contain uppercase letter, lowercase letter, number, and no space',
-      )
       .required('Required'),
   });
 
@@ -113,25 +110,25 @@ const LoginAdmin = () => {
                 >
                   Password
                 </label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
+                <InputPassword
+                  id={'password'}
+                  name={'password'}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.password}
-                  placeholder="Input password"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  placeholder="Input your password"
+                  HelperText={
+                    <span
+                      className={`${
+                        formik.touched.password && formik.errors.password
+                          ? ''
+                          : 'invisible'
+                      } text-xs text-red-500`}
+                    >
+                      {formik.errors.password || 'Correct'}
+                    </span>
+                  }
                 />
-                <span
-                  className={`${
-                    formik.touched.password && formik.errors.password
-                      ? ''
-                      : 'invisible'
-                  } text-xs text-red-500`}
-                >
-                  {formik.errors.password || 'Correct'}
-                </span>
               </div>
               <ButtonWithLoading
                 isLoading={isLoading}
