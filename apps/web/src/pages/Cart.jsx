@@ -7,26 +7,21 @@ import { Button } from 'flowbite-react';
 import { fetchCartItems, setCarts } from '../redux/slice/cartSlice';
 
 const Cart = () => {
-  
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cartReducer.items);
   console.log("🚀 ~ Cart ~ cartItems:", cartItems)
+  const storeUUID = useSelector((state) => state.storeReducer.storeId)
   useEffect(() => {
-    dispatch(fetchCartItems());
-  }, []);
+    dispatch(fetchCartItems(storeUUID));
+  }, [storeUUID]);
 
-  // const cartChange = (data) => {
-  //   const idx = cartItems.findIndex((val) => {
-  //     return val.id === data.id;
-  //   });
-  //   const temp = [...cartItems];
-  //   if (idx < 0) {
-  //     temp.push({ ...data, amount: 1 });
-  //   } else {
-  //     temp[idx] = { ...temp[idx], amount: temp[idx].quantity + 1 };
-  //   }
-  //   dispatch(setCarts(temp))
-  // };
+  const totalPrice = cartItems.reduce((accumulator, items) => {
+    if (items.checked === 1) {
+      const itemTotalPrice = items.productPrice * items.amount;
+      return accumulator + itemTotalPrice;
+    }
+    return accumulator;
+  }, 0);
 
   return (
     <UserLayout>
@@ -43,7 +38,7 @@ const Cart = () => {
         <CartContainer className="mt-3 p-3 flex-col rounded-md sticky top-[80vh]">
           <div className="flex flex-row justify-between">
             <p>
-              Total: <span className="font-bold">Rp50000</span>
+              Total: <span className="font-bold">Rp{totalPrice.toLocaleString("id-ID")}</span>
             </p>
             <Button color="blue">Checkout</Button>
           </div>

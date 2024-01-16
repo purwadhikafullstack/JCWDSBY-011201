@@ -6,6 +6,7 @@ import {
   deleteOneProductInCart,
   findOneCartById,
   findOneCartByInventoryId,
+  findStoreIdFromUUID,
   getCarts,
   incrementCartAmountBy1,
   updateCartsAmount,
@@ -14,15 +15,16 @@ import {
 import { validateToken } from '../middleware/tokenValidation';
 import { PRODUCT_URL } from '../config';
 import { processedCartGetData } from './cart/getResult';
-
+import { getResultFilterer } from './cart/uniqueGet';
 const cartRouter = Router();
-
 //GET
 cartRouter.get('/', validateToken, async (req, res, next) => {
   try {
-    const result = await getCarts(req);
-    const trueRes = processedCartGetData(result)
-    console.log("🚀 ~ cartRouter.get ~ trueRes:", trueRes)
+    const storeData = await findStoreIdFromUUID(req)
+    const result = await getCarts(req,storeData.id);
+    // const productIdArray = result.map((val,idx)=>val.inventory.productId)
+    const uniqueRes = getResultFilterer(result)
+    const trueRes = processedCartGetData(uniqueRes)
     res.status(200).json({
       success: true,
       message: 'cart fetched successfully',

@@ -17,6 +17,7 @@ module.exports = {
       },
       amount: {
         type: Sequelize.INTEGER,
+        defaultValue:1
       },
       checked: {
         type: Sequelize.BOOLEAN,

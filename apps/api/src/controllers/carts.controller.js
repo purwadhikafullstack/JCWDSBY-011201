@@ -2,6 +2,7 @@ import carts from '../models/carts.model';
 import inventory from '../models/inventory.model';
 import product from '../models/product.model';
 import productImage from '../models/product-image.model';
+import stores from '../models/stores.model';
 
 export const addCarts = async (req, res, t) => {
   return await carts.create(
@@ -24,19 +25,13 @@ export const findOneCartById = async (req) => {
 };
 
 export const updateCartsAmount = async (req, t) => {
-  if (req.body.amount > 0) {
-    return await carts.increment('amount', {
-      by: req.body.amount,
+  return await carts.update(
+    { amount: req.body.amount },
+    {
       where: { id: req.params.id },
       transaction: t,
-    });
-  } else {
-    return await carts.decrement('amount', {
-      by: req.body.amount,
-      where: { id: req.params.id },
-      transaction: t,
-    });
-  }
+    },
+  );
 };
 
 export const updateChecks = async (req, t) => {
@@ -49,7 +44,15 @@ export const updateChecks = async (req, t) => {
   }
 };
 
-export const getCarts = async (req) => {
+export const findStoreIdFromUUID = async (req) => {
+  return await stores.findOne({
+    where: { UUID: req.query.UUID },
+    raw: true,
+    attributes: ['id', 'name'],
+  });
+};
+
+export const getCarts = async (req, storeId) => {
   return await carts.findAll({
     where: { userId: req.tokenData.id },
     raw: true,
@@ -59,7 +62,7 @@ export const getCarts = async (req) => {
         model: inventory,
         as: 'inventory',
         required: true,
-        where: { storeId: req.query.storeId },
+        where: { storeId },
         attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
         include: [
           {
@@ -72,7 +75,8 @@ export const getCarts = async (req) => {
                 model: productImage,
                 as: 'product_images',
                 required: true,
-                attributes: ['image'],
+                attributes: ['image','productId','id'],
+                
               },
             ],
           },

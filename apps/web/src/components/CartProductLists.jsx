@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { CartPlusMinus } from './CartPlusMinus';
 import { Card, Checkbox } from 'flowbite-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateChecksInCloud } from '../redux/slice/cartSlice';
+import { IndividualCartItems } from './IndividualCartItems';
 export function CartProductLists(props) {
   return (
     <Card className="max-w-md">
@@ -13,43 +16,7 @@ export function CartProductLists(props) {
         </div>
       </div>
       {props.arrays.map((val, idx) => (
-        <div
-          key={idx}
-          className="w-full h-15 justify-start items-start gap-2 flex"
-        >
-          <div className="flex">
-            <Checkbox
-              className="!w-4 !h-4"
-              defaultChecked={val.checked ? true : false}
-            />
-          </div>
-          <div className="justify-start items-start gap-1 flex">
-            <div className=" rounded justify-center items-center flex">
-              <img className="w-16 h-10 object-cover" src={val.imageLink} />
-            </div>
-            <div className="flex-col justify-start items-start text-start gap-2 flex w-full">
-              <div className="flex-col flex">
-                <div className="text-black text-sm capitalize  ">
-                  {val.productName}
-                </div>
-              </div>
-              <div className="flex justify-start items-start gap-1 w-full ">
-                <div className="p-1 bg-rose-500 rounded justify-center items-center gap-1 flex">
-                  <div className="text-white text-[8px] font-light ">19%</div>
-                </div>
-                <div className="text-zinc-500 text-xs font-light  line-through">
-                  Rp5.500
-                </div>
-                <div className="text-black text-sm font-bold ">
-                  Rp{val.productPrice.toLocaleString('id-ID')}
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="sm:ml-12">
-            <CartPlusMinus amount={val.amount} cartId={val.id} />
-          </div>
-        </div>
+        <IndividualCartItems val={val} key={idx} />
       ))}
     </Card>
   );
