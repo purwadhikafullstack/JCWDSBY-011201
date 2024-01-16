@@ -25,10 +25,10 @@ const UserProductDetail = () => {
     const res = await API_CALL.get(`/product/${location.pathname.split('/product/')[1]}`)
     
     if (res) {
-      setProductData(res.data);
-      const response = await API_CALL.get(`/product/category/${res.data.product.category.name}`);
+      setProductData(res.data.result);
+      const response = await API_CALL.get(`/product/category/${res.data.category.name}`);
       if (res) {
-        const relatedProduct = response.data.filter((item) => item.product.id !== res.data.product.id)
+        const relatedProduct = response.data.filter((item) => item.id !== res.data.id)
         setRelatedProductData(relatedProduct);
       }
     }
@@ -39,7 +39,7 @@ const UserProductDetail = () => {
       <div className="flex flex-col gap-2 relative">
         <div className="h-96 md:h-[28rem] bg-blue-50">
           <Carousel>
-            {productData && productData.product.product_images.map((value, index) => (
+            {productData && productData.product_images.map((value, index) => (
               <img
                 key={index}
                 className="w-full h-full md:object-contain"
@@ -53,7 +53,7 @@ const UserProductDetail = () => {
           <div className="flex items-center justify-between">
             <div className="flex flex-col gap-1">
               <span className="text-2xl md:text-3xl font-bold line-clamp-2">
-                {productData && productData.product.name}
+                {productData && productData.name}
               </span>
               <div className="flex">
                 {/* {productData.discountPrice ? (
@@ -94,15 +94,15 @@ const UserProductDetail = () => {
 
           <div className="flex flex-col">
             <span className="text-base font-semibold">Product description</span>
-            <p className="text-base font-light">{productData && productData.product.description}</p>
+            <p className="text-base font-light">{productData && productData.description}</p>
           </div>
           <div className="flex flex-col">
             <span className="text-base font-semibold">Product units</span>
-            <p className="text-base font-light">{productData && `${productData.product.weight}${productData.product.unit}`}</p>
+            <p className="text-base font-light">{productData && `${productData.weight}${productData.unit}`}</p>
           </div>
           <div className="flex flex-col">
             <span className="text-base font-semibold">Product category</span>
-            <p className="text-base font-light">{productData && productData.product.category.name}</p>
+            <p className="text-base font-light">{productData && productData.category.name}</p>
           </div>
           <div className="flex flex-col">
             <span className="text-base font-semibold">Product stock</span>

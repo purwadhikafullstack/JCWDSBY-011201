@@ -11,7 +11,7 @@ const ModalConfirm = (props) => {
 
     return <>
         <Flowbite theme={{theme: customHeader}}>
-            <Modal show={props.show} onClose={props.onClose} position={'center'} dismissible popup>
+            <Modal show={props.show} onClose={props.onClose} position={'center'} size={'md'} dismissible popup>
                 <Modal.Header>{props.header}</Modal.Header>
                 <Modal.Body>
                     <h3>{props.message}</h3>

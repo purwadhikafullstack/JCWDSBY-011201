@@ -4,12 +4,15 @@ import resTemplate from "../../helper/resTemplate";
 import product from "../../models/product.model";
 import categories from "../../models/categories.model";
 import productImage from "../../models/product-image.model";
+import store from "../../models/stores.model";
+import users from "../../models/users.model";
 
 export default async function (req, res, next) {
     try {
         const query = req.query.q ?? '';
         const category = req.query.category ?? '';
         const sort = req.query.sort ?? 'none';
+        const email = req.query.admin ?? '';
         let order = [];
 
         if (sort === 'lowest') order.push(product ,'price', 'ASC');
@@ -24,7 +27,6 @@ export default async function (req, res, next) {
                     as: 'product',
                     required: true,
                     where: { name: { [Op.substring]: query } },
-                    // order: [order],
                     attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt', 'categoryId'] },
                     include: [
                         {
@@ -40,10 +42,25 @@ export default async function (req, res, next) {
                             attributes: ['id', 'image'],
                         },
                     ],
+                },
+                {
+                    model: store,
+                    as:'store',
+                    required: true,
+                    attributes: ['id', 'name'],
+                    include: [
+                        {
+                            model: users,
+                            as: 'user',
+                            required: true,
+                            where: { email: { [Op.substring]: email } },
+                            attributes: ['name'],
+                        },
+                    ]
                 }
             ],
             order: [order],
-            attributes: ['id', 'storeId', 'discountId', 'stock'],
+            attributes: ['id', 'discountId', 'stock'],
         });
         res.status(200).json(resTemplate(200, true, 'Get All Inventory Success', {count: result.length, data: result}));
     } catch (error) {

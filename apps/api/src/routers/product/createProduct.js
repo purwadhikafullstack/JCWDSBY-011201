@@ -1,4 +1,4 @@
-import { createInventory, findOneInventory } from '../../controllers/inventory.controller';
+import { findOneInventory } from '../../controllers/inventory.controller';
 import { DB } from '../../db';
 import product from '../../models/product.model';
 import resTemplate from '../../helper/resTemplate';
@@ -20,12 +20,7 @@ export default async function (req, res, next) {
             ]
         }, { transaction: t });
         if (duplicateProduct) {
-            throw {
-                rc: 409,
-                success: false,
-                message: 'Product already exists',
-                result: null,
-            }
+            throw resTemplate(409, false, 'Product already exists', null);
         }
 
         const result = await createProduct({

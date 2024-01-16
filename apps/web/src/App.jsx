@@ -33,7 +33,7 @@ import Inventory from './pages/admin/Inventory';
 import ManageAdmin from './pages/admin/ManageAdmin';
 import RegisteredUser from './pages/admin/RegisteredUser';
 import ManageStore from './pages/admin/ManageStore';
-import CheckAuth from './helpers/CheckAuth';
+import CheckAuth from './helpers/checkAuth';
 import { setStore } from './redux/slice/storeSlice';
 import ManageStoreAdd from './pages/admin/ManageStoreAdd';
 import ManageStoreUpdate from './pages/admin/ManageStoreUpdate';
@@ -42,6 +42,7 @@ import EditAdmin from './pages/admin/EditAdmin';
 import getNearestStore from './helpers/getNearestStore';
 import UserChangeEmail from './pages/UserChangeEmail';
 import VerifyEmail from './pages/VerifyEmail';
+import AddInventory from './pages/admin/AddInventory';
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 function App() {
@@ -251,6 +252,14 @@ function App() {
           element={
             <PrivateRoute role={['admin', 'super']}>
               <Inventory />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/inventory/create"
+          element={
+            <PrivateRoute role={['admin', 'super']}>
+              <AddInventory />
             </PrivateRoute>
           }
         />

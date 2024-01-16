@@ -20,7 +20,7 @@ import { validateSuper, validateToken } from "../middleware/tokenValidation";
 const productRouter = Router();
 
 productRouter.get('/', getAllProduct);
-productRouter.get('/inventory', getAllInventory);
+// productRouter.get('/inventory', getAllInventory);
 productRouter.get('/:name', findProductByName);
 productRouter.post('/', validateToken, validateSuper, createProduct);
 productRouter.patch('/:id', validateToken, validateSuper, updateProduct);

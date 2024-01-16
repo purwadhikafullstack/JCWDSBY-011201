@@ -5,8 +5,12 @@ import { useEffect, useState } from "react";
 import API_CALL from "../../helpers/API";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import { FaPlus } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Inventory = () => {
+    const navigate = useNavigate();
+    const currentUser = useSelector(state => state.userReducer);
     const [isLoading, setIsLoading] = useState(true);
     const [items, setItems] = useState([]);
     const [openModal, setOpenModal] = useState(false);
@@ -20,7 +24,8 @@ const Inventory = () => {
 
     const getData = async () => {
         setIsLoading(true);
-        const res = await API_CALL.get('/product/inventory');
+
+        const res = await API_CALL.get(`${currentUser.role ==='super'? 'inventory' : `inventory?admin=${currentUser.email}`}`);
         if (res) {
             setItems(res.data.result.data);
             setIsLoading(false);
@@ -65,6 +70,7 @@ const Inventory = () => {
                     <TableCell>{`${item.product.name}`}</TableCell>
                     <TableCell>{`${item.product.category.name}`}</TableCell>
                     <TableCell>{`${item.stock}`}</TableCell>
+                    {currentUser.role === 'super' && <TableCell>{`${item.store.name}`}</TableCell>}
                     <TableCell className='space-y-1'>
                         <p className='text-blue-600' onClick={() => handleEdit(item.id)}>Edit</p>
                         <p className='text-red-600' onClick={() => handleDelete(item.id)}>Delete</p>
@@ -81,13 +87,14 @@ const Inventory = () => {
             <LayoutPageAdmin title='Manage Inventory'>
                 <div className='grid grid-cols-1 max-w-full overflow-x-auto '>
                     <div className='mb-2'>
-                        <Button size={'xs'} color='blue'><FaPlus className='mr-1'/> Add Inventory</Button>
+                        <Button size={'xs'} color='blue' onClick={() => navigate('/manage/inventory/create')} ><FaPlus className='mr-1'/> Add Inventory</Button>
                     </div>
                     <Table>
                         <TableHead>
                             <TableHeadCell>Product Name</TableHeadCell>
                             <TableHeadCell>Category</TableHeadCell>
                             <TableHeadCell>Stock</TableHeadCell>
+                            {currentUser.role === 'super' && <TableHeadCell>Store</TableHeadCell>}
                             <TableHeadCell>Action</TableHeadCell>
                         </TableHead>
                         <TableBody>

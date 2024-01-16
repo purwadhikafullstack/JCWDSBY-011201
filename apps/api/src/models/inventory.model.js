@@ -8,7 +8,7 @@ export default class inventory extends Model {
    */
   static associate(models) {
     // define association here
-    // inventory.belongsTo(models.stores);
+    inventory.belongsTo(models.stores);
     // inventory.belongsTo(models.discounts);
     inventory.belongsTo(models.product, {
       onDelete: 'CASCADE',
