@@ -42,7 +42,6 @@ import EditAdmin from './pages/admin/EditAdmin';
 import getNearestStore from './helpers/getNearestStore';
 import UserChangeEmail from './pages/UserChangeEmail';
 import VerifyEmail from './pages/VerifyEmail';
-import AddInventory from './pages/admin/AddInventory';
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 function App() {
@@ -252,14 +251,6 @@ function App() {
           element={
             <PrivateRoute role={['admin', 'super']}>
               <Inventory />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/manage/inventory/create"
-          element={
-            <PrivateRoute role={['admin', 'super']}>
-              <AddInventory />
             </PrivateRoute>
           }
         />

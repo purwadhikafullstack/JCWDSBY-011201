@@ -8,10 +8,11 @@ export default async function (req, res, next) {
     try {
         const duplicateInventory = await findOneInventory({
             where: {
-                storeId: req.body.storeId,
+                storeId: req.body.storeId ?? req.tokenData.storeId,
                 productId: req.body.productId,
             }
         }, { transaction: t });
+        
         if (duplicateInventory) {
             throw resTemplate(409, false, 'Inventory already exists', null);
         }

@@ -22,7 +22,7 @@ export default async function (req, res, next) {
         if (duplicateProduct) {
             throw resTemplate(409, false, 'Product already exists', null);
         }
-
+        
         const result = await createProduct({
             name: req.body.name,
             price: req.body.price,

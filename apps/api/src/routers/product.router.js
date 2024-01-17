@@ -34,14 +34,14 @@ productRouter.get('/category/:name', async (req, res, next) => {
     }
 });
 
-productRouter.patch('/inventory/:id', async (req, res, next) => {
-    try {
-        await updateInventory(req.params.id, req.body);
-        res.status(200).json('Inventory updated');
-    } catch (error) {
-        next(error)
-    }
-});
+// productRouter.patch('/inventory/:id', async (req, res, next) => {
+//     try {
+//         await updateInventory(req.params.id, req.body);
+//         res.status(200).json('Inventory updated');
+//     } catch (error) {
+//         next(error)
+//     }
+// });
 
 productRouter.delete('/:id', async (req, res, next) => {
     try {

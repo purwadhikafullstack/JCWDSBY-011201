@@ -2,13 +2,13 @@ import AdminSidebar from '../../components/AdminSidebar';
 import LayoutPageAdmin from '../../components/LayoutPageAdmin';
 import { Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow, Button } from "flowbite-react";
 import { IoMdAdd } from "react-icons/io";
-import ModalAdminStore from '../../components/ModalAdminStore';
+import ModalAdminStore from '../../components/modal/ModalAdminStore';
 import { useEffect, useState } from 'react';
 import API_CALL from '../../helpers/API';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import ModalConfirm from '../../components/ModalConfirm';
+import ModalConfirm from '../../components/modal/ModalConfirm';
 
 const ManageAdmin = () => {
     const navigate = useNavigate();

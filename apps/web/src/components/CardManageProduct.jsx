@@ -2,7 +2,7 @@ import { MdDelete } from "react-icons/md";
 import { FiEdit } from "react-icons/fi";
 import { BsThreeDots } from "react-icons/bs";
 import { useSelector } from "react-redux";
-import { Dropdown } from "flowbite-react";
+import { Dropdown, DropdownItem } from "flowbite-react";
 
 const CardManageProduct = ({
     image,
@@ -66,8 +66,8 @@ const CardManageProduct = ({
                     <div className="flex justify-end mb-1 pr-1">
                         <div className={`${currentUserRole !== 'super' && 'hidden'}`}>
                             <Dropdown placement="left-bottom" size='sm' dismissOnClick={false} renderTrigger={() => <button><BsThreeDots/></button>}>
-                                <Dropdown.Item icon={FiEdit} onClick={onEdit}>Edit</Dropdown.Item>
-                                <Dropdown.Item icon={MdDelete} onClick={onDelete}>Delete</Dropdown.Item>
+                                <DropdownItem icon={FiEdit} onClick={onEdit}>Edit</DropdownItem>
+                                <DropdownItem icon={MdDelete} onClick={onDelete}>Delete</DropdownItem>
                             </Dropdown>
                         </div>
                     </div>

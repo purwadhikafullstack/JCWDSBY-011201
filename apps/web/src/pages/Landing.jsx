@@ -40,8 +40,8 @@ const Landing = () => {
   };
 
   const getProductData = async () => {
-    const res = await API_CALL.get('product/inventory');
-    // console.log('RES >>>', res.data);
+    const res = await API_CALL.get('inventory');
+    console.log('RES >>>', res.data);
     if (res) {
       setProductData(res.data.result.data);
     }
@@ -78,19 +78,6 @@ const Landing = () => {
                   }}
                 />
               ))}
-              {/* {product.map((value) => (
-                <UserProductCard
-                  key={value}
-                  image={
-                    'https://pppcoffee.com/cdn/shop/products/Chocolate_b22e9ffc-1fd7-41f9-8b88-6bac76eaf35d_1200x1200.jpg?v=1646977345'
-                  }
-                  productName={'Oatside Chocolate Barista Brew 250ML'}
-                  productUnit={'250ML/Pcs'}
-                  price={9000}
-                  discountPrice={7400}
-                  stock={49}
-                />
-              ))} */}
             </div>
           </div>
         </div>

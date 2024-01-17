@@ -38,7 +38,7 @@ const UserFindCategory = () => {
   };
 
   const getProductData = async () => {
-    const res = await API_CALL.get('product/inventory', {
+    const res = await API_CALL.get('inventory', {
       params: { q: searchParams.get('q'), category: searchParams.get('category'), sort: searchParams.get('sort')},
     });
     // console.log('RES >>>', res.data);
