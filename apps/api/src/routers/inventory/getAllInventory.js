@@ -14,6 +14,7 @@ export default async function (req, res, next) {
         const sort = req.query.sort ?? 'none';
         const email = req.query.admin ?? '';
         const storeUUID = req.query.store ?? '';
+        const page = req.query.page ?? 1;
         let order = [];
 
         if (sort === 'lowest') order.push(product ,'price', 'ASC');
@@ -28,6 +29,7 @@ export default async function (req, res, next) {
                     as: 'product',
                     required: true,
                     where: { name: { [Op.substring]: query } },
+                    order: [order],
                     attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt', 'categoryId'] },
                     include: [
                         {
@@ -61,10 +63,54 @@ export default async function (req, res, next) {
                     ]
                 }
             ],
-            order: [order],
+            limit: 5,
+            offset: page * 5 - 5,
             attributes: ['id', 'discountId', 'stock'],
         });
-        res.status(200).json(resTemplate(200, true, 'Get All Inventory Success', {count: result.length, data: result}));
+        const rawData = await findAllInventory({
+            include: [
+                {
+                    model: product,
+                    as: 'product',
+                    required: true,
+                    where: { name: { [Op.substring]: query } },
+                    order: [order],
+                    attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt', 'categoryId'] },
+                    include: [
+                        {
+                            model: categories,
+                            as: 'category',
+                            required: true,
+                            where: { name: { [Op.substring]: category } },
+                            attributes: ['id', 'name'],
+                        },
+                        {
+                            model: productImage,
+                            required: true,
+                            attributes: ['id', 'image'],
+                        },
+                    ],
+                },
+                {
+                    model: store,
+                    as:'store',
+                    required: true,
+                    where: { UUID: { [Op.substring]: storeUUID } },
+                    attributes: ['id', 'name'],
+                    include: [
+                        {
+                            model: users,
+                            as: 'user',
+                            required: true,
+                            where: { email: { [Op.substring]: email } },
+                            attributes: ['name'],
+                        },
+                    ]
+                }
+            ],
+            attributes: ['id', 'discountId', 'stock'],
+        });
+        res.status(200).json(resTemplate(200, true, 'Get All Inventory Success', {count: rawData.length, data: result, raw: rawData}));
     } catch (error) {
         next(error);
     }

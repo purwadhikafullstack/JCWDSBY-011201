@@ -1,16 +1,17 @@
-import { Button, Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow, Select, Pagination } from "flowbite-react";
-import AdminSidebar from "../../components/AdminSidebar";
-import LayoutPageAdmin from "../../components/LayoutPageAdmin";
-import { useEffect, useState } from "react";
-import API_CALL from "../../helpers/API";
-import LoadingSpinner from "../../components/LoadingSpinner";
-import { FaPlus } from "react-icons/fa6";
-import { useSelector } from "react-redux";
-import ModalAddInventory from "../../components/modal/ModalAddInventory";
+import { Button, Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow, Select, Pagination } from 'flowbite-react';
+import AdminSidebar from '../../components/AdminSidebar';
+import LayoutPageAdmin from '../../components/LayoutPageAdmin';
+import { useEffect, useState } from 'react';
+import API_CALL from '../../helpers/API';
+import LoadingSpinner from '../../components/LoadingSpinner';
+import { FaPlus } from 'react-icons/fa6';
+import { useSelector } from 'react-redux';
+import ModalAddInventory from '../../components/modal/ModalAddInventory';
 import { toast } from 'react-toastify';
 import ModalConfirm from '../../components/modal/ModalConfirm';
-import ModalEditInventory from "../../components/modal/ModalEditInventory";
-import { useSearchParams } from "react-router-dom";
+import ModalEditInventory from '../../components/modal/ModalEditInventory';
+import { useSearchParams } from 'react-router-dom';
+import { HiMagnifyingGlass } from 'react-icons/hi2';
 
 const Inventory = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -18,7 +19,8 @@ const Inventory = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [items, setItems] = useState([]);
     const [store, setStore] = useState(null);
-    const [selectedStore, setSelectedStore] = useState('all');
+    const [selectedStore, setSelectedStore] = useState('all'); //! need to remove later
+    const [totalPage, setTotalPage] = useState(1);
     const [openModal, setOpenModal] = useState({
         add: false,
         edit: false,
@@ -48,7 +50,14 @@ const Inventory = () => {
 
     useEffect(() => {
         getData();
-    }, [selectedStore])
+    }, [searchParams])
+
+    const onPageChange = (page) => {
+        setSearchParams((prev) => {
+            prev.set('page', page);
+            return prev;
+        });
+    };
 
     const getStore = async () => {
         try {
@@ -68,9 +77,13 @@ const Inventory = () => {
     const getData = async () => {
         setIsLoading(true);
         if (currentUser.role === 'super') {
-            const res = await API_CALL.get(`${selectedStore === 'all' ? 'inventory' : `inventory?store=${selectedStore}`}`);
+            // const res = await API_CALL.get(`${searchParams.get('store') ? `inventory?store=${searchParams.get('store')}` : 'inventory'}`);
+            const res = await API_CALL.get('/inventory', {
+                params: { store: searchParams.get('store'), page: searchParams.get('page')}
+            });
             if (res) {
                 setItems(res.data.result.data);
+                setTotalPage(Math.ceil(res.data.result.count / 5));
                 setIsLoading(false);
             }
         }
@@ -127,14 +140,14 @@ const Inventory = () => {
         } catch (error) {
             setOpenModal({ ...openModal, add: false, confirmAdd: false });
             if (error.response.status === 409) return toast.error('Inventory already exists', {
-                position: "bottom-center",
+                position: 'bottom-center',
                 autoClose: 5000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
-                theme: "light",
+                theme: 'light',
             });
         }
     };
@@ -162,7 +175,7 @@ const Inventory = () => {
         if (data) {
             return data.map((item, index) => {
                 return <TableRow key={index}>
-                    <TableCell>{`${index + 1}`}</TableCell>
+                    <TableCell>{`${((searchParams.get('page') || 1) - 1) * 5 + index + 1}`}</TableCell>
                     <TableCell>{`${item.product.name}`}</TableCell>
                     <TableCell>{`${item.product.category.name}`}</TableCell>
                     <TableCell>{`${item.stock}`}</TableCell>
@@ -184,6 +197,14 @@ const Inventory = () => {
         })
     };
 
+    const handleFilterStore = (value) => {
+        if (value === 'all') {
+            searchParams.delete('store');
+            return setSearchParams(searchParams)
+        }
+        setSearchParams({ store: value })
+    };
+
     return <>
         <div className='flex flex-row container bg-blue-100 min-w-[360px] h-max min-h-screen'>
             <AdminSidebar />
@@ -198,16 +219,59 @@ const Inventory = () => {
             <LayoutPageAdmin title='Manage Inventory'>
                 <div className='grid grid-cols-1 max-w-full overflow-x-auto '>
                     <div className='mb-2'>
-                        <div className='flex items-start flex-col gap-3 lg:flex-row lg:justify-between'>
-                            <div>
-                                <Button size={'xs'} color='blue' onClick={() => setOpenModal({ ...openModal, add: true })} ><FaPlus className='mr-1' /> Add Inventory</Button>
+                        <div className='grid grid-cols-1 grid-row-2 items-start gap-3 lg:justify-between'>
+                            <div className='flex flex-col gap-3 justify-between lg:items-center lg:flex-row'>
+                                <div>
+                                    <Button size={'xs'} color='blue' onClick={() => setOpenModal({ ...openModal, add: true })} ><FaPlus className='mr-1' /> Add Inventory</Button>
+                                </div>
+                                <div>
+                                    <div className='flex rounded-xl border-2 border-gray-500 focus-within:border-gray-700 p-1 overflow-hidden items-center gap-1'>
+                                        <span className='w-6 h-6'>
+                                            <HiMagnifyingGlass size={'100%'} />
+                                        </span>
+                                        <input
+                                            type='search'
+                                            defaultValue={searchParams.get('q')}
+                                            placeholder='Search product name'
+                                            onChange={(e) => {
+                                                setTimeout(() => {
+                                                    setSearchParams((prev) => {
+                                                        if (e.target.value) {
+                                                            prev.set('q', e.target.value);
+                                                        } else {
+                                                            prev.delete('q');
+                                                        }
+                                                        return prev;
+                                                    });
+                                                }, 1000);
+                                            }}
+                                            className=' outline-none bg-transparent'
+                                        />
+                                    </div>
+                                </div>
                             </div>
-                            <div className={`flex gap-2 items-center ${currentUser.role !== 'super' && 'hidden'}`}>
-                                <span>Store : </span>
-                                <Select onChange={(e) => setSelectedStore(e.target.value)}>
-                                    <option value={'all'}>All</option>
-                                    {storeOption()}
-                                </Select>
+                            <div className='flex flex-col gap-4 lg:flex-row'>
+                                <div className={`flex justify-between items-center lg:gap-2 ${currentUser.role !== 'super' && 'hidden'}`}>
+                                    <span className='font-bold'>Store : </span>
+                                    <Select onChange={(e) => handleFilterStore(e.target.value)}>
+                                        <option value={'all'}>All</option>
+                                        {storeOption()}
+                                    </Select>
+                                </div>
+                                <div className={`flex justify-between items-center lg:gap-2 ${currentUser.role !== 'super' && 'hidden'}`}>
+                                    <span className='font-bold'>Category : </span>
+                                    <Select onChange={(e) => setSelectedStore(e.target.value)}>
+                                        <option value={'all'}>All</option>
+                                        {storeOption()}
+                                    </Select>
+                                </div>
+                                <div className={`flex justify-between items-center lg:gap-2 ${currentUser.role !== 'super' && 'hidden'}`}>
+                                    <span className='font-bold'>Sort : </span>
+                                    <Select onChange={(e) => setSelectedStore(e.target.value)}>
+                                        <option value={'all'}>All</option>
+                                        {storeOption()}
+                                    </Select>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -241,12 +305,10 @@ const Inventory = () => {
                     />
                     <div className='flex lg:justify-center'>
                         <Pagination
-                            // currentPage={1}
-                            // totalPages={5}
                             layout='pagination'
                             currentPage={Number(searchParams.get('page')) || 1}
-                            totalPages={2}
-                            // onPageChange={onPageChange}
+                            totalPages={totalPage}
+                            onPageChange={onPageChange}
                             showIcons
                         />
                     </div>
