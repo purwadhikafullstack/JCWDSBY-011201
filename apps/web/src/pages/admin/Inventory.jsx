@@ -12,6 +12,7 @@ import ModalConfirm from '../../components/modal/ModalConfirm';
 import ModalEditInventory from '../../components/modal/ModalEditInventory';
 import { useSearchParams } from 'react-router-dom';
 import { HiMagnifyingGlass } from 'react-icons/hi2';
+import { sortingInventory } from '../../constants/sorting';
 
 const Inventory = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -19,7 +20,7 @@ const Inventory = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [items, setItems] = useState([]);
     const [store, setStore] = useState(null);
-    const [selectedStore, setSelectedStore] = useState('all'); //! need to remove later
+    const [category, setCategory] = useState(null);
     const [totalPage, setTotalPage] = useState(1);
     const [openModal, setOpenModal] = useState({
         add: false,
@@ -46,6 +47,7 @@ const Inventory = () => {
     useEffect(() => {
         getData();
         getStore();
+        getCategory();
     }, [])
 
     useEffect(() => {
@@ -74,15 +76,29 @@ const Inventory = () => {
         }
     };
 
+    const getCategory = async () => {
+        try {
+            setIsLoading(true);
+            const resCategory = await API_CALL.get('category', {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+                },
+            });
+            setCategory(resCategory.data);
+            setIsLoading(false);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     const getData = async () => {
         setIsLoading(true);
         if (currentUser.role === 'super') {
-            // const res = await API_CALL.get(`${searchParams.get('store') ? `inventory?store=${searchParams.get('store')}` : 'inventory'}`);
-            const res = await API_CALL.get('/inventory', {
-                params: { store: searchParams.get('store'), page: searchParams.get('page')}
+            const res = await API_CALL.get('/inventory/pagination', {
+                params: { store: searchParams.get('store'), page: searchParams.get('page'), sort: searchParams.get('sort'), category: searchParams.get('category'), q: searchParams.get('q') },
             });
             if (res) {
-                setItems(res.data.result.data);
+                setItems(res.data.result.rows);
                 setTotalPage(Math.ceil(res.data.result.count / 5));
                 setIsLoading(false);
             }
@@ -90,7 +106,7 @@ const Inventory = () => {
         if (currentUser.role === 'admin') {
             const res = await API_CALL.get(`inventory?admin=${currentUser.email}`);
             if (res) {
-                setItems(res.data.result.data);
+                setItems(res.data.result.rows);
                 setIsLoading(false);
             }
         }
@@ -191,9 +207,19 @@ const Inventory = () => {
 
     const storeOption = () => {
         return store && store.map((item, index) => {
-            return (
-                <option key={index} value={item.UUID}>{item.name}</option>
-            )
+            if(searchParams.get('store') === item.UUID) {
+                return <option key={index} value={item.UUID} selected>{item.name}</option>
+            }
+            return <option key={index} value={item.UUID}>{item.name}</option>
+        })
+    };
+
+    const categoryOption = () => {
+        return category && category.map((item, index) => {
+            if(searchParams.get('category') === item.name) {
+                return <option key={index} value={item.name} selected>{item.name}</option>
+            }
+            return <option key={index} value={item.name}>{item.name}</option>
         })
     };
 
@@ -202,7 +228,17 @@ const Inventory = () => {
             searchParams.delete('store');
             return setSearchParams(searchParams)
         }
-        setSearchParams({ store: value })
+        searchParams.set('store', value);
+        setSearchParams(searchParams)
+    };
+
+    const handleFilterCategory = (value) => {
+        if (value === 'all') {
+            searchParams.delete('category');
+            return setSearchParams(searchParams)
+        }
+        searchParams.set('category', value);
+        setSearchParams(searchParams)
     };
 
     return <>
@@ -258,18 +294,22 @@ const Inventory = () => {
                                         {storeOption()}
                                     </Select>
                                 </div>
-                                <div className={`flex justify-between items-center lg:gap-2 ${currentUser.role !== 'super' && 'hidden'}`}>
+                                <div className={`flex justify-between items-center lg:gap-2`}>
                                     <span className='font-bold'>Category : </span>
-                                    <Select onChange={(e) => setSelectedStore(e.target.value)}>
+                                    <Select onChange={(e) => handleFilterCategory(e.target.value)}>
                                         <option value={'all'}>All</option>
-                                        {storeOption()}
+                                        {categoryOption()}
                                     </Select>
                                 </div>
-                                <div className={`flex justify-between items-center lg:gap-2 ${currentUser.role !== 'super' && 'hidden'}`}>
+                                <div className={`flex justify-between items-center lg:gap-2`}>
                                     <span className='font-bold'>Sort : </span>
-                                    <Select onChange={(e) => setSelectedStore(e.target.value)}>
-                                        <option value={'all'}>All</option>
-                                        {storeOption()}
+                                    <Select onChange={(e) => { searchParams.set('sort', e.target.value); setSearchParams(searchParams); }}>
+                                        {sortingInventory.map((value, index) => {
+                                            if (searchParams.get('sort') === value.value) {
+                                                return <option key={index} value={value.value} selected>{value.sortName}</option>
+                                            }
+                                            return <option key={index} value={value.value}>{value.sortName}</option>
+                                        })}
                                     </Select>
                                 </div>
                             </div>
