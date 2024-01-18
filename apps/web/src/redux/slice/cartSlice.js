@@ -90,12 +90,13 @@ export const UpdateAmountInCloud = (id, amount, storeUUID) => {
   };
 };
 
-export const updateChecksInCloud = (cartId,storeUUID) => {
+export const updateChecksInCloud = (cartId,checked,storeUUID) => {
   return async (dispatch) => {
+    console.log("checkMonitor",checked);
     try {
       const response = await API_CALL.patch(
         `/cart/${cartId}?checker=true`,
-        {},
+        {checked},
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('authToken')}`,

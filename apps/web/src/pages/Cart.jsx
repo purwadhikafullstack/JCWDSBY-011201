@@ -9,8 +9,8 @@ import { fetchCartItems, setCarts } from '../redux/slice/cartSlice';
 const Cart = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cartReducer.items);
-  console.log("🚀 ~ Cart ~ cartItems:", cartItems)
-  const storeUUID = useSelector((state) => state.storeReducer.storeId)
+  console.log('🚀 ~ Cart ~ cartItems:', cartItems);
+  const storeUUID = useSelector((state) => state.storeReducer.storeId);
   useEffect(() => {
     dispatch(fetchCartItems(storeUUID));
   }, [storeUUID]);
@@ -30,20 +30,20 @@ const Cart = () => {
           <h1 className="text-xl font-bold">Cart</h1>
         </div>
         <div className="">
-          <div className="flex flex-col items-center mb-3">
-            <hr className="h-px w-full sm:w-11/12 bg-black border-0 dark:bg-gray-700"></hr>
-          </div>
           <CartProductLists arrays={cartItems} />
         </div>
-        <CartContainer className="mt-3 p-3 flex-col rounded-md sticky top-[80vh]">
-          <div className="flex flex-row justify-between">
-            <p>
-              Total: <span className="font-bold">Rp{totalPrice.toLocaleString("id-ID")}</span>
-            </p>
-            <Button color="blue">Checkout</Button>
-          </div>
-        </CartContainer>
       </div>
+      <CartContainer className="mt-3 p-3 flex-col rounded-md fixed w-full sm:w-64 top-[72vh] sm:right-36 sm:top-36">
+        <div className="flex flex-row justify-between">
+          <p>
+            Total:{' '}
+            <span className="font-bold">
+              Rp{totalPrice.toLocaleString('id-ID')}
+            </span>
+          </p>
+          <Button color="blue">Checkout</Button>
+        </div>
+      </CartContainer>
     </UserLayout>
   );
 };

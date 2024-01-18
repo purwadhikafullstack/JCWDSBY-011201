@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
-import { FiMinusCircle, FiPlusCircle } from 'react-icons/fi';
+import { FaPlus,FaMinus } from "react-icons/fa";
+
 import { useDispatch, useSelector } from 'react-redux';
 import {
   UpdateAmountInCloud,
@@ -19,16 +20,18 @@ export function CartPlusMinus(props) {
   }, [props.amount]);
 
   return (
-    <div className="my-1 w-16 h-7 flex border border-gray-300 rounded-lg items-center justify-around gap-x-2 ">
-      <FiMinusCircle
-        size={'24px'}
+    <div className="my-1 w-16 h-7 flex border border-gray-300 rounded-lg items-center justify-around gap-x-1 relative left-8 sm:left-0 ">
+      <FaMinus
+        size={'16px'}
+        className='text-blue-600'
         onClick={() => {
           dispatch(decrementItem(props.cartId));
         }}
       />
       <p className="text-xs">{props.amount}</p>
-      <FiPlusCircle
-        size={'24px'}
+      <FaPlus
+        size={'16px'}
+        className='text-blue-600'
         onClick={() => {
           dispatch(incrementItem(props.cartId));
           

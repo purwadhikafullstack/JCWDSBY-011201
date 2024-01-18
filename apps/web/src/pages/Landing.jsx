@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import HeroViews from '../components/views/HeroViews';
 import LandingCategoryViews from '../components/views/LandingCategoryViews';
 import { useNavigate } from 'react-router-dom';
+import LandingAddToCartDrawer from '../components/LandingAddToCartDrawer';
 
 const Landing = () => {
   const currStore = useSelector((reducer) => reducer.storeReducer);
@@ -95,6 +96,7 @@ const Landing = () => {
           </div>
         </div>
       </div>
+      <LandingAddToCartDrawer/>
       <Footer />
     </UserLayout>
   );

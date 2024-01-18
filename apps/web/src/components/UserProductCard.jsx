@@ -1,3 +1,6 @@
+import { DrawerForUserProductCard } from './DrawerForUserProductCard';
+import { Button } from 'flowbite-react';
+import { useState } from 'react';
 import { HiOutlinePlus } from 'react-icons/hi2';
 
 const UserProductCard = ({
@@ -10,6 +13,9 @@ const UserProductCard = ({
   onClickProduct,
   onAddCart,
 }) => {
+  const [openDrawer, setOpenDrawer] = useState(false);
+
+  const toggleDrawer = () => setOpenDrawer((prevState) => !prevState);
   return (
     <div className="flex flex-col w-full h-60 md:h-64 lg:h-72 border-2 rounded-md relative cursor-pointer">
       <div className="flex flex-col w-full h-full" onClick={onClickProduct}>
@@ -59,13 +65,24 @@ const UserProductCard = ({
         </div>
       </div>
       <button
-        className={`${stock ? 'bg-blue-700 hover:scale-[1.2] transition-all duration-300' : 'bg-gray-200'} absolute flex justify-center items-center w-8 h-8 rounded-full bottom-2 right-2`}
+        className={`${
+          stock
+            ? 'bg-blue-700 hover:scale-[1.2] transition-all duration-300'
+            : 'bg-gray-200'
+        } absolute flex justify-center items-center w-8 h-8 rounded-full bottom-2 right-2`}
         type="button"
         disabled={stock ? false : true}
-        onClick={onAddCart}
+        onClick={toggleDrawer}
       >
         <HiOutlinePlus className="text-white w-6 h-6" />
       </button>
+      <DrawerForUserProductCard
+        openDrawer={openDrawer}
+        toggleDrawer={toggleDrawer}
+        price={price}
+        image={image}
+        productName={productName}
+      />
     </div>
   );
 };
