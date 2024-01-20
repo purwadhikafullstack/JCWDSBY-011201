@@ -21,33 +21,33 @@ export const updateProduct = async (data, pointer) => {
     return await product.update(data, pointer);
 };
 
-export const findProductByCategory = async (category) => {
-    return await inventory.findAll({
-        include: [
-            {
-                model: product,
-                as: 'product',
-                required: true,
-                attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt', 'categoryId'] },
-                include: [
-                    {
-                        model: categories,
-                        as: 'category',
-                        where: { name: category },
-                        required: true,
-                        attributes: ['id', 'name'],
-                    },
-                    {
-                        model: productImage,
-                        required: true,
-                        attributes: ['id', 'image'],
-                    },
-                ],
-            }
-        ],
-        attributes: ['id', 'storeId', 'discountId', 'stock'],
-    });
-};
+// export const findProductByCategory = async (category) => {
+//     return await inventory.findAll({
+//         include: [
+//             {
+//                 model: product,
+//                 as: 'product',
+//                 required: true,
+//                 attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt', 'categoryId'] },
+//                 include: [
+//                     {
+//                         model: categories,
+//                         as: 'category',
+//                         where: { name: category },
+//                         required: true,
+//                         attributes: ['id', 'name'],
+//                     },
+//                     {
+//                         model: productImage,
+//                         required: true,
+//                         attributes: ['id', 'image'],
+//                     },
+//                 ],
+//             }
+//         ],
+//         attributes: ['id', 'storeId', 'discountId', 'stock'],
+//     });
+// };
 
 // export const getInventoryData = async () => {
 //     return await inventory.findAll({

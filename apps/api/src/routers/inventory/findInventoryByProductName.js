@@ -51,6 +51,7 @@ export default async function (req, res, next) {
             ],
             attributes: ['id', 'discountId', 'stock'],
         });
+        if(!result) throw resTemplate(404, false, 'Inventory not found');
 
         res.status(200).json(resTemplate(200, true, 'Inventory found', result));
     } catch (error) {

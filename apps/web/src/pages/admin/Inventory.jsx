@@ -94,7 +94,7 @@ const Inventory = () => {
     const getData = async () => {
         setIsLoading(true);
         if (currentUser.role === 'super') {
-            const res = await API_CALL.get('/inventory/pagination', {
+            const res = await API_CALL.get('inventory', {
                 params: { store: searchParams.get('store'), page: searchParams.get('page'), sort: searchParams.get('sort'), category: searchParams.get('category'), q: searchParams.get('q') },
             });
             if (res) {
@@ -226,18 +226,22 @@ const Inventory = () => {
     const handleFilterStore = (value) => {
         if (value === 'all') {
             searchParams.delete('store');
+            searchParams.set('page', 1);
             return setSearchParams(searchParams)
         }
         searchParams.set('store', value);
+        searchParams.set('page', 1);
         setSearchParams(searchParams)
     };
 
     const handleFilterCategory = (value) => {
         if (value === 'all') {
             searchParams.delete('category');
+            searchParams.set('page', 1);
             return setSearchParams(searchParams)
         }
         searchParams.set('category', value);
+        searchParams.set('page', 1);
         setSearchParams(searchParams)
     };
 
@@ -274,8 +278,10 @@ const Inventory = () => {
                                                     setSearchParams((prev) => {
                                                         if (e.target.value) {
                                                             prev.set('q', e.target.value);
+                                                            searchParams.set('page', 1);
                                                         } else {
                                                             prev.delete('q');
+                                                            searchParams.set('page', 1);
                                                         }
                                                         return prev;
                                                     });
@@ -303,7 +309,7 @@ const Inventory = () => {
                                 </div>
                                 <div className={`flex justify-between items-center lg:gap-2`}>
                                     <span className='font-bold'>Sort : </span>
-                                    <Select onChange={(e) => { searchParams.set('sort', e.target.value); setSearchParams(searchParams); }}>
+                                    <Select onChange={(e) => { searchParams.set('sort', e.target.value); searchParams.set('page', 1); setSearchParams(searchParams); }}>
                                         {sortingInventory.map((value, index) => {
                                             if (searchParams.get('sort') === value.value) {
                                                 return <option key={index} value={value.value} selected>{value.sortName}</option>

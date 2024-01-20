@@ -1,4 +1,4 @@
-import { findAllInventory } from "../../controllers/inventory.controller";
+import { findAllInventory, findAndCountAllInventory } from "../../controllers/inventory.controller";
 import { Op, col, literal } from 'sequelize';
 import resTemplate from "../../helper/resTemplate";
 import product from "../../models/product.model";
@@ -16,33 +16,25 @@ export default async function (req, res, next) {
         const email = req.query.admin ?? '';
         const storeUUID = req.query.store ?? '';
         const page = req.query.page ?? 1;
+        const limit = req.query.limit ?? 5;
         let order = [];
 
-        // if (sort === 'lowest') order.push(product ,'price', 'ASC');
-        // if (sort === 'highest') order.push(product ,'price', 'DESC');
-        // if (sort === 'nameasc' || sort === 'none') order.push(product ,'name', 'ASC');
-        // if (sort === 'namedesc') order.push(product ,'name', 'DESC');
+        if (sort === 'lowest') order.push(col('productPrice'), 'ASC');
+        if (sort === 'highest') order.push(col('productPrice'), 'DESC');
+        if (sort === 'lowestStock') order.push('stock', 'ASC');
+        if (sort === 'highestStock') order.push('stock', 'DESC');
+        if (sort === 'nameasc' || sort === 'none') order.push(col('productName'), 'ASC');
+        if (sort === 'namedesc') order.push(col('productName'), 'DESC');
 
-        const result = await findAllInventory({
-            // separate:true,
-            // order: [[product, col('product.name'), 'DESC']],
-            // order: literal(`(SELECT 'name' FROM product WHERE product.deletedAt IS NULL AND product.name LIKE '%${query}%' ORDER BY ${col('product.name')} ${sort} LIMIT 0,5) `),
-            order: literal(`(SELECT * FROM 'product' INNER JOIN 'category' ON 'product'.'categoryId' = 'category'.'id' WHERE 'product'.'id' = 'Inventory'.'productId') DESC`),
-            limit: 5,
-            // offset: page * 5 - 5,
-            // order: [[col('product.name') ,'name', 'DESC']],
-            // order: [['stock', 'ASC']],
+        const result = await findAndCountAllInventory({
             include: [
                 {
                     model: product,
-                    as: 'product',
                     required: true,
                     where: { name: { [Op.substring]: query } },
-                    // separate:true,
-                    // limit: 5,
-                    // order: [order],
-                    // order: [['name', 'DESC']],
-                    attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt', 'categoryId'] },
+                    attributes: {
+                        exclude: ['createdAt', 'updatedAt', 'deletedAt', 'categoryId'],
+                    },
                     include: [
                         {
                             model: categories,
@@ -54,13 +46,12 @@ export default async function (req, res, next) {
                         {
                             model: productImage,
                             required: true,
-                            attributes: ['id', 'image'],
-                        },
-                    ],
+                            attributes: ['id', 'image']
+                        }
+                    ]
                 },
                 {
                     model: store,
-                    as: 'store',
                     required: true,
                     where: { UUID: { [Op.substring]: storeUUID } },
                     attributes: ['id', 'name'],
@@ -71,56 +62,18 @@ export default async function (req, res, next) {
                             required: true,
                             where: { email: { [Op.substring]: email } },
                             attributes: ['name'],
-                        },
+                        }
                     ]
                 }
             ],
-            attributes: ['id', 'discountId', 'stock'],
-        });
-        const rawData = await findAllInventory({
-            include: [
-                {
-                    model: product,
-                    as: 'product',
-                    required: true,
-                    where: { name: { [Op.substring]: query } },
-                    order: [order],
-                    attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt', 'categoryId'] },
-                    include: [
-                        {
-                            model: categories,
-                            as: 'category',
-                            required: true,
-                            where: { name: { [Op.substring]: category } },
-                            attributes: ['id', 'name'],
-                        },
-                        {
-                            model: productImage,
-                            required: true,
-                            attributes: ['id', 'image'],
-                        },
-                    ],
-                },
-                {
-                    model: store,
-                    as: 'store',
-                    required: true,
-                    where: { UUID: { [Op.substring]: storeUUID } },
-                    attributes: ['id', 'name'],
-                    include: [
-                        {
-                            model: users,
-                            as: 'user',
-                            required: true,
-                            where: { email: { [Op.substring]: email } },
-                            attributes: ['name'],
-                        },
-                    ]
-                }
-            ],
-            attributes: ['id', 'discountId', 'stock'],
-        });
-        res.status(200).json(resTemplate(200, true, 'Get All Inventory Success', { count: rawData.length, data: result, raw: rawData }));
+            attributes: [[literal('product.name'), 'productName'], [literal('product.price'), 'productPrice'],'stock'],
+            limit: parseInt(limit),
+            offset: page * parseInt(limit) - parseInt(limit),
+            order: [order],
+            distinct: true,
+        })
+
+        res.status(200).json(resTemplate(200, true, 'Get All Inventory Success', result));
     } catch (error) {
         next(error);
     }

@@ -18,13 +18,12 @@ const Landing = () => {
 
   useEffect(() => {
     getCategoryData();
-    getProductData();
+    if(currStore.storeId) getProductData();
     getHeroData();
-  }, []);
+  }, [currStore]);
 
   const getCategoryData = async () => {
     const res = await API_CALL.get('category');
-    // console.log('RES >>>', res.data);
     if (res) {
       setCategoryData(res.data);
     }
@@ -40,11 +39,14 @@ const Landing = () => {
   };
 
   const getProductData = async () => {
-    const res = await API_CALL.get('inventory');
-    console.log('RES >>>', res.data);
-    if (res) {
-      setProductData(res.data.result.data);
-    }
+      const res = await API_CALL.get('inventory', {
+        params: {
+          store: currStore.storeId,
+        },
+      });
+      if (res) {
+        setProductData(res.data.result.rows);
+      }
   };
 
   return (

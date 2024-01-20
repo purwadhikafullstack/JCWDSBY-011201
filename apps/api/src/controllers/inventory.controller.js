@@ -15,3 +15,7 @@ export const createInventory = async (data) => {
 export const updateInventory = async (data, pointer) => {
     return await inventory.update(data, pointer);
 };
+
+export const findAndCountAllInventory = async (pointer) => {
+    return await inventory.findAndCountAll(pointer);
+};
