@@ -42,6 +42,7 @@ import EditAdmin from './pages/admin/EditAdmin';
 import getNearestStore from './helpers/getNearestStore';
 import UserChangeEmail from './pages/UserChangeEmail';
 import VerifyEmail from './pages/VerifyEmail';
+import TesCheckOut from './pages/TesCheckOut';
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 function App() {
@@ -179,6 +180,14 @@ function App() {
           element={
             <PrivateRoute role={'user'} navigate={'/login'}>
               <UserEditAddress />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/tes/checkout"
+          element={
+            <PrivateRoute role={'user'} navigate={'/login'}>
+              <TesCheckOut />
             </PrivateRoute>
           }
         />
