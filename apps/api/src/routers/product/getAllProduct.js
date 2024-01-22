@@ -21,7 +21,7 @@ export default async function (req, res, next) {
             ],
             attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
         });
-        res.status(200).json(resTemplate(200, true, 'Get all products success', {count: result.length, result: result}));
+        res.status(200).json(resTemplate(200, true, 'Get all products success', {count: result.length, data: result}));
     } catch (error) {
         next(error);
     }

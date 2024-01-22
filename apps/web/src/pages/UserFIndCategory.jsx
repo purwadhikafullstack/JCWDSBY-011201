@@ -1,47 +1,42 @@
 import Footer from '../components/Footer';
 import UserCategoryButton from '../components/UserCategoryButton';
 import UserLayout from '../components/UserLayout';
-import { Carousel } from 'flowbite-react';
 import UserProductCard from '../components/UserProductCard';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import API_CALL from '../helpers/API';
 import { useEffect, useState } from 'react';
 import { IMG_URL_CATEGORY, IMG_URL_PRODUCT } from '../constants/imageURL';
+import { useSelector } from 'react-redux';
+import { sortingProduct } from '../constants/sorting';
+import { Select } from 'flowbite-react';
 
 const UserFindCategory = () => {
+  const currStore = useSelector((reducer) => reducer.storeReducer);
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const [categoryData, setCategoryData] = useState(null);
   const [productData, setProductData] = useState([]);
-  const sort = [
-    { sortName: 'Lowest Price', value: 'lowest' },
-    { sortName: 'Highest Price', value: 'highest' },
-    { sortName: 'Name A-Z', value: 'nameasc' },
-    { sortName: 'Name Z-A', value: 'namedesc' },
-  ];
 
   useEffect(() => {
     getCategoryData();
-    getProductData();
-  }, [])
+    if (currStore.storeId) getProductData();
+  }, [currStore])
 
   useEffect(() => {
-    getProductData();
+    if (currStore.storeId) getProductData();
   }, [searchParams])
 
   const getCategoryData = async () => {
     const res = await API_CALL.get('category');
-    // console.log('RES >>>', res.data);
     if (res) {
       setCategoryData(res.data);
     }
   };
 
   const getProductData = async () => {
-    const res = await API_CALL.get('product/inventory', {
-      params: { q: searchParams.get('q'), category: searchParams.get('category'), sort: searchParams.get('sort')},
+    const res = await API_CALL.get('inventory', {
+      params: { q: searchParams.get('q'), category: searchParams.get('category'), sort: searchParams.get('sort'), store: currStore.storeId },
     });
-    // console.log('RES >>>', res.data);
     if (res) {
       setProductData(res.data.result.data);
     }
@@ -81,32 +76,9 @@ const UserFindCategory = () => {
         </div>
         <div className="flex gap-2 items-center">
           <span className="text-sm font-semibold">Sort By</span>
-          <select
-            className="text-sm font-bold rounded-full border-2 p-2"
-            name="sort"
-            id="sort"
-            onChange={(e) => {
-              setSearchParams((prev) => {
-                if (e.target.value) {
-                  prev.set('sort', e.target.value);
-                } else {
-                  prev.delete('sort');
-                }
-                return prev;
-              });
-            }}
-          >
-            <option value="">None</option>
-            {sort.map((value) => (
-              <option
-                key={value}
-                value={value.value}
-                selected={searchParams.get('sort') === value.value && true}
-              >
-                {value.sortName}
-              </option>
-            ))}
-          </select>
+          <Select value={searchParams.get('sort') || sortingProduct[0].value} onChange={(e) => {searchParams.set('sort', e.target.value); setSearchParams(searchParams); }}>
+            {sortingProduct.map((value, index) => <option key={index} value={value.value} >{value.sortName}</option>)}
+          </Select>
         </div>
         <div className="flex flex-col gap-2">
           <span className="font-bold text-base">

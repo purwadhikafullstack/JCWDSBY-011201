@@ -2,13 +2,13 @@ import AdminSidebar from "../../components/AdminSidebar";
 import LayoutPageAdmin from "../../components/LayoutPageAdmin";
 import BoxAddItem from "../../components/BoxAddItem";
 import { useNavigate } from "react-router-dom";
-import CardManage from "../../components/CardManage";
 import { useEffect, useState } from "react";
 import API_CALL from "../../helpers/API";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import { useSelector } from "react-redux";
 import { IMG_URL_PRODUCT } from "../../constants/imageURL";
 import CardManageProduct from "../../components/CardManageProduct";
+import capitalize from "../../helpers/capitalize";
 
 const ManageProduct = () => {
     const navigate = useNavigate();
@@ -22,7 +22,7 @@ const ManageProduct = () => {
 
     const getProduct = async () => {
         setIsLoading(true);
-        const res = await API_CALL.get('product/inventory');
+        const res = await API_CALL.get('product');
         if (res) {
             setData(res.data.result.data);
             setIsLoading(false);
@@ -45,21 +45,13 @@ const ManageProduct = () => {
                         return (
                             <CardManageProduct
                                 key={index}
-                                image={item.product.product_images[0].image && IMG_URL_PRODUCT + item.product.product_images[0].image}
-                                productName={item.product.name}
-                                productUnit={item.product.weight + item.product.unit}
-                                price={item.product.price}
-                                stock={item.stock}
-                                onEdit={() => navigate(`/manage/product/edit/${item.product.name}`)}
-                                onDelete={() => handleDeleteButton(item.product.id)}
+                                image={item.product_images[0].image && IMG_URL_PRODUCT + item.product_images[0].image}
+                                productName={capitalize(item.name)}
+                                productUnit={item.weight + item.unit}
+                                price={item.price}
+                                onEdit={() => navigate(`/manage/product/edit/${item.name}`)}
+                                onDelete={() => handleDeleteButton(item.id)}
                             />
-                            // <CardManage
-                            //     key={index}
-                            //     src={item.product_images[0].image? IMG_URL_PRODUCT + item.product_images[0].image : '/defaultImage.jpg'}
-                            //     name={item.name}
-                            //     onEdit={() => navigate(`/manage/product/edit/${item.name}`)}
-                            //     onDelete={() => handleDeleteButton(item.id)}
-                            // />
                         )
                     })}
                 </div>

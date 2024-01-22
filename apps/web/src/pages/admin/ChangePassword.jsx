@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { Button, Label, TextInput } from "flowbite-react";
-import ModalConfirm from "../../components/ModalConfirm";
+import ModalConfirm from "../../components/modal/ModalConfirm";
 import API_CALL from "../../helpers/API";
 
 const validationSchema = Yup.object().shape({

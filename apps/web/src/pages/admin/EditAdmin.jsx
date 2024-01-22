@@ -4,7 +4,7 @@ import TopBar from "../../components/TopBar";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import ModalConfirm from "../../components/ModalConfirm";
+import ModalConfirm from "../../components/modal/ModalConfirm";
 import { Button, Label, TextInput } from "flowbite-react";
 import API_CALL from "../../helpers/API";
 

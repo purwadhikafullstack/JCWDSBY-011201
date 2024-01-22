@@ -14,7 +14,7 @@ export default async function (req, res, next) {
       where: { name: { [Op.substring]: query } },
       order: [['isMain', 'DESC']],
       attributes: {
-        exclude: ['id', 'createdAt', 'updatedAt', 'deletedAt'],
+        exclude: ['createdAt', 'updatedAt', 'deletedAt'],
       },
       include: [
         { model: users, attributes: ['name'] },
@@ -30,7 +30,7 @@ export default async function (req, res, next) {
       where: { name: { [Op.substring]: query } },
       order: [['isMain', 'DESC']],
       attributes: {
-        exclude: ['id', 'createdAt', 'updatedAt', 'deletedAt'],
+        exclude: ['createdAt', 'updatedAt', 'deletedAt'],
       },
       include: [
         { model: users, attributes: ['name'] },
@@ -44,7 +44,7 @@ export default async function (req, res, next) {
       rc: 201,
       success: true,
       message: 'Success get all stores',
-      result: { row: count.length, data: result },
+      result: { row: count.length, data: result, raw: count },
     });
   } catch (error) {
     return res.status(error.rc || 500).json({
