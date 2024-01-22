@@ -7,164 +7,74 @@ import { unlink, existsSync } from "fs";
 
 export const findAllProducts = async (pointer) => {
     return await product.findAll(pointer);
-}; 
+};
 
-// export const getProductData = async () => {
-//     return await product.findAll({
+export const findOneProduct = async (pointer) => {
+    return await product.findOne(pointer);
+};
+
+export const createProduct = async (data) =>{
+    return await product.create(data);
+};
+
+export const updateProduct = async (data, pointer) => {
+    return await product.update(data, pointer);
+};
+
+// export const findProductByCategory = async (category) => {
+//     return await inventory.findAll({
 //         include: [
 //             {
-//                 model: categories,
-//                 as: 'category',
+//                 model: product,
+//                 as: 'product',
 //                 required: true,
-//                 attributes: ['id', 'name'],
-//             },
-//             {
-//                 model: productImage,
-//                 required: true,
-//                 attributes: ['id', 'image'],
-//             },
+//                 attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt', 'categoryId'] },
+//                 include: [
+//                     {
+//                         model: categories,
+//                         as: 'category',
+//                         where: { name: category },
+//                         required: true,
+//                         attributes: ['id', 'name'],
+//                     },
+//                     {
+//                         model: productImage,
+//                         required: true,
+//                         attributes: ['id', 'image'],
+//                     },
+//                 ],
+//             }
 //         ],
-//         attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
-//     },);
+//         attributes: ['id', 'storeId', 'discountId', 'stock'],
+//     });
 // };
 
-export const findProductByName = async (name) => {
-    return await inventory.findOne({
-        include: [
-            {
-                model: product,
-                as: 'product',
-                where: { name },
-                required: true,
-                attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt', 'categoryId'] },
-                include: [
-                    {
-                        model: categories,
-                        as: 'category',
-                        required: true,
-                        attributes: ['id', 'name'],
-                    },
-                    {
-                        model: productImage,
-                        required: true,
-                        attributes: ['id', 'image'],
-                    },
-                ],
-            }
-        ],
-        attributes: ['id', 'storeId', 'discountId', 'stock'],
-    });
-};
-
-export const findProductByCategory = async (category) => {
-    return await inventory.findAll({
-        include: [
-            {
-                model: product,
-                as: 'product',
-                required: true,
-                attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt', 'categoryId'] },
-                include: [
-                    {
-                        model: categories,
-                        as: 'category',
-                        where: { name: category },
-                        required: true,
-                        attributes: ['id', 'name'],
-                    },
-                    {
-                        model: productImage,
-                        required: true,
-                        attributes: ['id', 'image'],
-                    },
-                ],
-            }
-        ],
-        attributes: ['id', 'storeId', 'discountId', 'stock'],
-    });
-};
-
-export const getInventoryData = async () => {
-    return await inventory.findAll({
-        include: [
-            {
-                model: product,
-                as: 'product',
-                required: true,
-                attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt', 'categoryId'] },
-                include: [
-                    {
-                        model: categories,
-                        as: 'category',
-                        required: true,
-                        attributes: ['id', 'name'],
-                    },
-                    {
-                        model: productImage,
-                        required: true,
-                        attributes: ['id', 'image'],
-                    },
-                ],
-            }
-        ],
-        attributes: ['id', 'storeId', 'discountId', 'stock'],
-    });
-};
-
-export const createProduct = async (storeId, data) => {
-    const checkProduct = await inventory.findOne({
-        where: {
-            storeId,
-        },
-        include: [
-            {
-                model: product,
-                required: true,
-                where: {
-                    name: data.name,
-                }
-            }
-        ]
-    });
-    if (checkProduct) {
-        throw {
-            rc: 409,
-            success: false,
-            message: 'Product already exists',
-            result: null,
-        }
-    }
-    const result = await product.create(data);
-    if (result) {
-        await inventory.create({
-            storeId,
-            productId: result.id,
-            stock: 0
-        });
-        return result;
-    }
-};
-
-export const updateProduct = async (id, data) => {
-    if (Object.hasOwn(data, 'name')) {
-        const checkProductName = await product.findOne({
-            where: { name: data.name },
-        });
-        if (checkProductName) {
-            throw {
-                rc: 409,
-                success: false,
-                message: 'Product already exists',
-                result: null,
-            }
-        }
-    }
-    return await product.update(
-        data,
-        {
-            where: { id }
-        });
-};
+// export const getInventoryData = async () => {
+//     return await inventory.findAll({
+//         include: [
+//             {
+//                 model: product,
+//                 as: 'product',
+//                 required: true,
+//                 attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt', 'categoryId'] },
+//                 include: [
+//                     {
+//                         model: categories,
+//                         as: 'category',
+//                         required: true,
+//                         attributes: ['id', 'name'],
+//                     },
+//                     {
+//                         model: productImage,
+//                         required: true,
+//                         attributes: ['id', 'image'],
+//                     },
+//                 ],
+//             }
+//         ],
+//         attributes: ['id', 'storeId', 'discountId', 'stock'],
+//     });
+// };
 
 export const updateInventory = async (id, stock) => {
     return await inventory.update(

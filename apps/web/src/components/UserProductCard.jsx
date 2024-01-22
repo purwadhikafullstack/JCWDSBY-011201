@@ -43,6 +43,7 @@ const UserProductCard = ({
                   {discountPrice.toLocaleString('ID', {
                     style: 'currency',
                     currency: 'idr',
+                    maximumFractionDigits: 0
                   })}
                 </span>
               </div>
@@ -54,6 +55,7 @@ const UserProductCard = ({
                   {price.toLocaleString('ID', {
                     style: 'currency',
                     currency: 'idr',
+                    maximumFractionDigits: 0
                   })}
                 </span>
               </div>
@@ -63,6 +65,7 @@ const UserProductCard = ({
               {price.toLocaleString('ID', {
                 style: 'currency',
                 currency: 'idr',
+                maximumFractionDigits: 0
               })}
             </span>
           )}

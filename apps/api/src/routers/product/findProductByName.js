@@ -1,11 +1,14 @@
-import { findAllProducts } from "../../controllers/product.controller";
+import { findOneProduct } from "../../controllers/product.controller";
 import resTemplate from "../../helper/resTemplate";
 import categories from "../../models/categories.model";
 import productImage from "../../models/product-image.model";
 
 export default async function (req, res, next) {
     try {
-        const result = await findAllProducts({
+        const result = await findOneProduct({
+            where: {
+                name: req.params.name,
+            },
             include: [
                 {
                     model: categories,
@@ -21,8 +24,9 @@ export default async function (req, res, next) {
             ],
             attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
         });
-        res.status(200).json(resTemplate(200, true, 'Get all products success', {count: result.length, data: result}));
+
+        return res.status(200).json(resTemplate(200, true, 'Find product by name success', result));
     } catch (error) {
         next(error);
     }
-};
+}
