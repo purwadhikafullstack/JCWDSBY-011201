@@ -9,7 +9,6 @@ import NewPassword from './pages/NewPassword';
 import VerifyAccount from './pages/VerifyAccount';
 import LoginAdmin from './pages/LoginAdmin';
 import Landing from './pages/Landing';
-import Cart from './pages/Cart';
 import { gapi } from 'gapi-script';
 import { useEffect, useState } from 'react';
 import AdminDashboard from './pages/AdminDashboard';
@@ -33,7 +32,7 @@ import Inventory from './pages/admin/Inventory';
 import ManageAdmin from './pages/admin/ManageAdmin';
 import RegisteredUser from './pages/admin/RegisteredUser';
 import ManageStore from './pages/admin/ManageStore';
-import CheckAuth from './helpers/checkAuth';
+import CheckAuth from './helpers/CheckAuth';
 import { setStore } from './redux/slice/storeSlice';
 import ManageStoreAdd from './pages/admin/ManageStoreAdd';
 import ManageStoreUpdate from './pages/admin/ManageStoreUpdate';
@@ -42,6 +41,8 @@ import EditAdmin from './pages/admin/EditAdmin';
 import getNearestStore from './helpers/getNearestStore';
 import UserChangeEmail from './pages/UserChangeEmail';
 import VerifyEmail from './pages/VerifyEmail';
+import { fetchCartItems } from './redux/slice/cartSlice';
+import Cart from './pages/Cart';
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 function App() {
@@ -50,6 +51,13 @@ function App() {
   const dispatch = useDispatch();
   const globalUser = useSelector((reducer) => reducer.userReducer);
   const currStore = useSelector((reducer) => reducer.storeReducer);
+  const storeUUID = useSelector((state) => state.storeReducer.storeId);
+
+  useEffect(() => {
+    if (globalUser) {
+      dispatch(fetchCartItems(storeUUID));
+    }
+  }, [storeUUID]);
 
   useEffect(() => {
     function start() {
@@ -318,8 +326,6 @@ function App() {
             </PrivateRoute>
           }
         />
-        {/* Afra */}
-        <Route path="/cart" element={<Cart />} />
         <Route path="/*" element={<NotFound />} />
       </Routes>
       <ToastContainer

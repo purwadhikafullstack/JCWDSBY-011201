@@ -32,7 +32,8 @@ const UserTopbar = () => {
       <div
         className={`flex md:hidden cursor-pointer ${
           location.pathname.includes('category') ||
-          location.pathname.includes('product')
+          location.pathname.includes('product') ||
+          location.pathname.includes('cart')
             ? 'hidden'
             : ''
         }`}
@@ -46,7 +47,8 @@ const UserTopbar = () => {
       <div
         className={`${
           location.pathname.includes('category') ||
-          location.pathname.includes('product')
+          location.pathname.includes('product') ||
+          location.pathname.includes('cart')
             ? 'flex'
             : 'hidden'
         } md:hidden items-center cursor-pointer`}

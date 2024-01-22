@@ -9,6 +9,7 @@ import HeroViews from '../components/views/HeroViews';
 import LandingCategoryViews from '../components/views/LandingCategoryViews';
 import { useNavigate } from 'react-router-dom';
 
+
 const Landing = () => {
   const currStore = useSelector((reducer) => reducer.storeReducer);
   const [categoryData, setCategoryData] = useState(null);
@@ -70,6 +71,7 @@ const Landing = () => {
                   image={`${import.meta.env.VITE_IMG_URL}/product/${
                     value.product.product_images[0].image
                   }`}
+                  inventoryid={value.id}
                   productName={value.product.name}
                   productUnit={value.product.weight + value.product.unit}
                   price={value.product.price}
