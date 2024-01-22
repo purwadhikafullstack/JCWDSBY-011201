@@ -52,10 +52,11 @@ const EditProduct = () => {
         setIsLoading(true);
         const res = await API_CALL.get(`product/${name}`);
         if (res) {
+            const productData = res.data.result;
             setIsLoading(false);
-            setPrevName(res.data.product.name);
-            setData({ ...data, id: res.data.id, name: res.data.product.name, price: res.data.product.price, description: res.data.product.description, weight: res.data.product.weight, unit: res.data.product.unit, categoryId: res.data.product.category.id });
-            setFile(res.data.product.product_images);
+            setPrevName(productData.name);
+            setData({ ...data, id: productData.id, name: productData.name, price: productData.price, description: productData.description, weight: productData.weight, unit: productData.unit, categoryId: productData.category.id });
+            setFile(productData.product_images);
         }
     }
 
@@ -121,7 +122,7 @@ const EditProduct = () => {
         setIsLoading(true);
         const product = {
             name: data.name,
-            price: parseInt(data.price.replace(/[^0-9]/g, '')),
+            price: parseInt(data.price),
             description: data.description,
             weight: parseInt(data.weight),
             unit: data.unit,
@@ -133,10 +134,14 @@ const EditProduct = () => {
         }
         
         try {
-            await API_CALL.patch(`product/${data.id}`, product)
+            await API_CALL.patch(`product/${data.id}`, product, { 
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('authToken')}`
+                }
+            })
         } catch (error) {
             setIsLoading(false);
-            if (error.response.status === 409) return toast.error('Product already exists', {
+            if (error.response.status === 304) return toast.error('Product already exists', {
                 position: "bottom-center",
                 autoClose: 5000,
                 hideProgressBar: false,

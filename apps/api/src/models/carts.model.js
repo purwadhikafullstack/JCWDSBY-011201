@@ -7,6 +7,7 @@ export default class carts extends Model {
    * The `models/index` file will call this method automatically.
    */
   static associate(models) {
+    carts.belongsTo(models.inventory)
     // define association here
   }
 }
@@ -14,7 +15,7 @@ export default class carts extends Model {
 export const init = (sequelize) => {
   carts.init({
     userId: DataTypes.INTEGER,
-    productId: DataTypes.INTEGER,
+    inventoryId: DataTypes.INTEGER,
     amount: DataTypes.INTEGER,
     checked: DataTypes.BOOLEAN
   }, {

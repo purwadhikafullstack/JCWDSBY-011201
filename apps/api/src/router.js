@@ -14,6 +14,7 @@ import { storesRouter } from './routers/stores.router';
 import { utilsRouter } from './routers/utils.router';
 import { eventRouter } from './routers/event.router';
 import { adminRouter } from './routers/admin.router';
+import { inventoryRouter } from './routers/inventory.router';
 
 const router = Router();
 
@@ -40,6 +41,7 @@ router.use('/category', categoryRouter);
 router.use('/product', productRouter);
 router.use('/product/image', productImageRouter);
 router.use('/admin', adminRouter);
+router.use('/inventory', inventoryRouter)
 
 //Afra
 router.use('/cart', cartRouter);

@@ -28,5 +28,8 @@
     "hooks": {
       "pre-commit": "npx lint-staged"
     }
+  },
+  "dependencies": {
+    "mustache": "^4.2.0"
   }
 }

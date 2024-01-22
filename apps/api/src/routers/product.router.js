@@ -1,32 +1,21 @@
 import { Router } from "express";
 import {
-    getProductData,
-    getInventoryData,
-    createProduct,
-    updateProduct,
-    updateInventory, 
     deleteProduct,
     deleteInventory,
-    findProductByName,
     findProductByCategory,
 } from "../controllers/product.controller";
 import getAllProduct from "./product/getAllProduct";
-import getAllInventory from "./inventory/getAllInventory";
+import createProduct from "./product/createProduct";
+import findProductByName from "./product/findProductByName";
+import updateProduct from "./product/updateProduct";
+import { validateSuper, validateToken } from "../middleware/tokenValidation";
 
 const productRouter = Router();
 
 productRouter.get('/', getAllProduct);
-
-productRouter.get('/inventory', getAllInventory);
-
-productRouter.get('/:name', async (req, res, next) => {
-    try {
-        const result = await findProductByName(req.params.name);
-        res.status(200).json(result);
-    } catch (error) {
-        next(error);
-    }
-});
+productRouter.get('/:name', findProductByName);
+productRouter.post('/', validateToken, validateSuper, createProduct);
+productRouter.patch('/:id', validateToken, validateSuper, updateProduct);
 
 productRouter.get('/category/:name', async (req, res, next) => {
     try {
@@ -34,34 +23,6 @@ productRouter.get('/category/:name', async (req, res, next) => {
         res.status(200).json(result);
     } catch (error) {
         next(error);
-    }
-});
-
-
-productRouter.post('/', async (req, res, next) => {
-    try {
-        const result = await createProduct(1, req.body); //! TODO: add validation (store id is required)
-        res.status(200).json(result);
-    } catch (error) {
-        next(error);
-    }
-});
-
-productRouter.patch('/:id', async (req, res, next) => {
-    try {
-        await updateProduct(req.params.id, req.body);
-        res.status(200).json('Product updated');
-    } catch (error) {
-        next(error)
-    }
-});
-
-productRouter.patch('/inventory/:id', async (req, res, next) => {
-    try {
-        await updateInventory(req.params.id, req.body);
-        res.status(200).json('Inventory updated');
-    } catch (error) {
-        next(error)
     }
 });
 

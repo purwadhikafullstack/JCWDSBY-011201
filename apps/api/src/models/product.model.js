@@ -12,10 +12,7 @@ export default class product extends Model {
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE',
     });
-    product.hasMany(models.inventory, {
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE',
-    });
+    product.hasMany(models.inventory);
     product.hasMany(models.product_image, {
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE',

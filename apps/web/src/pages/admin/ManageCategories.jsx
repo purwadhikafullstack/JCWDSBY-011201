@@ -4,7 +4,7 @@ import LayoutPageAdmin from '../../components/LayoutPageAdmin';
 import BoxAddItem from '../../components/BoxAddItem';
 import CardManage from '../../components/CardManage';
 import API_CALL from '../../helpers/API';
-import ModalCategory from '../../components/ModalCategory';
+import ModalCategory from '../../components/modal/ModalCategory';
 import { MAX_SIZE, REGEX_FILE_TYPE } from '../../constants/file';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { useSelector } from 'react-redux';

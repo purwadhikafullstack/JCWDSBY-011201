@@ -33,8 +33,6 @@ export const getCategoryDataById = async (id) => {
 };
 
 export const updateCategory = async (id, data, image) => {
-  console.log('DATA >>> ', data);
-  console.log('DATA >>> ', Object.hasOwn(data, 'name'));
   if(Object.hasOwn(data, 'name')){
     const checkCategory = await category.findOne({ where: {name: data.name} });
     if (checkCategory) {
