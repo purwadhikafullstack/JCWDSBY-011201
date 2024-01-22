@@ -1,6 +1,6 @@
 import { Model, DataTypes } from 'sequelize';
 
-export default class Sample extends Model {
+export default class sample extends Model {
   /**
    * Helper method for defining associations.
    * This method is not a part of Sequelize lifecycle.
@@ -12,13 +12,13 @@ export default class Sample extends Model {
 }
 
 export const init = (sequelize) => {
-  Sample.init(
+  sample.init(
     {
       name: DataTypes.STRING,
     },
     {
       sequelize,
-      modelName: 'Sample',
+      modelName: 'sample',
     },
   );
 };
