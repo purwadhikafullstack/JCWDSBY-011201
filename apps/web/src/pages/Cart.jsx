@@ -9,7 +9,6 @@ import { fetchCartItems, setCarts } from '../redux/slice/cartSlice';
 const Cart = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cartReducer.items);
-  console.log('🚀 ~ Cart ~ cartItems:', cartItems);
   const storeUUID = useSelector((state) => state.storeReducer.storeId);
   useEffect(() => {
     dispatch(fetchCartItems(storeUUID));
@@ -25,7 +24,7 @@ const Cart = () => {
 
   return (
     <UserLayout>
-      <div className="container mx-auto max-w-sm h-[100svh] font-roboto">
+      <div className="container mx-auto max-w-sm h-[100svh] font-roboto overflow-y-auto">
         <div className="flex tracking-tight justify-center mb-3 ">
           <h1 className="text-xl font-bold">Cart</h1>
         </div>

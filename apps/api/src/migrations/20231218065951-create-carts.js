@@ -14,6 +14,7 @@ module.exports = {
       },
       inventoryId: {
         type: Sequelize.INTEGER,
+        unique:true
       },
       amount: {
         type: Sequelize.INTEGER,

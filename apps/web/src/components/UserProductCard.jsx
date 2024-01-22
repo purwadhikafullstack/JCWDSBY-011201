@@ -1,7 +1,9 @@
 import { DrawerForUserProductCard } from './DrawerForUserProductCard';
-import { Button } from 'flowbite-react';
 import { useState } from 'react';
 import { HiOutlinePlus } from 'react-icons/hi2';
+import { useSelector } from 'react-redux';
+import { BsFillCartCheckFill } from 'react-icons/bs';
+import { useNavigate } from 'react-router-dom';
 
 const UserProductCard = ({
   image,
@@ -12,9 +14,14 @@ const UserProductCard = ({
   stock,
   onClickProduct,
   onAddCart,
+  inventoryid,
 }) => {
+  const cartItems = useSelector((state) => state.cartReducer.items);
+  const navigate = useNavigate();
   const [openDrawer, setOpenDrawer] = useState(false);
-
+  const isItemExistInCart = cartItems.some(
+    (item) => item.inventoryId === inventoryid,
+  );
   const toggleDrawer = () => setOpenDrawer((prevState) => !prevState);
   return (
     <div className="flex flex-col w-full h-60 md:h-64 lg:h-72 border-2 rounded-md relative cursor-pointer">
@@ -64,24 +71,42 @@ const UserProductCard = ({
           </span>
         </div>
       </div>
-      <button
-        className={`${
-          stock
-            ? 'bg-blue-700 hover:scale-[1.2] transition-all duration-300'
-            : 'bg-gray-200'
-        } absolute flex justify-center items-center w-8 h-8 rounded-full bottom-2 right-2`}
-        type="button"
-        disabled={stock ? false : true}
-        onClick={toggleDrawer}
-      >
-        <HiOutlinePlus className="text-white w-6 h-6" />
-      </button>
+      {!isItemExistInCart ? (
+        <button
+          className={`${
+            stock
+              ? 'bg-blue-700 hover:scale-[1.2] transition-all duration-300'
+              : 'bg-gray-200'
+          } absolute flex justify-center items-center w-8 h-8 rounded-full bottom-2 right-2`}
+          type="button"
+          disabled={stock ? false : true}
+          onClick={toggleDrawer}
+        >
+          <HiOutlinePlus className="text-white w-6 h-6" />
+        </button>
+      ) : (
+        <button
+          className={`${
+            stock
+              ? 'bg-blue-700 hover:scale-[1.2] transition-all duration-300'
+              : 'bg-gray-200'
+          } absolute flex justify-center items-center w-8 h-8 rounded-full bottom-2 right-2`}
+          type="button"
+          onClick={() => {
+            navigate('/cart');
+          }}
+        >
+          <BsFillCartCheckFill className="text-white w-5 h-5" />
+        </button>
+      )}
       <DrawerForUserProductCard
+        inventoryid={inventoryid}
         openDrawer={openDrawer}
         toggleDrawer={toggleDrawer}
         price={price}
         image={image}
         productName={productName}
+        stock={stock}
       />
     </div>
   );

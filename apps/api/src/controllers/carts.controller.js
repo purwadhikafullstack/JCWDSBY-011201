@@ -43,6 +43,19 @@ export const updateChecks = async (req, t) => {
     );
   }
 };
+export const updateChecksAll = async (req, t) => {
+  console.log(req.body);
+  return await carts.update(
+    { checked: req.body.checked },
+    {
+      where: {
+        userId: req.tokenData.id,
+        inventoryId: req.body.inventoryIdArray,
+      },
+      transaction: t,
+    },
+  );
+};
 
 export const findStoreIdFromUUID = async (req) => {
   return await stores.findOne({
@@ -75,8 +88,7 @@ export const getCarts = async (req, storeId) => {
                 model: productImage,
                 as: 'product_images',
                 required: true,
-                attributes: ['image','productId','id'],
-                
+                attributes: ['image', 'productId', 'id'],
               },
             ],
           },
@@ -87,15 +99,17 @@ export const getCarts = async (req, storeId) => {
   });
 };
 
-export const deleteOneProductInCart = async (req, t) =>
+export const deleteOneProductInCart = async (req, t) => {
+  console.log('paramo', req.params.id);
   await carts.destroy({
     where: { id: req.params.id },
     transaction: t,
   });
+};
 
 export const deleteCheckedItemInCart = async (req, t) =>
   await carts.destroy({
-    where: { checked: true },
+    where: { inventoryId: req.body.inventoryIdArray },
     transaction: t,
   });
 

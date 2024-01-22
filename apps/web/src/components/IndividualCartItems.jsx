@@ -9,23 +9,31 @@ import {
 export function IndividualCartItems({ val, idx }) {
   const storeUUID = useSelector((state) => state.storeReducer.storeId);
   const prevCheckedRef = useRef(val.checked);
+  const [clicked, setClicked] = useState(false);
   const dispatch = useDispatch();
   useEffect(() => {
-    prevCheckedRef.current = val.checked;
-    const timer = setTimeout(() => {
-      dispatch(updateChecksInCloud(val.id, prevCheckedRef.current, storeUUID));
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, [val.checked]);
+    if (val.checked !== prevCheckedRef.current && clicked) {
+      prevCheckedRef.current = val.checked;
+      const timer = setTimeout(() => {
+        dispatch(
+          updateChecksInCloud(val.id, prevCheckedRef.current, storeUUID),
+        );
+      }, 300);
+      setClicked(false);
+      return () => clearTimeout(timer);
+    }
+  }, [val.checked, storeUUID, val.id]);
   return (
     <div className="w-full h-15 justify-start items-start gap-2 flex">
       <div className="flex">
         <Checkbox
           className="!w-4 !h-4"
-          defaultChecked={val.checked ? true : false}
-          onClick={() => {
+          checked={val.checked}
+          onChange={() => {
             dispatch(checkUncheckItem(val.id));
+          }}
+          onClick={() => {
+            setClicked(true);
           }}
         />
       </div>

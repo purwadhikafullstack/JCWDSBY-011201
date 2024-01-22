@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import HeroViews from '../components/views/HeroViews';
 import LandingCategoryViews from '../components/views/LandingCategoryViews';
 import { useNavigate } from 'react-router-dom';
-import LandingAddToCartDrawer from '../components/LandingAddToCartDrawer';
+
 
 const Landing = () => {
   const currStore = useSelector((reducer) => reducer.storeReducer);
@@ -69,6 +69,7 @@ const Landing = () => {
                   image={`${import.meta.env.VITE_IMG_URL}/product/${
                     value.product.product_images[0].image
                   }`}
+                  inventoryid={value.id}
                   productName={value.product.name}
                   productUnit={value.product.weight + value.product.unit}
                   price={value.product.price}
@@ -96,7 +97,6 @@ const Landing = () => {
           </div>
         </div>
       </div>
-      <LandingAddToCartDrawer/>
       <Footer />
     </UserLayout>
   );

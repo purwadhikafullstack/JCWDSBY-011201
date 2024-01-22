@@ -20,8 +20,12 @@ const cartSlice = createSlice({
     decrementItem: (state, action) => {
       const itemInCart = state.items.find((item) => item.id === action.payload);
       if (itemInCart) {
-        if (itemInCart.amount !== undefined && itemInCart.amount > 0) {
+        if (itemInCart.amount !== undefined && itemInCart.amount > 1) {
           itemInCart.amount--;
+        } else if (itemInCart.amount !== undefined && itemInCart.amount === 1) {
+          state.items = state.items.filter(
+            (item) => item.id !== action.payload,
+          );
         }
       }
     },
@@ -35,6 +39,15 @@ const cartSlice = createSlice({
         }
       }
     },
+    checkUncheckAll: (state, action) => {
+      state.items = state.items.map((item) => ({
+        ...item,
+        checked: action.payload,
+      }));
+    },
+    deleteChecked: (state, action) => {
+      state.items = state.items.filter((item) => item.checked === 0);
+    },
     cartToCheckout: (state, action) => {
       state.dataToCheckout = action.payload.dataToCheckout;
     },
@@ -47,6 +60,8 @@ export const {
   incrementItem,
   decrementItem,
   checkUncheckItem,
+  checkUncheckAll,
+  deleteChecked,
 } = cartSlice.actions;
 export default cartSlice.reducer;
 
@@ -59,13 +74,10 @@ export const fetchCartItems = (storeUUID) => {
             Authorization: `Bearer ${localStorage.getItem('authToken')}`,
           },
         });
-       
         dispatch(setCarts(response.data.data));
-        console.log("🚀 ~ return ~ response:", response.data)
       } catch (error) {
         console.log(error);
       }
-       
     }
   };
 };
@@ -73,7 +85,6 @@ export const fetchCartItems = (storeUUID) => {
 export const UpdateAmountInCloud = (id, amount, storeUUID) => {
   return async (dispatch) => {
     try {
-      console.log(amount);
       const response = await API_CALL.patch(
         `/cart/${id}`,
         { amount },
@@ -90,13 +101,12 @@ export const UpdateAmountInCloud = (id, amount, storeUUID) => {
   };
 };
 
-export const updateChecksInCloud = (cartId,checked,storeUUID) => {
+export const updateChecksInCloud = (cartId, checked, storeUUID) => {
   return async (dispatch) => {
-    console.log("checkMonitor",checked);
     try {
       const response = await API_CALL.patch(
         `/cart/${cartId}?checker=true`,
-        {checked},
+        { checked },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('authToken')}`,
@@ -104,6 +114,51 @@ export const updateChecksInCloud = (cartId,checked,storeUUID) => {
         },
       );
       dispatch(fetchCartItems(storeUUID));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
+export const updateChecksAllInCloud = (
+  checkState,
+  inventoryIdArray,
+  storeUUID,
+) => {
+  return async (dispatch) => {
+    try {
+      if (inventoryIdArray) {
+        const response = await API_CALL.patch(
+          `/cart/checkall`,
+          {
+            checked: checkState,
+            inventoryIdArray: inventoryIdArray,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+            },
+          },
+        );
+        dispatch(fetchCartItems(storeUUID));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+export const deleteCheckedItemInCloud = (inventoryIdArray, storeUUID) => {
+  return async (dispatch) => {
+    try {
+      if (inventoryIdArray) {
+        const response = await API_CALL.delete(`/cart`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem(`authToken`)}`,
+          },
+          data: { inventoryIdArray },
+        });
+        dispatch(fetchCartItems(storeUUID));
+      }
     } catch (error) {
       console.log(error);
     }
