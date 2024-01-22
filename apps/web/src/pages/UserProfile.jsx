@@ -12,7 +12,7 @@ const UserProfile = (props) => {
   const location = useLocation();
   return (
     <UserLayout>
-      <div className="flex flex-col w-full">
+      <div className="flex flex-col flex-grow w-full">
         <div className="header flex flex-col pt-8 px-4 pb-4 bg-blue-50 gap-2">
           <div className="flex">
             <span className="text-blue-800 font-extrabold text-3xl">Cosmo</span>
