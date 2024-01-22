@@ -1,6 +1,5 @@
 import { Avatar, Sidebar } from 'flowbite-react';
 import { HiHome } from 'react-icons/hi';
-import { HiMiniPower } from 'react-icons/hi2';
 import { MdInventory, MdStore } from 'react-icons/md';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { IoMdListBox } from 'react-icons/io';
@@ -37,7 +36,6 @@ const AdminSidebar = () => {
     {
       title: 'User',
       icon: FaUser,
-      // page: '/manage/inventory'
     },
     {
       title: 'Store',
@@ -79,6 +77,10 @@ const AdminSidebar = () => {
                     </Sidebar.Collapse>
                   );
                 }
+                if (globalUser.role === 'admin' && item.title === 'User'){
+                  return
+                }
+
                 return (
                   <Sidebar.Item
                     onClick={() => navigate(item.page)}

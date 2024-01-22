@@ -91,22 +91,26 @@ const CreateProduct = () => {
         if (!data.price) return setRequiredField({ ...requiredField, price: true });
         if (!data.description) return setRequiredField({ ...requiredField, description: true });
         try {
+            setIsLoading(true);
             const postProduct = await API_CALL.post('product', { 
                 name: data.name, 
-                price: parseInt(data.price.replace(/[^0-9]/g, '')), 
+                price: parseInt(data.price), 
                 description: data.description, 
                 weight: parseInt(data.weight), 
-                categoryId: parseInt(data.categoryId), 
                 unit: data.unit, 
-                image: file[0] 
+                categoryId: parseInt(data.categoryId), 
+            },
+            {
+                headers: {Authorization: `Bearer ${localStorage.getItem('authToken')}`,}
             });
 
             if (postProduct) {
                 const formData = new FormData();
-                formData.append('productId', postProduct.data.id);
+                formData.append('productId', postProduct.data.result.id);
                 file.forEach((image) => formData.append(`productUpload`, image));
                 const postImage = await API_CALL.post('product/image', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
                 if (postImage) navigate('/manage/product');
+                setIsLoading(false);
             }
         } catch (error) {
             if (error.response.status === 409) return toast.error('Product already exists', {

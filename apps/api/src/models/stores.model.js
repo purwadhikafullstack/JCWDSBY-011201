@@ -5,6 +5,7 @@ import users from './users.model';
 import cities from './cities.model';
 import provinces from './provinces.model';
 import districts from './districts.model';
+import inventory from './inventory.model';
 import { nanoid } from 'nanoid';
 
 export default class stores extends Model {
@@ -19,6 +20,7 @@ export default class stores extends Model {
     stores.belongsTo(cities, { foreignKey: 'cityId' });
     stores.belongsTo(provinces, { foreignKey: 'provinceId' });
     stores.belongsTo(districts, { foreignKey: 'districtId' });
+    stores.hasMany(inventory, { foreignKey:'storeId' });
   }
 }
 

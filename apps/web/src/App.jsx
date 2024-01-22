@@ -33,7 +33,7 @@ import Inventory from './pages/admin/Inventory';
 import ManageAdmin from './pages/admin/ManageAdmin';
 import RegisteredUser from './pages/admin/RegisteredUser';
 import ManageStore from './pages/admin/ManageStore';
-import CheckAuth from './helpers/CheckAuth';
+import CheckAuth from './helpers/checkAuth';
 import { setStore } from './redux/slice/storeSlice';
 import ManageStoreAdd from './pages/admin/ManageStoreAdd';
 import ManageStoreUpdate from './pages/admin/ManageStoreUpdate';
