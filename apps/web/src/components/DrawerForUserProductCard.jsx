@@ -88,7 +88,7 @@ export function DrawerForUserProductCard({
               }
             }}
             onclickplus={() => {
-              if (amount < 10 && amount < stock) {
+              if (amount < stock) {
                 setAmount((prev) => prev + 1);
               }
             }}

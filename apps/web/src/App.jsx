@@ -43,6 +43,7 @@ import UserChangeEmail from './pages/UserChangeEmail';
 import VerifyEmail from './pages/VerifyEmail';
 import { fetchCartItems } from './redux/slice/cartSlice';
 import Cart from './pages/Cart';
+import Checkout from './pages/Checkout';
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 function App() {
@@ -194,14 +195,15 @@ function App() {
         <Route path="/product/:name" element={<UserProductDetail />} />
 
         {/* Afra */}
-        {/* <Route
+        <Route
           path="/cart"
           element={
             <PrivateRoute role={'user'} navigate={'/login'}>
               <Cart />
             </PrivateRoute>
           }
-        /> */}
+        />
+         <Route path="/checkout" element={<Checkout />} />
         {/* Admin Side */}
         {/* Wahyu Widiantoro */}
         <Route path="/manage/login" element={<LoginAdmin />} />

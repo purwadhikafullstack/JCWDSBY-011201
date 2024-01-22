@@ -35,10 +35,10 @@ export function CartProductLists(props) {
     }, 1000);
   }, []);
   useEffect(() => {
-    const timer = setTimeout(() => {
-      dispatch(updateChecksAllInCloud(Number(checkall), itemsInvId, storeUUID));
-    }, 300);
-    return () => clearTimeout(timer);
+    dispatch(updateChecksAllInCloud(Number(checkall), itemsInvId, storeUUID));
+    // const timer = setTimeout(() => {
+    // }, 300);
+    // return () => clearTimeout(timer);
   }, [checkall, storeUUID]);
 
   const checkAllHandler = () => {

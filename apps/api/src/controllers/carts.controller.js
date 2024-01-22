@@ -99,14 +99,12 @@ export const getCarts = async (req, storeId) => {
   });
 };
 
-export const deleteOneProductInCart = async (req, t) => {
-  console.log('paramo', req.params.id);
+export const deleteOneProductInCart = async (req, t) =>
   await carts.destroy({
     where: { id: req.params.id },
     transaction: t,
   });
-};
-
+  
 export const deleteCheckedItemInCart = async (req, t) =>
   await carts.destroy({
     where: { inventoryId: req.body.inventoryIdArray },

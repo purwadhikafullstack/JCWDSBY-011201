@@ -5,11 +5,13 @@ import {
   HiOutlineReceiptPercent,
   HiOutlineUser,
 } from 'react-icons/hi2';
+import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const UserBottomBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const cartLength = useSelector((state) => state.cartReducer.items.length);
   return (
     <div className="UserBottomBar flex lg:hidden sticky bottom-0 w-full rounded-t-xl justify-evenly border bg-blue-50 p-2">
       <div
@@ -48,6 +50,11 @@ const UserBottomBar = () => {
       >
         <span className="w-6 h-6">
           <HiOutlineShoppingCart size={'100%'} />
+          {cartLength && cartLength > 0 ? (
+            <div class="absolute inline-flex items-center justify-center w-5 h-5 text-[10px] font-bold text-white bg-red-500 border-2 border-white rounded-full top-2 right-[150px]">
+              {cartLength}
+            </div>
+          ) : null}
         </span>
         <span className="text-xs font-semibold">Cart</span>
       </div>

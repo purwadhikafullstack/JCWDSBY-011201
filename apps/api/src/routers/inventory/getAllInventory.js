@@ -66,7 +66,7 @@ export default async function (req, res, next) {
                     ]
                 }
             ],
-            attributes: [[literal('product.name'), 'productName'], [literal('product.price'), 'productPrice'],'stock'],
+            attributes: [[literal('product.name'), 'productName'], [literal('product.price'), 'productPrice'],'stock','id'],
             limit: parseInt(limit),
             offset: page * parseInt(limit) - parseInt(limit),
             order: [order],

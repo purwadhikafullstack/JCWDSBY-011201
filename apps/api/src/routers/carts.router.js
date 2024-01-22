@@ -78,17 +78,17 @@ cartRouter.patch('/checkall', validateToken, async (req, res, next) => {
     next(error);
   }
 });
-//Delete 
-cartRouter.delete("/:id",validateToken,async (req,res,next) => {
+//Delete
+cartRouter.delete('/:id', validateToken, async (req, res, next) => {
   await DB.initialize();
-  const t = await DB.db.sequelize.transaction()
+  const t = await DB.db.sequelize.transaction();
   try {
-    await deleteOneProductInCart(req,t)
+    await deleteOneProductInCart(req, t);
   } catch (error) {
-    console.log(error)
+    console.log(error);
     next(error);
   }
-})
+});
 
 cartRouter.patch('/:id', validateToken, async (req, res, next) => {
   await DB.initialize();
@@ -123,32 +123,31 @@ cartRouter.patch('/:id', validateToken, async (req, res, next) => {
 });
 
 //Delete
-cartRouter.delete('/:id', validateToken, async (req, res, next) => {
-  await DB.initialize();
-  const t = await DB.db.sequelize.transaction();
-  try {
-    await deleteOneProductInCart(req, t);
-    await t.commit();
-    return res
-      .status(200)
-      .send({ success: true, message: 'Item deleted successfully' });
-  } catch (error) {
-    console.log(error);
-    await t.rollback();
-    next(error);
-  }
-});
 
 cartRouter.delete('/', validateToken, async (req, res, next) => {
   await DB.initialize();
-  const sequelizer = await DB.db.sequelize
   try {
-    await DB.db.sequelize.transaction(async(t) => {
+    await DB.db.sequelize.transaction(async (t) => {
       await deleteCheckedItemInCart(req, t);
     });
     return res
       .status(200)
       .json({ success: true, message: 'checked items deleted successfully' });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
+
+cartRouter.delete('/delete/:id', validateToken, async (req, res, next) => {
+  await DB.initialize();
+  try {
+    await DB.db.sequelize.transaction(async (t) => {
+      await deleteOneProductInCart(req, t);
+    });
+    return res
+      .status(200)
+      .json({ success: true, message: 'Item deleted successfully' });
   } catch (error) {
     console.log(error);
     next(error);

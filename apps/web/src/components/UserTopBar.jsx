@@ -15,6 +15,7 @@ const UserTopbar = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const currUser = useSelector((reducer) => reducer.userReducer);
+  const cartLength = useSelector((state) => state.cartReducer.items.length);
   return (
     <div
       className={`${
@@ -33,7 +34,8 @@ const UserTopbar = () => {
         className={`flex md:hidden cursor-pointer ${
           location.pathname.includes('category') ||
           location.pathname.includes('product') ||
-          location.pathname.includes('cart')
+          location.pathname.includes('cart') ||
+          location.pathname.includes('checkout')
             ? 'hidden'
             : ''
         }`}
@@ -48,7 +50,8 @@ const UserTopbar = () => {
         className={`${
           location.pathname.includes('category') ||
           location.pathname.includes('product') ||
-          location.pathname.includes('cart')
+          location.pathname.includes('cart') ||
+          location.pathname.includes('checkout')
             ? 'flex'
             : 'hidden'
         } md:hidden items-center cursor-pointer`}
@@ -129,6 +132,11 @@ const UserTopbar = () => {
         >
           <span className="w-6 h-6">
             <HiOutlineShoppingCart size={'100%'} />
+            {cartLength && cartLength > 0 ? (
+            <div class="absolute inline-flex items-center justify-center w-5 h-5 text-[10px] font-bold text-white bg-red-500 border-2 border-white rounded-full top-2 right-[260px]">
+              {cartLength}
+            </div>
+          ) : null}
           </span>
           <span className="text-xs font-semibold">Cart</span>
         </div>
