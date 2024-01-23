@@ -47,13 +47,13 @@ cartRouter.post('/', validateToken, async (req, res, next) => {
       await t.commit();
       return res
         .status(200)
-        .json({ success: true, message: 'Product added to cart' });
+        .json({ success: 'success', message: 'Product added to cart' });
     } else {
       await incrementCartAmountBy1(req, t);
       await t.commit();
       return res
         .status(200)
-        .json({ success: true, message: 'increase product amount by 1' });
+        .json({ success: 'success', message: 'increase product amount by 1' });
     }
   } catch (error) {
     console.log(error);

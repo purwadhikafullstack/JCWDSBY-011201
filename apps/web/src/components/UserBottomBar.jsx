@@ -51,7 +51,7 @@ const UserBottomBar = () => {
         <span className="w-6 h-6">
           <HiOutlineShoppingCart size={'100%'} />
           {cartLength && cartLength > 0 ? (
-            <div class="absolute inline-flex items-center justify-center w-5 h-5 text-[10px] font-bold text-white bg-red-500 border-2 border-white rounded-full top-2 right-[150px]">
+            <div className="absolute inline-flex items-center justify-center w-5 h-5 text-[10px] font-bold text-white bg-red-500 border-2 border-white rounded-full top-2 right-[150px]">
               {cartLength}
             </div>
           ) : null}

@@ -7,6 +7,7 @@ import API_CALL from '../helpers/API';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCartItems } from '../redux/slice/cartSlice';
 import ButtonWithLoading from './ButtonWithLoading';
+import customToast from '../utils/toast';
 
 export function DrawerForUserProductCard({
   openDrawer,
@@ -36,8 +37,9 @@ export function DrawerForUserProductCard({
           },
         },
       );
-      console.log('🚀 ~ onHandleSubmitAddToCart ~ response:', response);
+      console.log("🚀 ~ onHandleSubmitAddToCart ~ response:", response.data.success)
       dispatch(fetchCartItems(storeUUID));
+      customToast(response.data.success,response.data.message)
       setIsLoading(false);
       toggleDrawer(false);
     } catch (error) {
