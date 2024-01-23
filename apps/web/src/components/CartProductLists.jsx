@@ -14,6 +14,7 @@ import Skeleton from 'react-loading-skeleton';
 import { CartSkeleton } from './cart/CartSkeleton';
 export function CartProductLists(props) {
   const [checkall, setCheckall] = useState(false);
+  const [click,setClick]= useState(false)
   const cartItems = useSelector((state) => state.cartReducer.items);
   const storeUUID = useSelector((state) => state.storeReducer.storeId);
   const dispatch = useDispatch();
@@ -29,13 +30,17 @@ export function CartProductLists(props) {
     }
     return accu;
   }, []);
+
   useEffect(() => {
     setTimeout(() => {
       setLoad(false);
     }, 1000);
   }, []);
   useEffect(() => {
-    dispatch(updateChecksAllInCloud(Number(checkall), itemsInvId, storeUUID));
+   if (click) {
+     dispatch(updateChecksAllInCloud(Number(checkall), itemsInvId, storeUUID));
+     setClick(false)
+   }
     // const timer = setTimeout(() => {
     // }, 300);
     // return () => clearTimeout(timer);
@@ -46,10 +51,10 @@ export function CartProductLists(props) {
     dispatch(checkUncheckAll(Number(!checkall)));
   };
   return (
-    <Card className="max-w-md max-h-72 sm:max-h-screen overflow-y-auto">
+    <Card className="max-w-md max-h-80 sm:max-h-screen overflow-y-auto">
       <div className=" flex items-center justify-between">
         <div className="flex gap-x-3">
-          <Checkbox onClick={checkAllHandler} className="!w-4 !h-4" />
+          <Checkbox checked={checkall}  onChange={checkAllHandler} onClick={()=>setClick(true)} className="!w-4 !h-4" />
           <h5 className="text-md font-bold leading-none text-gray-900 dark:text-white">
             Pilih semua
           </h5>
@@ -72,7 +77,12 @@ export function CartProductLists(props) {
         <CartSkeleton />
       ) : (
         props.arrays.map((val, idx) => (
-          <IndividualCartItems val={val} key={idx} />
+          <IndividualCartItems
+            val={val}
+            key={idx}
+            checkall={checkall}
+            setCheckallFalse={setCheckall}
+          />
         ))
       )}
     </Card>

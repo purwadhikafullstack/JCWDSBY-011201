@@ -26,10 +26,12 @@ export const init = (sequelize) => {
       userAddressId: DataTypes.INTEGER,
       paymentTotal: DataTypes.INTEGER,
       paymentStatus: DataTypes.STRING,
+      deletedAt: DataTypes.DATE
     },
     {
       sequelize,
       modelName: 'transactions',
+      paranoid:true
     },
   );
 };

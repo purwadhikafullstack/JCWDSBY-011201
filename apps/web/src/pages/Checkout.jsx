@@ -16,7 +16,8 @@ const Checkout = () => {
   const [selectedCourier, setSelectedCourier] = useState(null);
   const [showAddresses, setShowAddresses] = useState(false);
   const [showCourier, setShowCourier] = useState(false);
-  const [showSendTime,setSendTime] = useState(false)
+  const [showSendTime, setSendTime] = useState(false);
+  const cartItems = useSelector((state) => state.cartReducer.items);
   const currStore = useSelector((reducer) => reducer.storeReducer);
   const getAvailableAddress = async () => {
     try {
@@ -39,17 +40,25 @@ const Checkout = () => {
     }
   };
 
-  const getCourierList = async () => {
+  const checkedItems = cartItems
+    .filter((item) => item.checked === 1)
+    .map(({ productName, productPrice, productWeight, amount, ...rest }) => ({
+      name: productName,
+      value: productPrice,
+      weight: productWeight,
+      quantity: amount,
+      ...rest,
+    }));
+  console.log('🚀 ~ Checkout ~ checkedItems:', checkedItems);
+
+  const getCourierList = async (checkoutItems) => {
     try {
       const result = await API_CALL.post(
         '/utils/courier-rates',
         {
           storePostal: currStore?.postalCode,
           userPostal: selectedAddress?.postalCode,
-          items: [
-            { name: 'shoes', value: 200000, weight: 160, quantity: 3 },
-            { name: 'milk', value: 200000, weight: 160, quantity: 3 },
-          ],
+          items: checkoutItems,
         },
         {
           headers: {
@@ -57,7 +66,7 @@ const Checkout = () => {
           },
         },
       );
-      console.log("🚀 ~ getCourierList ~ result:", result)
+      console.log('🚀 ~ getCourierList ~ result:', result);
       localStorage.setItem('tempCourier', JSON.stringify(result.data.result));
       setCourier(result.data.result);
       if (result.data.result.length > 0) {
@@ -75,8 +84,8 @@ const Checkout = () => {
   }, [currStore.storeId]);
 
   useEffect(() => {
-    if (selectedAddress) {
-      getCourierList();
+    if (selectedAddress&&checkedItems) {
+      getCourierList(checkedItems);
     }
   }, [selectedAddress]);
 

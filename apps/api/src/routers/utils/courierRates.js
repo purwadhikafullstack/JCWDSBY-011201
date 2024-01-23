@@ -21,6 +21,7 @@ export default async function (req, res, next) {
         },
       },
     );
+    console.log("🚀 ~ result:", result)
     const finalResult = result.data.pricing.map((value, idx) => {
       return {
         courier_id: value.courier_code + '_' + value.courier_service_code,

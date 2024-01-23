@@ -15,6 +15,7 @@ import { utilsRouter } from './routers/utils.router';
 import { eventRouter } from './routers/event.router';
 import { adminRouter } from './routers/admin.router';
 import { inventoryRouter } from './routers/inventory.router';
+import { transactionRouter } from './routers/transactions.router';
 
 const router = Router();
 
@@ -45,5 +46,6 @@ router.use('/inventory', inventoryRouter)
 
 //Afra
 router.use('/cart', cartRouter);
+router.use('/transaction', transactionRouter);
 
 export default router;

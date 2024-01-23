@@ -22,10 +22,12 @@ export const init = (sequelize) => {
       discountId: DataTypes.INTEGER,
       amount: DataTypes.INTEGER,
       price: DataTypes.INTEGER,
+      deletedAt: DataTypes.DATE
     },
     {
       sequelize,
       modelName: 'transactionDetails',
+      paranoid:true
     },
   );
 };

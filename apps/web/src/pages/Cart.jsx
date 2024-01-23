@@ -23,6 +23,13 @@ const Cart = () => {
     }
     return accumulator;
   }, 0);
+  const checkedItemsInvId = cartItems.reduce((accu, item) => {
+    if (item.checked === 1) {
+      accu.push(item.inventoryId);
+    }
+    return accu;
+  }, []);
+  console.log("🚀 ~ checkedItemsInvId ~ checkedItemsInvId:", checkedItemsInvId)
 
   return (
     <UserLayout>
@@ -44,6 +51,7 @@ const Cart = () => {
           </p>
           <Button
             color="blue"
+            disabled={checkedItemsInvId?.length<1?true:false}
             onClick={() => {
               navigate('/checkout');
             }}
