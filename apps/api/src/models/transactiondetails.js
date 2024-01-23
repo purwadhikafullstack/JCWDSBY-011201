@@ -8,6 +8,9 @@ export default class transactionDetails extends Model {
    */
   static associate(models) {
     // define association here
+    transactionDetails.belongsTo(models.transactions, {
+      foreignKey: 'transactionId',
+    });
   }
 }
 
