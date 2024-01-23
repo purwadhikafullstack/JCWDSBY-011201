@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { BITESHIP_API_KEY, BITESHIP_API_URL } from '../../config';
 
+
 export default async function (req, res, next) {
   try {
     const items = req.body.items;
@@ -36,6 +37,7 @@ export default async function (req, res, next) {
       result: finalResult,
     });
   } catch (error) {
+    console.log("error",error);
     next(error);
   }
 }

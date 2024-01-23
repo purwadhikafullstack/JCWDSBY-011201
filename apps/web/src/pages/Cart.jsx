@@ -5,9 +5,11 @@ import CartContainer from '../components/cart/CartContainer';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from 'flowbite-react';
 import { fetchCartItems, setCarts } from '../redux/slice/cartSlice';
+import { useNavigate } from 'react-router-dom';
 
 const Cart = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const cartItems = useSelector((state) => state.cartReducer.items);
   const storeUUID = useSelector((state) => state.storeReducer.storeId);
   useEffect(() => {
@@ -32,7 +34,7 @@ const Cart = () => {
           <CartProductLists arrays={cartItems} />
         </div>
       </div>
-      <CartContainer className="mt-3 p-3 flex-col rounded-md fixed w-full sm:w-64 top-[72vh] sm:right-36 sm:top-36">
+      <CartContainer className="mt-3 p-3 flex-col rounded-md sm:fixed w-full sm:w-64  sm:right-36 sm:top-36">
         <div className="flex flex-row justify-between">
           <p>
             Total:{' '}
@@ -40,7 +42,14 @@ const Cart = () => {
               Rp{totalPrice.toLocaleString('id-ID')}
             </span>
           </p>
-          <Button color="blue">Checkout</Button>
+          <Button
+            color="blue"
+            onClick={() => {
+              navigate('/checkout');
+            }}
+          >
+            Checkout
+          </Button>
         </div>
       </CartContainer>
     </UserLayout>

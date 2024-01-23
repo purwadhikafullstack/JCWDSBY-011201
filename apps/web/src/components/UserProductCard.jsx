@@ -33,17 +33,22 @@ const UserProductCard = ({
             alt={productName}
           />
         </div>
-        <div className="flex flex-col h-[40%] w-full justify-around py-0.5 px-1">
-          <span className="text-sm font-bold line-clamp-1">{productName}</span>
-          <span className="text-xs font-light">{productUnit}</span>
+        <div className="flex flex-col h-[40%] justify-evenly w-full py-0.5 px-2 md:px-4">
+          <span className="text-xs font-thin capitalize">
+            {stock ? `ready  ${stock}` : 'Out of stock'}
+          </span>
+          <span className="text-sm md:text-base font-bold line-clamp-1">
+            {productName} {productUnit}
+          </span>
+          {/* <span className="text-xs font-light">{productUnit}</span> */}
           {discountPrice ? (
             <div className="flex flex-col">
               <div className="flex">
-                <span className="text-sm font-semibold text-blue-800">
+                <span className="text-base font-semibold text-blue-800">
                   {discountPrice.toLocaleString('ID', {
                     style: 'currency',
                     currency: 'idr',
-                    maximumFractionDigits: 0
+                    maximumFractionDigits: 0,
                   })}
                 </span>
               </div>
@@ -55,7 +60,7 @@ const UserProductCard = ({
                   {price.toLocaleString('ID', {
                     style: 'currency',
                     currency: 'idr',
-                    maximumFractionDigits: 0
+                    maximumFractionDigits: 0,
                   })}
                 </span>
               </div>
@@ -65,13 +70,10 @@ const UserProductCard = ({
               {price.toLocaleString('ID', {
                 style: 'currency',
                 currency: 'idr',
-                maximumFractionDigits: 0
+                maximumFractionDigits: 0,
               })}
             </span>
           )}
-          <span className="text-xs font-thin">
-            {stock ? `stock: ${stock}` : 'Out of stock'}
-          </span>
         </div>
       </div>
       {!isItemExistInCart ? (
