@@ -39,6 +39,7 @@ export default async function loginAdmin(req, res, next) {
         role,
         type,
         storeId: isExist.dataValues.store?.id || null,
+        storeUUID: isExist.dataValues.store?.UUID || null,
         method: 'AUTHORIZATION',
       },
       SCRT_KEY,

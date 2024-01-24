@@ -52,7 +52,7 @@ const Landing = () => {
 
   return (
     <UserLayout>
-      <div className="flex flex-col w-full flex-grow p-4 gap-4">
+      <div className="flex flex-col w-full lg:w-[1024px] m-auto flex-grow p-4 gap-4">
         <div className="flex w-full">
           <NearestSTore storeData={currStore} />
         </div>

@@ -38,13 +38,13 @@ const UserFindCategory = () => {
       params: { q: searchParams.get('q'), category: searchParams.get('category'), sort: searchParams.get('sort'), store: currStore.storeId },
     });
     if (res) {
-      setProductData(res.data.result.data);
+      setProductData(res.data.result.rows);
     }
   };
 
   return (
     <UserLayout>
-      <div className="flex flex-col w-full flex-grow p-4 gap-4">
+      <div className="flex flex-col w-full lg:w-[1024px] m-auto flex-grow p-4 gap-4">
         <div className="flex flex-col gap-2">
           <span className="font-bold text-base">Categories</span>
           <div className="flex w-full border-2 p-2 md:p-4 overflow-auto rounded-xl bg-blue-50">

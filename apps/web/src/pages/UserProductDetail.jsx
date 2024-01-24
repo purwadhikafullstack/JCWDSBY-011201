@@ -41,7 +41,7 @@ const UserProductDetail = () => {
   return (
     <UserLayout>
       <LoadingSpinner isLoading={isLoading} size={16} />
-      <div className="flex flex-col gap-2 relative">
+      <div className="flex flex-col gap-2 lg:w-[1024px] m-auto relative">
         <div className="h-96 md:h-[28rem] bg-blue-50">
           <Carousel>
             {productData && productData.product.product_images.map((value, index) => (
