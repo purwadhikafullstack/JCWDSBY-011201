@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - main
+
+#Allow repo secrets
+env:
+  VITE_AVATAR_URL: ${{ secrets.VITE_AVATAR_URL }}
+  VITE_PRODUCT_URL: ${{ secrets.VITE_PRODUCT_URL }}
 jobs:
   build:
     timeout-minutes: 15
