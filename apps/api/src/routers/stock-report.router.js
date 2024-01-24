@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { validateToken, validateAdmin, validateSuper } from "../middleware/tokenValidation";
-import getStockReport from "./report/getStockReport";
+import { validateToken, validateAdmin} from "../middleware/tokenValidation";
+import { getStockReport } from "../controllers/stock-report.controller";
 
 const stockReportRouter = Router();
 

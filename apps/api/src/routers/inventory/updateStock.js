@@ -23,7 +23,7 @@ export default async function (req, res, next) {
             initialStock: prev.stock,
             stockChange: req.body.stock - prev.stock,
             endStock: req.body.stock,
-            detail: 'Stock adjustments'
+            detail: 'Stock adjustment'
         }, {transaction: t});
 
         t.commit();
