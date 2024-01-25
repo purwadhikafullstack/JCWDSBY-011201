@@ -3,6 +3,7 @@
 import { Model, DataTypes } from 'sequelize';
 import stores from './stores.model';
 import user_addresses from './user-addresses.model';
+import stock_report from './stock-report';
 import { nanoid } from 'nanoid';
 
 export default class users extends Model {
@@ -15,6 +16,7 @@ export default class users extends Model {
     // define association here
     users.hasOne(stores, { foreignKey: 'userId' });
     users.hasMany(user_addresses, { foreignKey: 'userId' });
+    users.hasMany(stock_report)
   }
 }
 

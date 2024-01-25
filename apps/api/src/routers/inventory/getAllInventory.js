@@ -6,7 +6,6 @@ import categories from "../../models/categories.model";
 import productImage from "../../models/product-image.model";
 import store from "../../models/stores.model";
 import users from "../../models/users.model";
-import inventory from "../../models/inventory.model";
 
 export default async function (req, res, next) {
     try {
@@ -66,7 +65,7 @@ export default async function (req, res, next) {
                     ]
                 }
             ],
-            attributes: [[literal('product.name'), 'productName'], [literal('product.price'), 'productPrice'],'stock'],
+            attributes: [[literal('product.name'), 'productName'], [literal('product.price'), 'productPrice'],'stock','id'],
             limit: parseInt(limit),
             offset: page * parseInt(limit) - parseInt(limit),
             order: [order],

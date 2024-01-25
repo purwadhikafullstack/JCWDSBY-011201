@@ -1,6 +1,7 @@
 import resTemplate from "../../helper/resTemplate";
 import { createInventory, findOneInventory } from "../../controllers/inventory.controller";
 import { DB } from '../../db';
+import { createStockReport } from "../../controllers/stock-report";
 
 export default async function (req, res, next) {
     await DB.initialize();
@@ -24,6 +25,15 @@ export default async function (req, res, next) {
                 stock: req.body.stock
             }, { transaction: t });
 
+            await createStockReport({
+                inventoryId: result.id,
+                userId: req.tokenData.id,
+                initialStock: 0,
+                stockChange: req.body.stock,
+                endStock: req.body.stock,
+                detail: 'Add new inventory'
+            }, { transaction: t });
+
             await t.commit();
             return res.status(200).json(resTemplate(200, true, 'Inventory created', result));
         }
@@ -32,6 +42,15 @@ export default async function (req, res, next) {
             storeId: req.body.storeId,
             productId: req.body.productId,
             stock: req.body.stock
+        }, { transaction: t });
+
+        await createStockReport({
+            inventoryId: result.id,
+            userId: req.tokenData.id,
+            initialStock: 0,
+            stockChange: req.body.stock,
+            endStock: req.body.stock,
+            detail: 'Add new inventory'
         }, { transaction: t });
 
         await t.commit();

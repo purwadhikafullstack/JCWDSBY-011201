@@ -1,10 +1,11 @@
 import { Avatar, Sidebar } from 'flowbite-react';
-import { HiHome } from 'react-icons/hi';
+import { HiHome, HiDocumentReport } from 'react-icons/hi';
 import { MdInventory, MdStore } from 'react-icons/md';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { IoMdListBox } from 'react-icons/io';
 import { BsBoxFill } from 'react-icons/bs';
 import { FaUser, FaUserCheck, FaUserCog } from 'react-icons/fa';
+import { TbDiscount2, TbReportMoney, TbReportAnalytics } from "react-icons/tb";
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -42,6 +43,15 @@ const AdminSidebar = () => {
       icon: MdStore,
       page: '/manage/store',
     },
+    {
+      title: 'Discount',
+      icon: TbDiscount2,
+      // page: '/manage/discount',
+    },
+    {
+      title: 'Report',
+      icon: HiDocumentReport,
+    },
   ];
 
   return (
@@ -50,15 +60,14 @@ const AdminSidebar = () => {
         <Sidebar collapsed={true}>
           <Sidebar.Items className="grid content-between h-full">
             <Sidebar.ItemGroup>
-              <button className="group flex w-full items-center rounded-lg p-2 text-base font-normal text-gray-900 transition duration-75 dark:text-white dark:hover:bg-gray-700">
+              {/* <button className="group flex w-full items-center rounded-lg p-2 text-base font-normal text-gray-900 transition duration-75 dark:text-white dark:hover:bg-gray-700">
                 <GiHamburgerMenu className="h-6 w-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" />
-              </button>
+              </button> */}
               {menu.map((item, index) => {
-                // console.log('USER ROLE', globalUser.role);
                 if (globalUser.role === 'super' && item.title === 'User') {
                   return (
                     <Sidebar.Collapse
-                      icon={FaUser}
+                      icon={item.icon}
                       label={item.title}
                       key={index}
                     >
@@ -79,6 +88,28 @@ const AdminSidebar = () => {
                 }
                 if (globalUser.role === 'admin' && item.title === 'User'){
                   return
+                }
+                if(item.title === 'Report'){
+                  return (
+                    <Sidebar.Collapse
+                      icon={item.icon}
+                      label={item.title}
+                      key={index}
+                    >
+                      <Sidebar.Item
+                        icon={TbReportAnalytics}
+                        onClick={() => navigate('/manage/report/stock')}
+                      >
+                        Stock
+                      </Sidebar.Item>
+                      <Sidebar.Item
+                        icon={TbReportMoney}
+                        onClick={() => navigate('/manage/report/sales')}
+                      >
+                        Sales
+                      </Sidebar.Item>
+                    </Sidebar.Collapse>
+                  );
                 }
 
                 return (

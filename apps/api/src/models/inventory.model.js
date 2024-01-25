@@ -11,6 +11,7 @@ export default class inventory extends Model {
     inventory.belongsTo(models.stores);
     // inventory.belongsTo(models.discounts);
     inventory.belongsTo(models.product);
+    inventory.hasMany(models.stock_report)
   }
 };
 export const init = (sequelize) => {
