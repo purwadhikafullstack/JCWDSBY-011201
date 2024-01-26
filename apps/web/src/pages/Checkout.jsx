@@ -9,16 +9,20 @@ import customToast from '../utils/toast';
 import Container from '../components/Container';
 import SelectAddressCheckout from '../components/SelectAddressCheckout';
 import SelectCourierCheckout from '../components/SelectCourierCheckout';
+import { useSnap } from '../hooks/useMidtrans';
 const Checkout = () => {
   const [address, setAddress] = useState(null);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [courier, setCourier] = useState(null);
   const [selectedCourier, setSelectedCourier] = useState(null);
+  console.log('🚀 ~ Checkout ~ selectedCourier:', selectedCourier);
   const [showAddresses, setShowAddresses] = useState(false);
   const [showCourier, setShowCourier] = useState(false);
   const [showSendTime, setSendTime] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState('');
   const cartItems = useSelector((state) => state.cartReducer.items);
   const currStore = useSelector((reducer) => reducer.storeReducer);
+  const { snapEmbed } = useSnap();
   const getAvailableAddress = async () => {
     try {
       const result = await API_CALL.get('/utils/shipping-address', {
@@ -40,7 +44,8 @@ const Checkout = () => {
     }
   };
 
-  const checkedItems = cartItems
+  
+  const checkoutItems = cartItems
     .filter((item) => item.checked === 1)
     .map(({ productName, productPrice, productWeight, amount, ...rest }) => ({
       name: productName,
@@ -49,7 +54,33 @@ const Checkout = () => {
       quantity: amount,
       ...rest,
     }));
-  console.log('🚀 ~ Checkout ~ checkedItems:', checkedItems);
+  console.log('🚀 ~ Checkout ~ checkedItems:', checkoutItems);
+  const paymentTotal = checkoutItems.reduce((sum, item) => sum + (item.value*item.quantity),0) + selectedCourier?.price
+  console.log("🚀 ~ Checkout ~ paymentTotal:", paymentTotal)
+
+  const handlePay = async () => {
+    //   if (!address||!courier) {
+    //     alert("harap lengkapi semua opsi")
+    //     return
+    //   }
+
+    const response = await API_CALL.post(
+      '/transaction',
+      {
+        addressUUID: selectedAddress.UUID,
+        shipmentTotal: selectedCourier.price,
+        paymentMethod,
+        paymentTotal,
+        checkoutItems
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+        },
+      },
+    );
+    snapEmbed('2af20b75-21a5-4b04-80d1-b88140a76ecc', 'snap-container');
+  };
 
   const getCourierList = async (checkoutItems) => {
     try {
@@ -84,8 +115,8 @@ const Checkout = () => {
   }, [currStore.storeId]);
 
   useEffect(() => {
-    if (selectedAddress&&checkedItems) {
-      getCourierList(checkedItems);
+    if (selectedAddress && checkoutItems) {
+      getCourierList(checkoutItems);
     }
   }, [selectedAddress]);
 
@@ -131,6 +162,10 @@ const Checkout = () => {
             <p className="font-semibold">ringkasan pembayaran</p>
             <p className="font-semibold">subtotal pembayaran</p>
           </Card>
+          <div
+            id="snap-container"
+            className="flex justify-center items-center sm:w-full"
+          ></div>
         </div>
       </div>
       <CartContainer className="mt-3 p-3 flex-col rounded-md  w-full sm:w-64  sm:right-36 sm:top-36">
@@ -142,7 +177,9 @@ const Checkout = () => {
               Rp50000
             </span>
           </p>
-          <Button color="blue">Checkout</Button>
+          <Button onClick={handlePay} color="blue">
+            Checkout
+          </Button>
         </div>
       </CartContainer>
     </UserLayout>

@@ -16,7 +16,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       transactionDate: {
-        type: Sequelize.STRING
+        type: Sequelize.DATE
       },
       shipmentTotal: {
         type: Sequelize.INTEGER
@@ -34,7 +34,8 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       paymentStatus: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        defaultValue:'pending'
       },
       deletedAt: {
         type: Sequelize.DATE

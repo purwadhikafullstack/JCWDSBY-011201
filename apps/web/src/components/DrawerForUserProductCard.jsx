@@ -52,7 +52,8 @@ export function DrawerForUserProductCard({
       open={openDrawer}
       onClose={toggleDrawer}
       direction="bottom"
-      className=" w-full sm:max-w-xl max-h-72 mx-auto shadow-inner shadow-blue-500 rounded-t-lg p-5"
+      
+      className=" w-full sm:max-w-xl !h-[40vh] sm:h-72 mx-auto shadow-inner shadow-blue-500 rounded-t-lg p-5"
     >
       <div className="flex flex-col gap-y-3">
         <div className="w-full h-16 flex gap-x-6">

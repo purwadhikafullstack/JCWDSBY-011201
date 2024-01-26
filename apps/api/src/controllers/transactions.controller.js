@@ -1,3 +1,118 @@
 import transactions from '../models/transactions.model';
+import transactionDetails from '../models/transactionDetails.model';
+import user_addresses from '../models/user-addresses.model';
+import users from '../models/users.model';
+import inventory from '../models/inventory.model';
+import { literal } from 'sequelize';
+import midtransClient from 'midtrans-client';
+import { MIDTRANS_KEY } from '../config';
+import { invoiceNamer } from '../routers/utils/invoiceNamer';
 
-//Post
+//Get
+export const findUserAddressIdForTransaction = async (req) => {
+  return await user_addresses.findOne({
+    where: { UUID: req.body.addressUUID },
+    attributes: ['id'],
+    raw: true,
+  });
+};
+
+//Post Create Transaction & TransactionDetails & Reduce Inventory
+export const createTransaction = async (req, t, userAddressId) => {
+  return await transactions.create(
+    {
+      userId: req.tokenData.id,
+      invoice: 'XXXTRAS',
+      transactionDate: literal('CURRENT_TIMESTAMP'),
+      shipmentTotal: req.body.shipmentTotal,
+      paymentMethod: req.body.paymentMethod,
+      userAddressId,
+      paymentTotal: req.body.paymentTotal,
+    },
+    { transaction: t },
+  );
+};
+
+export const transactionDetailsBulkCreate = async (req, t, latestTransId) => {
+  try {
+    console.log('lewat');
+    const bulkItems = req.body.checkoutItems.map((val, idx) => ({
+      transactionId: latestTransId,
+      inventoryId: val.inventoryId,
+      discountId: val.discountId,
+      amount: val.quantity,
+      price: val.value,
+    }));
+    return await transactionDetails.bulkCreate(bulkItems, { transaction: t });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const reduceStock = async (req, t) => {
+  const promiseReduceStock = req.body.checkoutItems.map(async (val, idx) => {
+    return await inventory.decrement(
+      { stock: Math.abs(val.quantity) },
+      { where: { id: val.inventoryId }, transaction: t },
+    );
+  });
+  console.log(
+    '🚀 ~ promiseReduceStock ~ promiseReduceStock:',
+    promiseReduceStock,
+  );
+  return Promise.all(promiseReduceStock);
+};
+
+export const findUserDataForTransaction = async (req) => {
+  return users.findOne({ where: { id: req.tokenData.id }, raw: true });
+};
+
+export const handleMidtrans = async (req, userData) => {
+  let snap = new midtransClient.Snap({
+    // Set to true if you want Production Environment (accept real transaction).
+    isProduction: false,
+    serverKey: MIDTRANS_KEY,
+  });
+  console.log('🚀 ~ handleMidtrans ~ MIDTRANS_KEY:', MIDTRANS_KEY);
+
+  const item_details = req.body.checkoutItems.map((val, idx) => {
+    return {
+      name: val.name,
+      price: val.value,
+      quantity: val.quantity,
+    };
+  });
+  const totalNetPrice = req.body.checkoutItems.reduce((total, val) => {
+    console.log(total, val.value, val.quantity);
+    return total + val.value * val.quantity;
+  }, 0);
+  console.log('🚀 ~ handleMidtrans ~ totalNetPrice:', totalNetPrice);
+  let parameter = {
+    transaction_details: {
+      order_id: invoiceNamer(),
+      gross_amount: req.transactionData.paymentTotal,
+    },
+    credit_card: {
+      secure: true,
+    },
+    customer_details: {
+      first_name: userData.name,
+      email: userData.email,
+    },
+    item_details: [
+      ...item_details,
+      {
+        name: 'Misc Fee',
+        price: req.transactionData.paymentTotal - totalNetPrice,
+        quantity: 1,
+      },
+    ],
+    enabled_payments: [
+      req.body.paymentMethod
+    ],
+  };
+
+  const snapTransaction = await snap.createTransaction(parameter);
+  console.log('🚀 ~ handleMidtrans ~ snapTransaction:', snapTransaction);
+  return snapTransaction;
+};
