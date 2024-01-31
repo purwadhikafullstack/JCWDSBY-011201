@@ -11,12 +11,12 @@ const RegisteredUser = () => {
 
     useEffect(() => {
         getUsers();
-    },[]);
+    }, []);
 
     const getUsers = async () => {
         setIsLoading(true);
         const res = await API_CALL.get('/user')
-        if(res){
+        if (res) {
             setUsers(res.data);
             setIsLoading(false);
         }
@@ -29,9 +29,9 @@ const RegisteredUser = () => {
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>{user.name}</TableCell>
                     <TableCell>{user.email}</TableCell>
-                    {user.isVerified ? 
-                    <TableCell><Badge color='success' className='w-fit'>Verified</Badge></TableCell> :
-                    <TableCell><Badge color='failure' className='w-fit'>Not Verified</Badge></TableCell>
+                    {user.isVerified ?
+                        <TableCell><Badge color='success' className='w-fit'>Verified</Badge></TableCell> :
+                        <TableCell><Badge color='failure' className='w-fit'>Not Verified</Badge></TableCell>
                     }
                 </TableRow>
             )
@@ -39,25 +39,25 @@ const RegisteredUser = () => {
     }
 
     return <>
-    <div className='flex flex-row container bg-blue-100 min-w-[360px] h-max min-h-screen'>
-        <AdminSidebar />
-            <LoadingSpinner isLoading={isLoading} size={16}/>
-        <LayoutPageAdmin title='Registered User'>
-        <div className='grid grid-cols-1 overflow-x-auto '>
-            <Table>
-                <TableHead>
-                    <TableHeadCell>#</TableHeadCell>
-                    <TableHeadCell>Name</TableHeadCell>
-                    <TableHeadCell>Email</TableHeadCell>
-                    <TableHeadCell>Status</TableHeadCell>
-                </TableHead>
-                <TableBody className='divide-y divide-solid divide-slate-400'>
-                    {printUser()}
-                </TableBody>
-            </Table>
+        <div className='flex flex-row container bg-blue-100 min-w-[360px] h-max min-h-screen'>
+            <AdminSidebar />
+            <LoadingSpinner isLoading={isLoading} size={16} />
+            <LayoutPageAdmin title='Registered User'>
+                <div className='grid grid-cols-1 overflow-x-auto '>
+                    <Table>
+                        <TableHead>
+                            <TableHeadCell>#</TableHeadCell>
+                            <TableHeadCell>Name</TableHeadCell>
+                            <TableHeadCell>Email</TableHeadCell>
+                            <TableHeadCell>Status</TableHeadCell>
+                        </TableHead>
+                        <TableBody className='divide-y divide-solid divide-slate-400'>
+                            {printUser()}
+                        </TableBody>
+                    </Table>
+                </div>
+            </LayoutPageAdmin>
         </div>
-        </LayoutPageAdmin>
-    </div>
     </>
 };
 
