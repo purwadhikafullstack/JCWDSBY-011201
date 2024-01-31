@@ -45,6 +45,8 @@ import TesCheckOut from './pages/TesCheckOut';
 import { fetchCartItems } from './redux/slice/cartSlice';
 import Cart from './pages/Cart';
 import StockReport from './pages/admin/StockReport';
+import ManageDiscount from './pages/admin/ManageDiscount';
+import CreateDiscount from './pages/admin/CreateDiscount';
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 function App() {
@@ -341,6 +343,22 @@ function App() {
           element={
             <PrivateRoute role={['admin', 'super']}>
               <StockReport />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/discount"
+          element={
+            <PrivateRoute role={['admin', 'super']}>
+              <ManageDiscount />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/discount/create"
+          element={
+            <PrivateRoute role={['admin', 'super']}>
+              <CreateDiscount />
             </PrivateRoute>
           }
         />

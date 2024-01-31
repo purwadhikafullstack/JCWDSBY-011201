@@ -25,7 +25,7 @@ export default async function (req, res, next) {
         if (sort === 'nameasc' || sort === 'none') order.push(col('productName'), 'ASC');
         if (sort === 'namedesc') order.push(col('productName'), 'DESC');
 
-        const result = await findAndCountAllInventory({
+        const params = {
             include: [
                 {
                     model: product,
@@ -70,7 +70,14 @@ export default async function (req, res, next) {
             offset: page * parseInt(limit) - parseInt(limit),
             order: [order],
             distinct: true,
-        })
+        }
+
+        if (limit === 'none'){
+            delete params.limit;
+            delete params.offset;
+        }
+
+        const result = await findAndCountAllInventory(params)
 
         res.status(200).json(resTemplate(200, true, 'Get All Inventory Success', result));
     } catch (error) {

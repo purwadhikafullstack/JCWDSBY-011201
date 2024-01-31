@@ -9,7 +9,7 @@ export default class inventory extends Model {
   static associate(models) {
     // define association here
     inventory.belongsTo(models.stores);
-    // inventory.belongsTo(models.discounts);
+    inventory.belongsTo(models.discount);
     inventory.belongsTo(models.product);
     inventory.hasMany(models.stock_report)
   }

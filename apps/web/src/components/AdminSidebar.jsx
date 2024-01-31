@@ -1,7 +1,7 @@
 import { Avatar, Sidebar } from 'flowbite-react';
 import { HiHome, HiDocumentReport } from 'react-icons/hi';
 import { MdInventory, MdStore } from 'react-icons/md';
-import { GiHamburgerMenu } from 'react-icons/gi';
+// import { GiHamburgerMenu } from 'react-icons/gi';
 import { IoMdListBox } from 'react-icons/io';
 import { BsBoxFill } from 'react-icons/bs';
 import { FaUser, FaUserCheck, FaUserCog } from 'react-icons/fa';
@@ -46,7 +46,7 @@ const AdminSidebar = () => {
     {
       title: 'Discount',
       icon: TbDiscount2,
-      // page: '/manage/discount',
+      page: '/manage/discount',
     },
     {
       title: 'Report',

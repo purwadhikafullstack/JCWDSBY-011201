@@ -48,6 +48,6 @@ export default async function (params) {
         return result;
         
     } catch (error) {
-        return error;
+        throw error;
     }
 }
