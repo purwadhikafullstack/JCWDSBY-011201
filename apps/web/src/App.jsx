@@ -32,7 +32,7 @@ import Inventory from './pages/admin/Inventory';
 import ManageAdmin from './pages/admin/ManageAdmin';
 import RegisteredUser from './pages/admin/RegisteredUser';
 import ManageStore from './pages/admin/ManageStore';
-import checkAuth from './helpers/checkAuth';
+import CheckAuth from './helpers/checkAuth';
 import { setStore } from './redux/slice/storeSlice';
 import ManageStoreAdd from './pages/admin/ManageStoreAdd';
 import ManageStoreUpdate from './pages/admin/ManageStoreUpdate';
@@ -44,6 +44,7 @@ import VerifyEmail from './pages/VerifyEmail';
 import TesCheckOut from './pages/TesCheckOut';
 import { fetchCartItems } from './redux/slice/cartSlice';
 import Cart from './pages/Cart';
+import StockReport from './pages/admin/StockReport';
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 function App() {
@@ -75,7 +76,7 @@ function App() {
     async function validateAuth() {
       try {
         if (globalUser.name === '') {
-          const authResult = await checkAuth();
+          const authResult = await CheckAuth();
           if (!authResult) {
             throw 'Authentication failed';
           }
@@ -332,6 +333,14 @@ function App() {
           element={
             <PrivateRoute role={['admin', 'super']}>
               <ManageStoreUpdate />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/report/stock"
+          element={
+            <PrivateRoute role={['admin', 'super']}>
+              <StockReport />
             </PrivateRoute>
           }
         />

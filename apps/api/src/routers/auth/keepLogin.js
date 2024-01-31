@@ -34,6 +34,7 @@ export default async function keepLogin(req, res, next) {
       result.dataValues.role === 'super'
     ) {
       signedData.storeId = result.dataValues.store?.id || null;
+      signedData.storeUUID = result.dataValues.store?.UUID || null;
     }
     const token = jwt.sign(signedData, SCRT_KEY, { expiresIn: '7d' });
     return res.status(201).json({

@@ -43,7 +43,7 @@ const UserFindCategory = () => {
       },
     });
     if (res) {
-      setProductData(res.data.result.data);
+      setProductData(res.data.result.rows);
     }
   };
 
