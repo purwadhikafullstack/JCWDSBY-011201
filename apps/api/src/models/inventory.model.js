@@ -17,7 +17,6 @@ export default class inventory extends Model {
 export const init = (sequelize) => {
   inventory.init({
     storeId: DataTypes.INTEGER,
-    discountId: DataTypes.INTEGER,
     productId: DataTypes.INTEGER,
     stock: DataTypes.INTEGER,
     deletedAt: DataTypes.DATE
