@@ -69,7 +69,7 @@ const LandingCategoryViews = ({ categoryData }) => {
           className="flex w-full justify-center items-center"
         >
           <div
-            className={`flex flex-col gap-4 cursor-pointer justify-center w-44 h-56 lg:w-48 lg:h-64 items-center px-6 md:px-4 py-6 md:py-10 lg:px-10 lg:py-14 border rounded-lg ${
+            className={`flex flex-col gap-4 cursor-pointer justify-center w-44 h-56 lg:w-48 lg:h-64 items-center px-6 md:px-4 py-6 md:py-10 lg:px-6 lg:py-14 border rounded-lg ${
               colors[Math.ceil(Math.random() * 3)]
             }`}
             onClick={() => {
