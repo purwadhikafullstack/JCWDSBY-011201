@@ -5,8 +5,10 @@ import users from '../models/users.model';
 import inventory from '../models/inventory.model';
 import { literal } from 'sequelize';
 import midtransClient from 'midtrans-client';
-import { MIDTRANS_KEY } from '../config';
+import { APP_URL, MIDTRANS_KEY } from '../config';
 import { invoiceNamer } from '../routers/utils/invoiceNamer';
+import product from '../models/product.model';
+import stores from '../models/stores.model';
 
 //Get
 export const findUserAddressIdForTransaction = async (req) => {
@@ -17,16 +19,25 @@ export const findUserAddressIdForTransaction = async (req) => {
   });
 };
 
+export const findStoreByUUID = async (req) => {
+  return await stores.findOne({
+    where: { UUID: req.body.storeUUID },
+    attributes: ['id', 'name'],
+    raw:true
+  });
+};
+
 //Post Create Transaction & TransactionDetails & Reduce Inventory
-export const createTransaction = async (req, t, userAddressId) => {
+export const createTransaction = async (req, t, userAddressId, storeId) => {
   return await transactions.create(
     {
       userId: req.tokenData.id,
-      invoice: 'XXXTRAS',
+      invoice: invoiceNamer(),
       transactionDate: literal('CURRENT_TIMESTAMP'),
       shipmentTotal: req.body.shipmentTotal,
       paymentMethod: req.body.paymentMethod,
       userAddressId,
+      storeId,
       paymentTotal: req.body.paymentTotal,
     },
     { transaction: t },
@@ -35,7 +46,6 @@ export const createTransaction = async (req, t, userAddressId) => {
 
 export const transactionDetailsBulkCreate = async (req, t, latestTransId) => {
   try {
-    console.log('lewat');
     const bulkItems = req.body.checkoutItems.map((val, idx) => ({
       transactionId: latestTransId,
       inventoryId: val.inventoryId,
@@ -89,7 +99,7 @@ export const handleMidtrans = async (req, userData) => {
   console.log('🚀 ~ handleMidtrans ~ totalNetPrice:', totalNetPrice);
   let parameter = {
     transaction_details: {
-      order_id: invoiceNamer(),
+      order_id: req.transactionData.invoice,
       gross_amount: req.transactionData.paymentTotal,
     },
     credit_card: {
@@ -107,12 +117,53 @@ export const handleMidtrans = async (req, userData) => {
         quantity: 1,
       },
     ],
-    enabled_payments: [
-      req.body.paymentMethod
-    ],
+    enabled_payments: [req.body.paymentMethod],
+    callbacks: {
+      finish: `${APP_URL}order-details`,
+      //   unfinish: `${APP_URL}`,
+      //   pending: `${APP_URL}`,
+    },
   };
 
   const snapTransaction = await snap.createTransaction(parameter);
   console.log('🚀 ~ handleMidtrans ~ snapTransaction:', snapTransaction);
   return snapTransaction;
+};
+
+export const getOneTransaction = async (req) => {
+  return await transactions.findOne({
+    where: { invoice: req.params.order_id },
+  });
+};
+
+export const getTransactionDetails = async (req, transactionId) => {
+  return await transactionDetails.findAll({
+    where: { transactionId },
+    raw: true,
+    nest: true,
+    attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
+    include: [
+      {
+        model: inventory,
+        as: 'inventory',
+        required: true,
+        attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
+        include: [
+          {
+            model: product,
+            as: 'product',
+            required: true,
+            attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
+          },
+        ],
+      },
+    ],
+  });
+};
+
+export const updateTransactionStatus = async (req, t) => {
+  return await transactions.update(
+    { paymentStatus: req.body.status },
+    { where: { invoice: req.params.order_id }, transaction: t },
+  );
 };

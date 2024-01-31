@@ -24,6 +24,7 @@ export const init = (sequelize) => {
       paymentMethod: DataTypes.STRING,
       paymentProofImg: DataTypes.STRING,
       userAddressId: DataTypes.INTEGER,
+      storeId:DataTypes.INTEGER,
       paymentTotal: DataTypes.INTEGER,
       paymentStatus: DataTypes.STRING,
       deletedAt: DataTypes.DATE

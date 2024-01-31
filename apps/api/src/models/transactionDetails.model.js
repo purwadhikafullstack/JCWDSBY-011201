@@ -11,6 +11,7 @@ export default class transactionDetails extends Model {
     transactionDetails.belongsTo(models.transactions, {
       foreignKey: 'transactionId',
     });
+    transactionDetails.belongsTo(models.inventory);
   }
 }
 
@@ -22,12 +23,12 @@ export const init = (sequelize) => {
       discountId: DataTypes.INTEGER,
       amount: DataTypes.INTEGER,
       price: DataTypes.INTEGER,
-      deletedAt: DataTypes.DATE
+      deletedAt: DataTypes.DATE,
     },
     {
       sequelize,
       modelName: 'transactionDetails',
-      paranoid:true
+      paranoid: true,
     },
   );
 };

@@ -7,50 +7,53 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       userId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+      },
+      storeId: {
+        type: Sequelize.INTEGER,
       },
       invoice: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       transactionDate: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       shipmentTotal: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       paymentMethod: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       paymentProofImg: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       userAddressId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       paymentTotal: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       paymentStatus: {
         type: Sequelize.STRING,
-        defaultValue:'pending'
+        defaultValue: 'pending',
       },
       deletedAt: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('transactions');
-  }
+  },
 };
