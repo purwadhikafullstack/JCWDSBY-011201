@@ -134,7 +134,7 @@ const UserEditAddress = (props) => {
   return (
     <UserLayout>
       <div className="flex flex-col h-full w-full">
-        <div className="header flex flex-col pt-8 px-4 pb-4 bg-blue-50 gap-2">
+        <div className="header flex flex-col pt-8 px-4 lg:px-32 pb-4 bg-blue-50 gap-2">
           <div className="flex">
             <span className="text-blue-800 font-extrabold text-3xl">Cosmo</span>
           </div>
@@ -152,35 +152,37 @@ const UserEditAddress = (props) => {
             </span>
           </div>
         </div>
-        <FormAddress
-          province={provinceId}
-          provinceData={province}
-          city={cityId}
-          cityData={city}
-          district={districtId}
-          districtData={district}
-          address={address}
-          postal={postal}
-          onProvince={(e) => {
-            setProvinceId(e.target.value);
-            setCityId(null);
-            setCity(null);
-            setDistrictId(null);
-            setDistrict(null);
-          }}
-          onCity={(e) => {
-            setCityId(e.target.value);
-            setDistrictId(null);
-            setDistrict(null);
-          }}
-          onDistrict={(e) => {
-            setDistrictId(e.target.value);
-          }}
-          onAddress={(e) => setAddress(e.target.value)}
-          onPostal={(e) => setPostal(e.target.value)}
-          onSubmit={handleEditAddress}
-          isLoading={isLoading}
-        />
+        <div className="flex w-full px-4 lg:px-32">
+          <FormAddress
+            province={provinceId}
+            provinceData={province}
+            city={cityId}
+            cityData={city}
+            district={districtId}
+            districtData={district}
+            address={address}
+            postal={postal}
+            onProvince={(e) => {
+              setProvinceId(e.target.value);
+              setCityId(null);
+              setCity(null);
+              setDistrictId(null);
+              setDistrict(null);
+            }}
+            onCity={(e) => {
+              setCityId(e.target.value);
+              setDistrictId(null);
+              setDistrict(null);
+            }}
+            onDistrict={(e) => {
+              setDistrictId(e.target.value);
+            }}
+            onAddress={(e) => setAddress(e.target.value)}
+            onPostal={(e) => setPostal(e.target.value)}
+            onSubmit={handleEditAddress}
+            isLoading={isLoading}
+          />
+        </div>
       </div>
     </UserLayout>
   );

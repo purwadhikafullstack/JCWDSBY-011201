@@ -18,7 +18,7 @@ const FormAddress = ({
   isLoading,
 }) => {
   return (
-    <div className="flex flex-col items-center py-8 px-4 gap-4">
+    <div className="flex flex-col w-full items-center py-8 px-4 gap-4">
       <div className="flex flex-col gap-2 w-full">
         <Label htmlFor="province" value="Province *" />
         <Select onChange={onProvince}>
