@@ -35,14 +35,14 @@ const CardManageDiscount = ({
                 </div>
                 <div className={`flex gap-1 ${data.term === 'product' ? '' : data.term === 'buy 1 get 1' ? '' : 'hidden'}`}>
                     <TiShoppingCart className={`self-center lg:text-xl`} />
-                    <div className="text-sm lg:text-xl">{data.store.inventories[0]?.product.name}</div>
+                    <div className="text-sm lg:text-xl">{data.productName}</div>
                 </div>
                 <div className={`flex gap-1 ${data.term === 'product' ? '' : data.term === 'min transaction' ? '' : 'hidden'}`}>
                     <CiDiscount1 className="self-center lg:text-xl" />
-                    <div className="text-sm lg:text-xl">{data.type === 'percentage' ? `${data.percentage*100}%` : `${data.nominal.toLocaleString('id-ID', {style: 'currency', currency: 'IDR', maximumFractionDigits: 0})}`}</div>
+                    <div className="text-sm lg:text-xl">{data.type === 'percentage' ? `${data?.percentage*100}%` : `${data.nominal?.toLocaleString('id-ID', {style: 'currency', currency: 'IDR', maximumFractionDigits: 0})}`}</div>
                 </div>
                 <div className={`flex flex-col text-sm gap-1 lg:text-md lg:gap-11 lg:flex-row lg:mt-3 ${data.term !== 'min transaction' && 'hidden'}`}>
-                    <p>Min Transaction : <br className="hidden lg:block"/>{data.minTransaction.toLocaleString('id-ID', {style: 'currency', currency: 'IDR', maximumFractionDigits: 0})}</p>
+                    <p>Min Transaction : <br className="hidden lg:block"/>{data?.minTransaction.toLocaleString('id-ID', {style: 'currency', currency: 'IDR', maximumFractionDigits: 0})}</p>
                     <p>Limit : <br className="hidden lg:block"/>{data.limit}</p>
                     <p className="font-bold lg:text-lg">{data.voucherCode}</p>
                 </div>

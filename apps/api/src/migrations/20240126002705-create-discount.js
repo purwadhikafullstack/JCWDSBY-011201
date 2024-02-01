@@ -9,8 +9,15 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      UUID: {
+        allowNull: false,
+        type: Sequelize.STRING,
+      },
       storeId: {
         allowNull: false,
+        type: Sequelize.INTEGER
+      },
+      inventoryId: {
         type: Sequelize.INTEGER
       },
       name: {

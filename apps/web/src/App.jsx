@@ -46,7 +46,8 @@ import { fetchCartItems } from './redux/slice/cartSlice';
 import Cart from './pages/Cart';
 import StockReport from './pages/admin/StockReport';
 import ManageDiscount from './pages/admin/ManageDiscount';
-import CreateDiscount from './pages/admin/CreateDiscount';
+import ManageDiscountAdd from './pages/admin/ManageDiscountAdd';
+import ManageDiscountEdit from './pages/admin/ManageDiscountEdit';
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 function App() {
@@ -358,7 +359,15 @@ function App() {
           path="/manage/discount/create"
           element={
             <PrivateRoute role={['admin', 'super']}>
-              <CreateDiscount />
+              <ManageDiscountAdd />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/discount/edit/:UUID"
+          element={
+            <PrivateRoute role={['admin', 'super']}>
+              <ManageDiscountEdit />
             </PrivateRoute>
           }
         />

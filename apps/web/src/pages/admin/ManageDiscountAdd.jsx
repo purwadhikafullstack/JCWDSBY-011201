@@ -6,8 +6,7 @@ import Stepper from "../../components/Stepper";
 import API_CALL from "../../helpers/API";
 import ModalConfirm from "../../components/modal/ModalConfirm";
 
-
-const CreateDiscount = () => {
+const ManageDiscountAdd = () => {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState();
     const [isError, setIsError] = useState();
@@ -60,4 +59,4 @@ const CreateDiscount = () => {
     </div>
 };
 
-export default CreateDiscount;
+export default ManageDiscountAdd;

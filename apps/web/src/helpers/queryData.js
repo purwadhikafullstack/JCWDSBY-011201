@@ -63,7 +63,7 @@ export const getDiscount = async (setValue, setLoading, setTotalPage, queryParam
         })
         setTotalPage && setTotalPage(parseInt(res.data.result?.totalPage || 1))
         setValue(res.data.result.rows);
-
+        
         setLoading && setLoading(false);
     } catch (error) {
         console.error(error);

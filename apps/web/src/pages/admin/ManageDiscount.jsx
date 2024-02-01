@@ -47,7 +47,7 @@ const ManageDiscount = () => {
                         <Button onClick={() => navigate('/manage/discount/create')}>Create Discount</Button>
                     </div>
                     <div className="mt-5 grid gap-3 lg:grid-cols-4 lg:gap-y-10">
-                        {discountData && discountData.map((val, idx) => <CardManageDiscount key={idx} data={val} onDelete={() => {setOpenModal(true); setDiscID(val.id)}} />)}
+                        {discountData && discountData.map((val, idx) => <CardManageDiscount key={idx} data={val} onDelete={() => {setOpenModal(true); setDiscID(val.id)}} onEdit={() => navigate(`/manage/discount/edit/${val.UUID}`)} />)}
                     </div>
                 </div>
                 <div className='grid max-w-full overflow-x-auto pb-4 justify-items-center lg:justify-items-end'>

@@ -1,4 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
+import { nanoid } from 'nanoid';
 
 export default class discount extends Model {
   /**
@@ -11,13 +12,18 @@ export default class discount extends Model {
     // Transaction Detail
     // discount.hasMany(models.transactionDetail)
     discount.belongsTo(models.stores)
-    discount.hasOne(models.inventory)
+    discount.belongsTo(models.inventory)
   }
 };
 
 export const init = (sequelize) => {
   discount.init({
+    UUID: {
+      type: DataTypes.STRING,
+      defaultValue: nanoid(),
+    },
     storeId: DataTypes.INTEGER,
+    inventoryId: DataTypes.INTEGER,
     name: DataTypes.STRING,
     limit: DataTypes.INTEGER,
     term: DataTypes.ENUM(['buy 1 get 1', 'product', 'min transaction']),
