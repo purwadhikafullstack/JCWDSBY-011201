@@ -9,6 +9,7 @@ import { MAX_SIZE, REGEX_FILE_TYPE } from '../../constants/file';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { useSelector } from 'react-redux';
 import { IMG_URL_CATEGORY } from '../../constants/imageURL';
+import ContainerAdmin from '../../components/ContainerAdmin';
 
 const ManageCategories = () => {
     const [openModal, setOpenModal] = useState(false);
@@ -156,7 +157,7 @@ const ManageCategories = () => {
     };
 
     return <>
-        <div className='flex flex-row container bg-blue-100 min-w-[360px] h-max min-h-screen'>
+        <ContainerAdmin>
             <AdminSidebar />
             <LoadingSpinner size={16} isLoading={isLoading} />
             <LayoutPageAdmin title='Manage Categories'>
@@ -193,7 +194,9 @@ const ManageCategories = () => {
                     })}
                 </div>
             </LayoutPageAdmin>
-        </div>
+        </ContainerAdmin>
+
+
     </>
 };
 

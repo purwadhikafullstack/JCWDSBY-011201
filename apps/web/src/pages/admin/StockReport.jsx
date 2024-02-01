@@ -20,12 +20,8 @@ const StockReport = () => {
     const [totalPage, setTotalPage] = useState(1);
 
     useEffect(() => {
-        setIsLoading(true);
-        setTimeout(() =>{
-            setIsLoading(false);
-        }, 500);
         getStockReport(searchParams, setStockReportData, setTotalPage)
-        getStore(setStoreData)
+        getStore(setStoreData, setIsLoading)
     }, [searchParams])
 
     const handleFilterStore = (value) => {
