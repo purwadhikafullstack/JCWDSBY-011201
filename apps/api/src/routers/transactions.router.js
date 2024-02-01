@@ -32,7 +32,7 @@ transactionRouter.get('/orders', validateToken, getAdminAllTransactions);
 transactionRouter.patch(
   '/proof',
   validateToken,
-  uploader('/proof', 2).single('proofUpload'),
+  uploader('/proof', 1).single('proofUpload'),
   patchPaymentProofController,
 );
 transactionRouter.patch(
@@ -40,6 +40,5 @@ transactionRouter.patch(
   validateToken,
   patchTransactionStatusController,
 );
-
 
 export { transactionRouter };
