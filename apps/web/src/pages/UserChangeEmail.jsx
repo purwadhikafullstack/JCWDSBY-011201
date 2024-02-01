@@ -66,7 +66,7 @@ const UserChangeEmail = (props) => {
   return (
     <UserLayout>
       <div className="flex flex-col h-full w-full">
-        <div className="header flex flex-col pt-8 px-4 pb-4 bg-blue-50 gap-2">
+        <div className="header flex flex-col pt-8 px-4 lg:px-32 pb-4 bg-blue-50 gap-2">
           <div className="flex">
             <span className="text-blue-800 font-extrabold text-3xl">Cosmo</span>
           </div>
@@ -84,7 +84,7 @@ const UserChangeEmail = (props) => {
             </span>
           </div>
         </div>
-        <div className="flex flex-col items-center py-8 px-4 gap-4">
+        <div className="flex flex-col items-center py-8 px-4 lg:px-32 gap-4">
           <div className="w-full">
             <div className="mb-2 block">
               <Label htmlFor="newEmail" value="Email" />

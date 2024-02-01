@@ -79,7 +79,7 @@ const UserAddressList = (props) => {
   return (
     <UserLayout>
       <div className="flex flex-col h-full w-full">
-        <div className="header flex flex-col pt-8 px-4 pb-4 bg-blue-50 gap-2">
+        <div className="header flex flex-col pt-8 px-4 lg:px-32 pb-4 bg-blue-50 gap-2">
           <div className="flex">
             <span className="text-blue-800 font-extrabold text-3xl">Cosmo</span>
           </div>
@@ -97,7 +97,7 @@ const UserAddressList = (props) => {
             </span>
           </div>
         </div>
-        <div className="flex flex-col items-center py-8 px-4 gap-4 overflow-auto">
+        <div className="flex flex-col items-center py-8 lg:px-32 px-4 gap-4 overflow-auto">
           {isLoadingData && (
             <div class="flex items-center w-full justify-between animate-pulse border rounded-xl p-4">
               <div>

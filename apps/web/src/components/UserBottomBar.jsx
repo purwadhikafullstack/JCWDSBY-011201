@@ -11,7 +11,7 @@ const UserBottomBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   return (
-    <div className="UserBottomBar flex lg:hidden sticky bottom-0 w-full rounded-t-xl justify-evenly border bg-blue-50 p-2">
+    <div className="UserBottomBar flex lg:hidden sticky bottom-0 w-full rounded-t-xl justify-evenly border bg-white shadow-md p-2">
       <div
         className={`menuList flex flex-col justify-center items-center p-2 cursor-pointer ${
           location.pathname === '/' ? 'text-blue-700' : ''
