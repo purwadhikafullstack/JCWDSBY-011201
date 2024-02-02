@@ -85,7 +85,7 @@ const UserProfileDetail = (props) => {
   return (
     <UserLayout>
       <div className="flex flex-col h-full w-full">
-        <div className="header flex flex-col pt-8 px-4 pb-4 bg-blue-50 gap-2">
+        <div className="header flex flex-col pt-8 px-4 lg:px-32 pb-4 bg-blue-50 gap-2">
           <div className="flex">
             <span className="text-blue-800 font-extrabold text-3xl">Cosmo</span>
           </div>
@@ -103,7 +103,7 @@ const UserProfileDetail = (props) => {
             </span>
           </div>
         </div>
-        <div className="flex flex-col items-center py-8 px-4 gap-4">
+        <div className="flex flex-col items-center py-8 lg:px-32 px-4 gap-4">
           <div className="w-36 h-36 rounded-full border overflow-hidden relative">
             <img
               className="w-full h-full object-cover"

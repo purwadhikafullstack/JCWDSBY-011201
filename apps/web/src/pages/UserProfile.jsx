@@ -13,7 +13,7 @@ const UserProfile = (props) => {
   return (
     <UserLayout>
       <div className="flex flex-col flex-grow w-full">
-        <div className="header flex flex-col pt-8 px-4 pb-4 bg-blue-50 gap-2">
+        <div className="header flex flex-col pt-8 px-4 lg:px-32 pb-4 bg-blue-50 gap-2">
           <div className="flex">
             <span className="text-blue-800 font-extrabold text-3xl">Cosmo</span>
           </div>
@@ -23,7 +23,7 @@ const UserProfile = (props) => {
             </span>
             <div className="flex w-[40%] justify-end lg:justify-center items-center">
               <Avatar
-                className="lg:hidden"
+                className="flex md:hidden"
                 img={
                   globalUser.image
                     ? `${import.meta.env.VITE_IMG_URL}/avatar/${
@@ -35,7 +35,7 @@ const UserProfile = (props) => {
                 rounded
               />
               <Avatar
-                className="max-md:hidden"
+                className="hidden md:flex"
                 img={
                   globalUser.image
                     ? `${import.meta.env.VITE_IMG_URL}/avatar/${
@@ -49,8 +49,9 @@ const UserProfile = (props) => {
             </div>
           </div>
         </div>
-        <div className="flex flex-grow flex-col py-8 px-4 gap-4">
+        <div className="flex flex-grow flex-col py-8 px-4 lg:px-32 gap-4">
           <span className="font-bold text-base">Settings</span>
+          <hr />
           <div className="flex flex-col gap-4">
             <span
               className="font-semibold text-lg cursor-pointer text-blue-500 hover:underline underline-offset-2"
@@ -107,6 +108,7 @@ const UserProfile = (props) => {
               Log Out
             </span>
           </div>
+          <hr />
         </div>
         <Footer />
       </div>

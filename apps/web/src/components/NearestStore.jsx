@@ -1,25 +1,31 @@
 import { Badge } from 'flowbite-react';
+import { HiMapPin, HiOutlineMapPin } from 'react-icons/hi2';
 
 const NearestSTore = ({ storeData }) => {
   if (!storeData.storeName) {
     return (
-      <div className="flex flex-col gap-1">
-        <div className="flex">
-          <span className="font-bold text-sm">Nearest Store</span>
+      <div className="flex max-sm:flex-col gap-1 md:items-baseline">
+        <div className="flex gap-1">
+          <span className="font-normal text-sm text-gray-500">
+            Nearest Store
+          </span>
+          <HiOutlineMapPin className="w-6 h-6 text-gray-500" />
         </div>
-
         <div className="h-3 animate-pulse w-24 bg-gray-200 rounded-full"></div>
-        <div className="h-3 animate-pulse w-36 bg-gray-200 rounded-full"></div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col gap-1">
-      <div className="flex gap-2 items-center">
-        <span className="font-bold text-sm">Nearest Store</span>
+    <div className="flex max-sm:flex-col gap-1 md:items-baseline">
+      <div className="flex gap-1">
+        <span className="font-normal text-sm text-gray-500">Nearest Store</span>
+        <HiOutlineMapPin className="w-6 h-6 text-gray-500" />
+      </div>
+      <div className="flex gap-1 items-baseline">
+        <span className="font-semibold text-xs">{`${storeData.storeName}`}</span>
         <Badge
-          color={`${storeData.distance ? `blue` : `failure`}`}
+          color={`${storeData.distance ? `green` : `failure`}`}
           className="font-bold"
         >
           {storeData.distance
@@ -27,8 +33,6 @@ const NearestSTore = ({ storeData }) => {
             : `Out of Range`}
         </Badge>
       </div>
-      <span className="font-semibold text-xs">{`${storeData.storeName}`}</span>
-      <span className="font-semibold text-xs">{`${storeData.district}, ${storeData.city}, ${storeData.postalCode}`}</span>
     </div>
   );
 };

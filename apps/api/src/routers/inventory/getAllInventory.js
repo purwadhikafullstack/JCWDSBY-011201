@@ -6,7 +6,6 @@ import categories from "../../models/categories.model";
 import productImage from "../../models/product-image.model";
 import store from "../../models/stores.model";
 import users from "../../models/users.model";
-import inventory from "../../models/inventory.model";
 
 export default async function (req, res, next) {
     try {
@@ -26,7 +25,7 @@ export default async function (req, res, next) {
         if (sort === 'nameasc' || sort === 'none') order.push(col('productName'), 'ASC');
         if (sort === 'namedesc') order.push(col('productName'), 'DESC');
 
-        const result = await findAndCountAllInventory({
+        const params = {
             include: [
                 {
                     model: product,
@@ -71,7 +70,14 @@ export default async function (req, res, next) {
             offset: page * parseInt(limit) - parseInt(limit),
             order: [order],
             distinct: true,
-        })
+        }
+
+        if (limit === 'none'){
+            delete params.limit;
+            delete params.offset;
+        }
+
+        const result = await findAndCountAllInventory(params)
 
         res.status(200).json(resTemplate(200, true, 'Get All Inventory Success', result));
     } catch (error) {

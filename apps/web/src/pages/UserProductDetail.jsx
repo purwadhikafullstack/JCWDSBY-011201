@@ -10,16 +10,18 @@ import API_CALL from '../helpers/API';
 import { IMG_URL_PRODUCT } from '../constants/imageURL';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { useSelector } from 'react-redux';
+import { DrawerForUserProductCard } from '../components/DrawerForUserProductCard';
 
 const UserProductDetail = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const currStore = useSelector(reducer => reducer.storeReducer);
   const params = useParams();
-  const [openModal, setOpenModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [productData, setProductData] = useState(null);
   const [relatedProductData, setRelatedProductData] = useState([]);
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const toggleDrawer = () => setOpenDrawer((prevState) => !prevState);
 
   useEffect(() => {
     setIsLoading(true);
@@ -41,7 +43,7 @@ const UserProductDetail = () => {
   return (
     <UserLayout>
       <LoadingSpinner isLoading={isLoading} size={16} />
-      <div className="flex flex-col gap-2 relative">
+      <div className="flex flex-col gap-2 lg:w-[1024px] m-auto relative">
         <div className="h-96 md:h-[28rem] bg-blue-50">
           <Carousel>
             {productData && productData.product.product_images.map((value, index) => (
@@ -164,10 +166,20 @@ const UserProductDetail = () => {
             </div>
             <button
               className={`${productData && productData.stock ? 'bg-blue-700' : 'bg-gray-200'} text-base font-semibold text-white rounded-md p-2 bg-blue-700`}
-              disabled={productData && productData.stock ? true : false}
+              disabled={productData && productData.stock ? false : true}
+              onClick={() => setOpenDrawer(true)}
             >
               Add to cart
             </button>
+            <DrawerForUserProductCard
+              inventoryid={productData && productData.id}
+              openDrawer={openDrawer}
+              toggleDrawer={toggleDrawer}
+              price={productData && productData.product.price}
+              image={productData && IMG_URL_PRODUCT + productData.product.product_images[0].image}
+              productName={productData && productData.product.name}
+              stock={productData && productData.stock}
+            />
           </div>
         </div>
       </div>

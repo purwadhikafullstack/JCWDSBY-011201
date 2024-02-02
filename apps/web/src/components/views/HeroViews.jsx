@@ -3,7 +3,7 @@ import { Carousel } from 'flowbite-react';
 const HeroViews = ({ heroData }) => {
   if (!heroData) {
     return (
-      <div className="h-56 w-full sm:h-64 xl:h-80 2xl:h-96 animate-pulse">
+      <div className="h-56 w-full sm:h-64 md:h-[400px] lg:h-[550px] animate-pulse">
         <div className="flex items-center justify-center w-full h-full bg-gray-300 rounded">
           <svg
             className="w-10 h-10 text-gray-200 dark:text-gray-600"
@@ -19,12 +19,12 @@ const HeroViews = ({ heroData }) => {
     );
   }
   return (
-    <div className="h-56 w-full sm:h-64 xl:h-80 2xl:h-96">
+    <div className="h-56 w-full sm:h-64 md:h-[400px] lg:h-[550px]">
       <Carousel>
         {heroData.map((value, idx) => (
           <img
             key={idx}
-            className="h-full object-cover"
+            className="h-full object-cover lg:object-stretch"
             src={`${import.meta.env.VITE_IMG_URL}/event/${value.image}`}
             alt={value.name}
           />

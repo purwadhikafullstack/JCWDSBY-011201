@@ -32,7 +32,7 @@ import Inventory from './pages/admin/Inventory';
 import ManageAdmin from './pages/admin/ManageAdmin';
 import RegisteredUser from './pages/admin/RegisteredUser';
 import ManageStore from './pages/admin/ManageStore';
-import CheckAuth from './helpers/CheckAuth';
+import CheckAuth from './helpers/checkAuth';
 import { setStore } from './redux/slice/storeSlice';
 import ManageStoreAdd from './pages/admin/ManageStoreAdd';
 import ManageStoreUpdate from './pages/admin/ManageStoreUpdate';
@@ -48,6 +48,10 @@ import Cart from './pages/cart';
 import UserOrders from './pages/UserOrders';
 import UserOrderDetails from './pages/UserOrderDetails';
 import AdminOrders from './pages/AdminOrders';
+import StockReport from './pages/admin/StockReport';
+import ManageDiscount from './pages/admin/ManageDiscount';
+import ManageDiscountAdd from './pages/admin/ManageDiscountAdd';
+import ManageDiscountEdit from './pages/admin/ManageDiscountEdit';
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 function App() {
@@ -376,6 +380,38 @@ function App() {
           element={
             <PrivateRoute role={['admin', 'super']}>
               <ManageStoreUpdate />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/report/stock"
+          element={
+            <PrivateRoute role={['admin', 'super']}>
+              <StockReport />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/discount"
+          element={
+            <PrivateRoute role={['admin', 'super']}>
+              <ManageDiscount />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/discount/create"
+          element={
+            <PrivateRoute role={['admin', 'super']}>
+              <ManageDiscountAdd />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/discount/edit/:UUID"
+          element={
+            <PrivateRoute role={['admin', 'super']}>
+              <ManageDiscountEdit />
             </PrivateRoute>
           }
         />
