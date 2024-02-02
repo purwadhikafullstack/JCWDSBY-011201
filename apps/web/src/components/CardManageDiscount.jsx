@@ -21,36 +21,36 @@ const CardManageDiscount = ({
 
         return <div className="flex-1">
             <div>
-                <p className="font-bold lg:text-xl">{data.name}</p>
+                <p className="font-bold lg:text-md">{data.name}</p>
                 <p className="text-xs lg:text-sm">{date}</p>
             </div>
             <div className={`grid mt-2 gap-1 ${data.term === 'buy 1 get 1' && 'lg:gap-3'} ${data.term === 'product' && 'lg:gap-2'}`}>
                 <div className="flex gap-1">
-                    <GoChecklist className="self-center lg:text-xl" />
-                    <div className="text-sm lg:text-xl">{term}</div>
+                    <GoChecklist className="self-center lg:text-md" />
+                    <div className="text-sm lg:text-md">{term}</div>
                 </div>
                 <div className="flex gap-1">
-                    <HiOutlineBuildingStorefront className="self-center lg:text-xl" />
-                    <div className="text-sm lg:text-xl">{data.storeName}</div>
+                    <HiOutlineBuildingStorefront className="self-center lg:text-md" />
+                    <div className="text-sm lg:text-md">{data.storeName}</div>
                 </div>
                 <div className={`flex gap-1 ${data.term === 'product' ? '' : data.term === 'buy 1 get 1' ? '' : 'hidden'}`}>
-                    <TiShoppingCart className={`self-center lg:text-xl`} />
-                    <div className="text-sm lg:text-xl">{data.productName}</div>
+                    <TiShoppingCart className={`self-center lg:text-md`} />
+                    <div className="text-sm lg:text-md">{data.productName}</div>
                 </div>
                 <div className={`flex gap-1 ${data.term === 'product' ? '' : data.term === 'min transaction' ? '' : 'hidden'}`}>
-                    <CiDiscount1 className="self-center lg:text-xl" />
-                    <div className="text-sm lg:text-xl">{data.type === 'percentage' ? `${data?.percentage*100}%` : `${data.nominal?.toLocaleString('id-ID', {style: 'currency', currency: 'IDR', maximumFractionDigits: 0})}`}</div>
+                    <CiDiscount1 className="self-center lg:text-md" />
+                    <div className="text-sm lg:text-md">{data.type === 'percentage' ? `${data?.percentage*100}%` : `${data.nominal?.toLocaleString('id-ID', {style: 'currency', currency: 'IDR', maximumFractionDigits: 0})}`}</div>
                 </div>
-                <div className={`flex flex-col text-sm gap-1 lg:text-md lg:gap-11 lg:flex-row lg:mt-3 ${data.term !== 'min transaction' && 'hidden'}`}>
+                <div className={`grid lg:grid-flow-col text-sm gap-1 lg:text-md lg:flex-row lg:mt-3 ${data.term !== 'min transaction' && 'hidden'}`}>
                     <p>Min Transaction : <br className="hidden lg:block"/>{data?.minTransaction.toLocaleString('id-ID', {style: 'currency', currency: 'IDR', maximumFractionDigits: 0})}</p>
                     <p>Limit : <br className="hidden lg:block"/>{data.limit}</p>
-                    <p className="font-bold lg:text-lg">{data.voucherCode}</p>
+                    <p className="font-bold lg:text-md">{data.voucherCode}</p>
                 </div>
             </div>
         </div>
     };
 
-    return <div className=" bg-white shadow-md rounded-md min-h-[7rem] p-3 lg:w-[400px] h-min lg:h-full">
+    return <div className="border shadow-lg rounded-md min-h-[7rem] p-4 lg:w-[365px] h-min lg:h-full">
             <div className=" flex h-full">
                 {data && showCard()}
                 <div className="grid">
