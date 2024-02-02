@@ -170,7 +170,7 @@ export const updateTransactionStatus = async (req, t) => {
 
 export const updateProofImg = async (req, t, filename) => {
   return await transactions.update(
-    { paymentProofImg: filename },
+    { paymentProofImg: filename,paymentStatus:'checking' },
     { where: { invoice: req.body.invoice, userId: req.tokenData.id } },
   );
 };

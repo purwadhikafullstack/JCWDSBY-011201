@@ -7,6 +7,7 @@ import provinces from './provinces.model';
 import districts from './districts.model';
 import inventory from './inventory.model';
 import { nanoid } from 'nanoid';
+import transactions from './transactions.model';
 
 export default class stores extends Model {
   /**
@@ -21,6 +22,7 @@ export default class stores extends Model {
     stores.belongsTo(provinces, { foreignKey: 'provinceId' });
     stores.belongsTo(districts, { foreignKey: 'districtId' });
     stores.hasMany(inventory, { foreignKey:'storeId' });
+    stores.hasMany(transactions, { foreignKey:'storeId' });
   }
 }
 

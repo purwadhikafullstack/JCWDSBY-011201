@@ -73,6 +73,9 @@ export const getTransactionDetailsController = async (req, res, next) => {
         resTemplate(200, true, 'get transaction Details success', {
           status: transData.paymentStatus,
           invoice: transData.invoice,
+          paymentMethod:transData.paymentMethod,
+          total:transData.paymentTotal,
+          img:transData.paymentProofImg,
           items: [
             ...processedRes,
             {

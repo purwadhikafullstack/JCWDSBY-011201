@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export const useSnap = () => {
+  const navigate = useNavigate();
   const [snap, setSnap] = useState(null);
   useEffect(() => {
     const midtransScriptUrl = 'https://app.sandbox.midtrans.com/snap/snap.js';
@@ -12,7 +14,6 @@ export const useSnap = () => {
     scriptTag.onload = () => {
       setSnap(window.snap);
     };
-
     document.body.appendChild(scriptTag);
 
     return () => {
@@ -25,22 +26,20 @@ export const useSnap = () => {
       snap.embed(snapToken, {
         embedId,
         onSuccess: (result) => {
-          console.log('success', result);
-        //   action.onSuccess(result);
+          action.onSuccess(result);
         },
         onPending: (result) => {
-          console.log('pending', result);
-        //   action.onPending(result);
+          action.onPending(result);
         },
         onClose: (result) => {
-          console.log('closed', result);
-        //   action.onClose();
+          action.onClose(result);
+          navigate('/');
         },
         onError: (result) => {
-          console.log('fail', result);
+          action.onError(result);
         },
       });
     }
   };
-  return {snapEmbed}
+  return { snapEmbed };
 };

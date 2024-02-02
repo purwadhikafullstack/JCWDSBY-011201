@@ -7,7 +7,7 @@ import stores from '../models/stores.model';
 import { Op } from 'sequelize';
 
 export const getPagination = (page, size) => {
-  const limit = size ? +size : 10;
+  const limit = size ? +size : 5;
   const offset = page ? (page - 1) * limit : 0;
 
   return { limit, offset };
@@ -21,22 +21,72 @@ export const findStoreIdByAdminId = (req, userId) => {
   });
 };
 
-export const getOrdersAdmin = async (req, storeId, limit, offset, invoice) => {
+export const getOrdersAdmin = async (
+  req,
+  storeId,
+  limit,
+  offset,
+  invoice,
+  status,
+  payment
+) => {
   return transactions.findAndCountAll({
     limit,
     offset,
-    where: { storeId, invoice: { [Op.substring]: invoice } },
+    where: {
+      paymentStatus: { [Op.substring]: status },
+      [Op.or]: [
+        {
+          invoice: { [Op.substring]: invoice },
+        },
+        { paymentMethod: { [Op.substring]: payment } },
+      ],
+      ...(req.tokenData.role === 'admin' ? { storeId } : {}),
+    },
     raw: true,
     nest: true,
+    include: [
+      {
+        model: stores,
+        as: 'store',
+        required: true,
+        attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
+      },
+    ],
   });
 };
 
-export const getOrdersUser = async (req, userId, limit, offset, invoice) => {
+export const getOrdersUser = async (
+  req,
+  userId,
+  limit,
+  offset,
+  invoice,
+  status,
+  payment
+) => {
   return transactions.findAndCountAll({
     limit,
     offset,
-    where: { userId, invoice: { [Op.substring]: invoice } },
+    where: {
+      userId,
+      paymentStatus: { [Op.substring]: status },
+      [Op.or]: [
+        {
+          invoice: { [Op.substring]: invoice },
+        },
+        { paymentMethod: { [Op.substring]: payment } },
+      ],
+    },
     raw: true,
     nest: true,
+    include: [
+      {
+        model: stores,
+        as: 'store',
+        required: true,
+        attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
+      },
+    ],
   });
 };

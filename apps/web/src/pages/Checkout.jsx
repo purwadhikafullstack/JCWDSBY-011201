@@ -4,12 +4,15 @@ import { Button, Card } from 'flowbite-react';
 import CartContainer from '../components/cart/CartContainer';
 import { useEffect, useState } from 'react';
 import API_CALL from '../helpers/API';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import customToast from '../utils/toast';
-import Container from '../components/Container';
 import SelectAddressCheckout from '../components/SelectAddressCheckout';
 import SelectCourierCheckout from '../components/SelectCourierCheckout';
 import { useSnap } from '../hooks/useMidtrans';
+import SelectPayment from '../components/SelectPayment';
+import { useNavigate } from 'react-router-dom';
+import { updateTransactionStatus } from '../helpers/checkout/updateTransaction';
+import { deleteCheckedItemInCloud } from '../redux/slice/cartSlice';
 const Checkout = () => {
   const [address, setAddress] = useState(null);
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -19,10 +22,15 @@ const Checkout = () => {
   const [showAddresses, setShowAddresses] = useState(false);
   const [showCourier, setShowCourier] = useState(false);
   const [showSendTime, setSendTime] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState('');
+  const [showSnap, setShowSnap] = useState(false);
+  const [selectedPayment, setSelectedPayment] = useState('');
+  const [showPayment, setShowPayment] = useState();
   const cartItems = useSelector((state) => state.cartReducer.items);
   const currStore = useSelector((reducer) => reducer.storeReducer);
+  console.log('🚀 ~ Checkout ~ currStore:', currStore.storeId);
   const { snapEmbed } = useSnap();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const getAvailableAddress = async () => {
     try {
       const result = await API_CALL.get('/utils/shipping-address', {
@@ -44,7 +52,6 @@ const Checkout = () => {
     }
   };
 
-  
   const checkoutItems = cartItems
     .filter((item) => item.checked === 1)
     .map(({ productName, productPrice, productWeight, amount, ...rest }) => ({
@@ -55,23 +62,29 @@ const Checkout = () => {
       ...rest,
     }));
   console.log('🚀 ~ Checkout ~ checkedItems:', checkoutItems);
-  const paymentTotal = checkoutItems.reduce((sum, item) => sum + (item.value*item.quantity),0) + selectedCourier?.price
-  console.log("🚀 ~ Checkout ~ paymentTotal:", paymentTotal)
+  const itemsInvId = checkoutItems.reduce((accu, item) => {
+    accu.push(item.inventoryId);
+    return accu;
+  }, []);
+  console.log('🚀 ~ itemsInvId ~ itemsInvId:', itemsInvId);
+  const paymentTotal =
+    checkoutItems.reduce((sum, item) => sum + item.value * item.quantity, 0) +
+    selectedCourier?.price;
 
   const handlePay = async () => {
     //   if (!address||!courier) {
     //     alert("harap lengkapi semua opsi")
     //     return
     //   }
-
     const response = await API_CALL.post(
       '/transaction',
       {
         addressUUID: selectedAddress.UUID,
+        storeUUID: currStore.storeId,
         shipmentTotal: selectedCourier.price,
-        paymentMethod,
         paymentTotal,
-        checkoutItems
+        checkoutItems,
+        paymentMethod: selectedPayment.name,
       },
       {
         headers: {
@@ -79,7 +92,33 @@ const Checkout = () => {
         },
       },
     );
-    snapEmbed('2af20b75-21a5-4b04-80d1-b88140a76ecc', 'snap-container');
+    if (response) {
+      console.log('🚀 ~ handlePay ~ response:', response.data.result.invoice);
+      setShowSnap(true);
+      dispatch(deleteCheckedItemInCloud(itemsInvId, currStore.storeId));
+      if (selectedPayment.name=='transfer') {
+        navigate(`/order-details?order_id=${response.data.result.invoice}`)
+        return
+      }
+      snapEmbed(response.data.result.token, 'snap-container', {
+        onSuccess: (result) => {
+          updateTransactionStatus(response.data.result.invoice, 'paid');
+          console.log(result);
+          navigate('/');
+          setShowSnap(false);
+        },
+        onPending: (result) => {
+          console.log(result);
+          //   navigate('/');
+          setShowSnap(false);
+        },
+        onClose: (result) => {
+          console.log(result);
+          //   navigate('/');
+          setShowSnap(false);
+        },
+      });
+    }
   };
 
   const getCourierList = async (checkoutItems) => {
@@ -122,54 +161,71 @@ const Checkout = () => {
 
   return (
     <UserLayout>
-      <div className="container mx-auto max-w-[480px] h-[100vh] font-roboto overflow-y-auto bg-gray-100 ">
-        <div className="flex flex-col">
-          <SelectAddressCheckout
-            selectedAddress={selectedAddress}
-            addressData={address}
-            showAddresses={showAddresses}
-            onShowAddresses={() => setShowAddresses((prev) => !prev)}
-            onSelectAddress={(value) => {
-              setShowCourier(false);
-              setShowAddresses(false);
-              if (selectedAddress.UUID !== value.UUID) {
-                setCourier(null);
-              }
-              setSelectedAddress(value);
-            }}
-          />
-          <SelectCourierCheckout
-            selectedCourier={selectedCourier}
-            courierData={courier}
-            showCouriers={showCourier}
-            onShowCouriers={() => setShowCourier((prev) => !prev)}
-            onSelectCourier={(value) => {
-              setShowCourier(false);
-              setSelectedCourier(value);
-            }}
-          />
-          <Card className="flex flex-col rounded-none capitalize text-xs sm:text-sm mb-3">
-            <p className="font-semibold">pilih waktu pengiriman</p>
-          </Card>
-          <Card className="flex flex-col rounded-none capitalize text-xs sm:text-sm mb-3">
-            <p className="font-semibold">rincian pesanan</p>
-            <div className="bg-gradient-to-b from-blue-400 to-white border w-full h-32 rounded-md"></div>
-          </Card>
-          <Card className="flex flex-col rounded-none capitalize text-xs sm:text-sm mb-3">
-            <p className="font-semibold">metode pembayaran</p>
-          </Card>
-          <Card className="flex flex-col rounded-none capitalize text-xs sm:text-sm mb-3">
-            <p className="font-semibold">ringkasan pembayaran</p>
-            <p className="font-semibold">subtotal pembayaran</p>
-          </Card>
+      <div className="w-full overflow-y-auto">
+        <div className="container mx-auto max-w-[480px] h-[100vh] font-roboto  bg-gray-100 ">
+          {!showSnap && (
+            <div className="flex flex-col">
+              <SelectAddressCheckout
+                selectedAddress={selectedAddress}
+                addressData={address}
+                showAddresses={showAddresses}
+                onShowAddresses={() => setShowAddresses((prev) => !prev)}
+                onSelectAddress={(value) => {
+                  setShowCourier(false);
+                  setShowAddresses(false);
+                  if (selectedAddress.UUID !== value.UUID) {
+                    setCourier(null);
+                  }
+                  setSelectedAddress(value);
+                }}
+              />
+              <SelectCourierCheckout
+                selectedCourier={selectedCourier}
+                courierData={courier}
+                showCouriers={showCourier}
+                onShowCouriers={() => setShowCourier((prev) => !prev)}
+                onSelectCourier={(value) => {
+                  setShowCourier(false);
+                  setSelectedCourier(value);
+                }}
+              />
+              <Card className="flex flex-col rounded-none capitalize text-xs sm:text-sm mb-3">
+                <p className="font-semibold">pilih waktu pengiriman</p>
+              </Card>
+              <Card className="flex flex-col rounded-none capitalize text-xs sm:text-sm mb-3">
+                <p className="font-semibold">rincian pesanan</p>
+                <div className="bg-gradient-to-b from-blue-400 to-white border w-full h-32 rounded-md"></div>
+              </Card>
+              <Card className="flex flex-col rounded-none capitalize text-xs sm:text-sm mb-3">
+                <p className="font-semibold">metode pembayaran</p>
+                <SelectPayment
+                  selectedPayment={selectedPayment}
+                  showPayment={showPayment}
+                  onShowPayment={() => setShowPayment((prev) => !prev)}
+                  onSelectPayment={(value) => {
+                    setShowPayment(false);
+                    setSelectedPayment(value);
+                  }}
+                />
+              </Card>
+              <Card className="flex flex-col rounded-none capitalize text-xs sm:text-sm mb-3">
+                <p className="font-semibold">ringkasan pembayaran</p>
+                <p className="font-semibold">subtotal pembayaran</p>
+              </Card>
+            </div>
+          )}
           <div
             id="snap-container"
             className="flex justify-center items-center sm:w-full"
           ></div>
         </div>
       </div>
-      <CartContainer className="mt-3 p-3 flex-col rounded-md  w-full sm:w-64  sm:right-36 sm:top-36">
-        <div className="flex flex-row justify-between">
+      <CartContainer
+        className={` ${
+          showSnap ? `hidden` : 'flex'
+        } mt-3 p-3 flex-col rounded-md sm:fixed w-full sm:w-64 sm:right-36 sm:top-36`}
+      >
+        <div className="flex flex-row sm:flex-col justify-between sm:gap-y-4">
           <p>
             Total:{' '}
             <span className="font-bold">

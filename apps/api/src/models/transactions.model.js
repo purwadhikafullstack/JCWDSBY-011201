@@ -10,6 +10,7 @@ export default class transactions extends Model {
     transactions.hasMany(models.transactionDetails, {
       foreignKey: 'transactionId',
     });
+    transactions.belongsTo(models.stores, { foreignKey: 'storeId' });
     // define association here
   }
 }
@@ -24,15 +25,15 @@ export const init = (sequelize) => {
       paymentMethod: DataTypes.STRING,
       paymentProofImg: DataTypes.STRING,
       userAddressId: DataTypes.INTEGER,
-      storeId:DataTypes.INTEGER,
+      storeId: DataTypes.INTEGER,
       paymentTotal: DataTypes.INTEGER,
       paymentStatus: DataTypes.STRING,
-      deletedAt: DataTypes.DATE
+      deletedAt: DataTypes.DATE,
     },
     {
       sequelize,
       modelName: 'transactions',
-      paranoid:true
+      paranoid: true,
     },
   );
 };

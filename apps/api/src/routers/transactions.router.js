@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { validateAdmin, validateToken } from '../middleware/tokenValidation';
 
-import { getAdminAllTransactions } from '../controllers/order.controller';
+import { getAllTransactions } from '../controllers/order.controller';
 import {
   createTransactionController,
   getTransactionDetailsController,
@@ -26,7 +26,7 @@ transactionRouter.get(
   getTransactionDetailsController,
 );
 
-transactionRouter.get('/orders', validateToken, getAdminAllTransactions);
+transactionRouter.get('/orders', validateToken, getAllTransactions);
 
 //PAtch
 transactionRouter.patch(
