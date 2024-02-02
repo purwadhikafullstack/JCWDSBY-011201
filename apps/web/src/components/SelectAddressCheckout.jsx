@@ -95,7 +95,7 @@ const SelectAddressCheckout = ({
                 </span>
               </div>
               <span
-                className="text-xs font-bold text-blue-800"
+                className="text-xs font-bold text-blue-800 cursor-pointer"
                 onClick={() =>
                   navigate('/profile/address', {
                     state: { previousPath: location.pathname },

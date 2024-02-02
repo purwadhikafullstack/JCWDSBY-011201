@@ -39,7 +39,11 @@ const Login = () => {
       }
     } catch (error) {
       console.log(error);
-      customToast('error', error.response.data.message);
+      if (error.response.status !== 500) {
+        customToast('error', error.response.data.message);
+      } else {
+        customToast('error', 'Failed to login');
+      }
     }
     setIsloading(false);
   };
