@@ -13,21 +13,15 @@
         allowNull: false,
         type: Sequelize.INTEGER
       },
-      discountId: {
-        type: Sequelize.INTEGER
-      },
       productId: {
         allowNull: false,
         type: Sequelize.INTEGER,
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE',
-        references: {
-          model: 'products',
-          key: 'id'
-        }
       },
       stock: {
         allowNull: false,
+        type: Sequelize.INTEGER
+      },
+      bookedStock: {
         type: Sequelize.INTEGER
       },
       deletedAt: {

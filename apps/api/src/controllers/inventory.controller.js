@@ -8,6 +8,10 @@ export const findOneInventory = async (pointer) => {
     return await inventory.findOne(pointer);
 };
 
+export const findByPkInventory = async (pk, options) => {
+    return await inventory.findByPk(pk, options);
+};
+
 export const createInventory = async (data) => {
     return await inventory.create(data);
 };

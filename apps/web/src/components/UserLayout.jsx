@@ -1,16 +1,20 @@
 import Container from './Container';
 import UserBottomBar from './UserBottomBar';
-import UserTopbar from './UserTopBar';
+import UserTopbar from './topbar/UserTopBar';
+import UserTopbarDesktop from './topbar/UserTopBarDesktop';
 
 const UserLayout = (props) => {
   return (
-    <Container>
-      <div className="flex flex-col h-full overflow-auto">
-        <UserTopbar />
-        {props.children}
-        <UserBottomBar />
-      </div>
-    </Container>
+    <>
+      <Container>
+        <div className="flex w-full flex-col h-full overflow-auto">
+          <UserTopbarDesktop />
+          <UserTopbar />
+          {props.children}
+          <UserBottomBar />
+        </div>
+      </Container>
+    </>
   );
 };
 

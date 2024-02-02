@@ -7,11 +7,13 @@ import updateStore from './stores/updateStore';
 import updateMainBranch from './stores/updateMainBranch';
 import deleteStore from './stores/deleteStore';
 import getMainStore from './stores/getMainStore';
+import { getStoreByUUID } from '../controllers/store.controller';
 
 const storesRouter = Router();
 
 storesRouter.get('/', validateToken, validateSuper, getStores);
 storesRouter.get('/main', validateToken, validateSuper, getMainStore);
+storesRouter.get('/UUID/:UUID', validateToken, validateSuper, getStoreByUUID);
 storesRouter.get('/:id', validateToken, validateSuper, getStoreDetail);
 storesRouter.post('/', validateToken, validateSuper, createStore);
 storesRouter.patch('/:id', validateToken, validateSuper, updateStore);

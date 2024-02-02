@@ -9,17 +9,18 @@ export default class inventory extends Model {
   static associate(models) {
     // define association here
     inventory.belongsTo(models.stores);
-    // inventory.belongsTo(models.discounts);
+    inventory.hasMany(models.discount);
     inventory.belongsTo(models.product);
+    inventory.hasMany(models.stock_report)
   }
 };
 export const init = (sequelize) => {
   inventory.init({
     storeId: DataTypes.INTEGER,
-    discountId: DataTypes.INTEGER,
     productId: DataTypes.INTEGER,
     stock: DataTypes.INTEGER,
-    deletedAt: DataTypes.DATE
+    bookedStock: DataTypes.INTEGER,
+    deletedAt: DataTypes.DATE,
   }, {
     sequelize,
     modelName: 'inventory',
