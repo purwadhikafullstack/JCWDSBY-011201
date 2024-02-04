@@ -8,7 +8,7 @@ import { MdDelete } from "react-icons/md";
 import API_CALL from "../../helpers/API";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import { toast } from "react-toastify";
-import { customTextInputTheme } from "../../constants/flowbiteCustomTheme";
+import { customTextInputTheme } from "../../helpers/flowbiteCustomTheme";
 
 const CreateProduct = () => {
     const navigate = useNavigate();
