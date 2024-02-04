@@ -6,7 +6,7 @@ import {
   checkUncheckItem,
   updateChecksInCloud,
 } from '../redux/slice/cartSlice';
-export function IndividualCartItems({ val, idx }) {
+export function IndividualCartItems({ val, idx,checkall,setCheckallFalse }) {
   const storeUUID = useSelector((state) => state.storeReducer.storeId);
   const prevCheckedRef = useRef(val.checked);
   const [clicked, setClicked] = useState(false);
@@ -34,6 +34,9 @@ export function IndividualCartItems({ val, idx }) {
           }}
           onClick={() => {
             setClicked(true);
+            if (checkall) {
+              setCheckallFalse(false)
+            }
           }}
         />
       </div>

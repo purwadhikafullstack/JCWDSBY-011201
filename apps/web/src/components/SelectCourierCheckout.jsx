@@ -13,7 +13,7 @@ const SelectCourierCheckout = ({
   if (courierData) {
     if (courierData.length > 0) {
       return (
-        <div className="flex flex-col w-full p-2 gap-1">
+        <div className="flex flex-col w-full p-2 gap-1 bg-white">
           <div
             className="flex w-full rounded-lg justify-between border-2 p-3 gap-3 items-center cursor-pointer"
             onClick={onShowCouriers}
@@ -96,7 +96,7 @@ const SelectCourierCheckout = ({
       );
     } else {
       return (
-        <div className="flex flex-col w-full p-2 gap-1">
+        <div className="flex flex-col w-full p-2 gap-1 bg-white">
           <div className="flex w-full rounded-lg justify-between border-2 p-3 gap-3 items-center">
             <div className="flex gap-3 md:gap-4 items-center">
               <HiTruck className="w-8 h-8 text-blue-800" />
