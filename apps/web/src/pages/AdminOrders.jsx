@@ -6,6 +6,7 @@ import { Button, Datepicker, Pagination } from 'flowbite-react';
 import SortBar from '../components/SortBar';
 import { getStore } from '../helpers/queryData';
 import { useSelector } from 'react-redux';
+import { DatepickerForOrders } from '../components/DatepickerForOrders';
 
 const AdminOrders = () => {
   const [order, setOrder] = useState([]);
@@ -146,16 +147,7 @@ const AdminOrders = () => {
               <option value={'checking'}>checking</option>
             </select>
           </label>
-          <div className="flex flex-col gap-y-3 mb-3">
-            <label htmlFor="from" className='flex gap-x-6'>
-              from:
-              <Datepicker className='w-40' maxDate={new Date()} />
-            </label>
-            <label htmlFor="to" className='flex gap-x-10'>
-              to:
-              <Datepicker className='w-40' maxDate={new Date()} />
-            </label>
-          </div>
+         <DatepickerForOrders  setSearchParams={setSearchParams}  />
           <SortBar
             title={'Store :'}
             onChange={(e) => handleFilterStore(e.target.value)}

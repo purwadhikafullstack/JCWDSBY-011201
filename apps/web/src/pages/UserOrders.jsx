@@ -4,6 +4,7 @@ import UserLayout from '../components/UserLayout';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { HiOutlineArrowRight, HiOutlineMagnifyingGlass } from 'react-icons/hi2';
 import { Button, Datepicker, Pagination } from 'flowbite-react';
+import { DatepickerForOrders } from '../components/DatepickerForOrders';
 const UserOrders = () => {
   const [order, setOrder] = useState([]);
   const [totalPage, setTotalPage] = useState(1);
@@ -137,17 +138,8 @@ const UserOrders = () => {
               <option value={'checking'}>checking</option>
             </select>
           </label>
-          <div className="flex flex-col gap-y-3 mb-3">
-            <label htmlFor="from" className='flex gap-x-6'>
-              from:
-              <Datepicker className='w-40' maxDate={new Date()} />
-            </label>
-            <label htmlFor="to" className='flex gap-x-10'>
-              to:
-              <Datepicker className='w-40' maxDate={new Date()} />
-            </label>
-          </div>
-          <div className="flex flex-col gap-y-4 overflow-y-auto">
+          <DatepickerForOrders setSearchParams={setSearchParams} />
+          <div className="flex flex-col flex-grow gap-y-4 overflow-y-auto">
             {order?.map((val, idx) => {
               return (
                 <div

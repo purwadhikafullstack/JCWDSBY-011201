@@ -28,20 +28,26 @@ export const getOrdersAdmin = async (
   offset,
   invoice,
   status,
-  payment
+  payment,
+  from,
+  to,
 ) => {
   return transactions.findAndCountAll({
     limit,
     offset,
     where: {
       paymentStatus: { [Op.substring]: status },
+      storeId,
+      createdAt: {
+        [Op.between]: [from, to],
+      },
       [Op.or]: [
         {
           invoice: { [Op.substring]: invoice },
         },
         { paymentMethod: { [Op.substring]: payment } },
       ],
-      ...(req.tokenData.role === 'admin' ? { storeId } : {}),
+      //   ...(req.tokenData.role === 'admin' ? { storeId } : {}),
     },
     raw: true,
     nest: true,
@@ -63,7 +69,9 @@ export const getOrdersUser = async (
   offset,
   invoice,
   status,
-  payment
+  payment,
+  from,
+  to
 ) => {
   return transactions.findAndCountAll({
     limit,
@@ -71,6 +79,9 @@ export const getOrdersUser = async (
     where: {
       userId,
       paymentStatus: { [Op.substring]: status },
+      createdAt: {
+        [Op.between]: [from, to],
+      },
       [Op.or]: [
         {
           invoice: { [Op.substring]: invoice },
