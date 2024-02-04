@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import AdminSidebar from "../../components/AdminSidebar";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import LayoutPageAdmin from "../../components/LayoutPageAdmin";
 import StockReportTable from "../../components/table/StockReportTable";
@@ -10,6 +9,7 @@ import { useSearchParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { getStockReport, getStore } from "../../helpers/queryData";
 import { Pagination } from "flowbite-react";
+import LayoutDashboard from "../../components/LayoutDashboard";
 
 const StockReport = () => {
     const currentUser = useSelector(state => state.userReducer);
@@ -43,8 +43,7 @@ const StockReport = () => {
     };
 
     return <>
-        <div className='flex flex-row container bg-blue-100 min-w-[360px] h-max min-h-screen'>
-            <AdminSidebar />
+        <LayoutDashboard>
             <LoadingSpinner isLoading={isLoading} size={16} />
             <LayoutPageAdmin title='Stock Report'>
                 <div className='grid grid-cols-1 overflow-x-auto '>
@@ -100,7 +99,7 @@ const StockReport = () => {
                     </div>
                 </div>
             </LayoutPageAdmin>
-        </div>
+        </LayoutDashboard>
     </>
 };
 

@@ -1,10 +1,10 @@
 import { Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow } from "flowbite-react";
-import { tableHeadCenter } from "../../constants/flowbiteCustomTheme";
+import { customTable } from "../../helpers/flowbiteCustomTheme";
 
 const StockReportTable = ({ data }) => {
     return <>
         {data ? !data.length ? <span>Data not available</span> :
-            <Table striped theme={tableHeadCenter}>
+            <Table theme={customTable}>
                 <TableHead>
                     <TableHeadCell >#</TableHeadCell>
                     <TableHeadCell >Date</TableHeadCell>

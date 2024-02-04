@@ -9,6 +9,7 @@ import { IMG_URL_CATEGORY, IMG_URL_PRODUCT } from '../constants/imageURL';
 import { useSelector } from 'react-redux';
 import { sortingProduct } from '../constants/sorting';
 import { Select } from 'flowbite-react';
+import FindCategoryViews from '../components/views/FindCategoryViews';
 
 const UserFindCategory = () => {
   const currStore = useSelector((reducer) => reducer.storeReducer);
@@ -51,37 +52,11 @@ const UserFindCategory = () => {
     <UserLayout>
       <div className="flex flex-col w-full flex-grow p-4 lg:px-32 gap-4">
         <div className="flex flex-col gap-2">
-          <span className="font-bold text-base">Categories</span>
-          <div className="flex w-full border-2 p-2 md:p-4 overflow-auto rounded-xl bg-blue-50">
-            <div className="grid grid-rows-1 grid-flow-col gap-4">
-              {categoryData &&
-                categoryData.map((value, index) => (
-                  <UserCategoryButton
-                    key={index}
-                    image={IMG_URL_CATEGORY + value.image}
-                    categoryName={value.name}
-                    isSelected={
-                      searchParams.get('category') === value.name.toString()
-                        ? true
-                        : false
-                    }
-                    onClick={() => {
-                      setSearchParams((prev) => {
-                        if (prev.get('category') === value.name.toString()) {
-                          prev.delete('category');
-                        } else {
-                          prev.set('category', value.name);
-                        }
-                        return prev;
-                      });
-                    }}
-                  />
-                ))}
-            </div>
-          </div>
+          <span className="font-bold text-2xl lg:text-4xl text-blue-700">Categories</span>
+          <FindCategoryViews categoryData={categoryData}/>
         </div>
         <div className="flex gap-2 items-center">
-          <span className="text-sm font-semibold">Sort By</span>
+          <span className="font-bold text-xl lg:text-2xl text-black">Sort By</span>
           <Select
             value={searchParams.get('sort') || sortingProduct[0].value}
             onChange={(e) => {
@@ -97,7 +72,7 @@ const UserFindCategory = () => {
           </Select>
         </div>
         <div className="flex flex-col gap-2">
-          <span className="font-bold text-base">
+          <span className="font-bold text-2xl lg:text-4xl text-blue-700">
             Products {searchParams.get('q') && `for "${searchParams.get('q')}"`}
           </span>
           <div className="flex w-full">

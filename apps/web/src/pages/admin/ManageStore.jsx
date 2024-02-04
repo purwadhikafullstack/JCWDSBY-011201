@@ -8,6 +8,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { HiMagnifyingGlass } from 'react-icons/hi2';
 import customToast from '../../utils/toast';
 import ManageStoreTable from '../../components/table/ManageStoreTable';
+import ContainerAdmin from '../../components/ContainerAdmin';
 
 const ManageStore = () => {
   const [openModalMain, setOpenModalMain] = useState(false);
@@ -88,7 +89,7 @@ const ManageStore = () => {
 
   return (
     <>
-      <div className="flex flex-row container bg-blue-100 min-w-[360px] h-max min-h-screen">
+      <ContainerAdmin>
         <AdminSidebar />
         <LoadingSpinner isLoading={isLoading} size={16} />
         <LayoutPageAdmin title="Manage Store">
@@ -154,7 +155,7 @@ const ManageStore = () => {
             </div>
           </div>
         </LayoutPageAdmin>
-      </div>
+      </ContainerAdmin>
     </>
   );
 };

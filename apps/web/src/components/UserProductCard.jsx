@@ -4,6 +4,7 @@ import { HiHeart, HiOutlineHeart, HiOutlinePlus } from 'react-icons/hi2';
 import { useSelector } from 'react-redux';
 import { BsFillCartCheckFill } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
+import { Badge } from 'flowbite-react';
 
 const UserProductCard = ({
   image,
@@ -19,6 +20,7 @@ const UserProductCard = ({
   onAddWishList,
   onRemoveWishList,
   wishlist,
+  isPromo,
 }) => {
   const cartItems = useSelector((state) => state.cartReducer.items);
   const navigate = useNavigate();
@@ -60,15 +62,21 @@ const UserProductCard = ({
               {productName}
             </span>
           </div>
+          <div className='flex'>
+            {!discountPrice && isPromo && <Badge color={'success'}>Buy 1 Get 1</Badge>}
+          </div>
           {discountPrice ? (
             <div className="flex flex-col">
-              <span className=" line-through text-base text-red-500">
-                {price.toLocaleString('ID', {
-                  style: 'currency',
-                  currency: 'idr',
-                  maximumFractionDigits: 0,
-                })}
-              </span>
+              <div className='flex gap-2'>
+                <span className=" line-through text-base text-red-500">
+                  {price.toLocaleString('ID', {
+                    style: 'currency',
+                    currency: 'idr',
+                    maximumFractionDigits: 0,
+                  })}
+                </span>
+                {isPromo && <Badge color={'success'}>Buy 1 Get 1</Badge>}
+              </div>
               <div className="flex">
                 <span className="text-lg font-bold text-blue-800">
                   {discountPrice.toLocaleString('ID', {
@@ -92,11 +100,10 @@ const UserProductCard = ({
       </div>
       {!isItemExistInCart ? (
         <button
-          className={`${
-            stock
-              ? 'bg-blue-700 hover:scale-[1.2] transition-all duration-300'
-              : 'bg-gray-200'
-          } absolute flex justify-center items-center w-10 h-10 rounded-full bottom-2 lg:bottom-4 right-2`}
+          className={`${stock
+            ? 'bg-blue-700 hover:scale-[1.2] transition-all duration-300'
+            : 'bg-gray-200'
+            } absolute flex justify-center items-center w-10 h-10 rounded-full bottom-2 lg:bottom-4 right-2`}
           type="button"
           disabled={stock ? false : true}
           onClick={toggleDrawer}
@@ -105,11 +112,10 @@ const UserProductCard = ({
         </button>
       ) : (
         <button
-          className={`${
-            stock
-              ? 'bg-blue-700 hover:scale-[1.2] transition-all duration-300'
-              : 'bg-gray-200'
-          } absolute flex justify-center items-center w-10 h-10 rounded-full bottom-2 lg:bottom-4 right-2`}
+          className={`${stock
+            ? 'bg-blue-700 hover:scale-[1.2] transition-all duration-300'
+            : 'bg-gray-200'
+            } absolute flex justify-center items-center w-10 h-10 rounded-full bottom-2 lg:bottom-4 right-2`}
           type="button"
           onClick={() => {
             navigate('/cart');
