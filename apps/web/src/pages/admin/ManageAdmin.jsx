@@ -1,4 +1,3 @@
-import AdminSidebar from '../../components/AdminSidebar';
 import LayoutPageAdmin from '../../components/LayoutPageAdmin';
 import { Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow, Button } from "flowbite-react";
 import { IoMdAdd } from "react-icons/io";
@@ -9,6 +8,8 @@ import LoadingSpinner from '../../components/LoadingSpinner';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import ModalConfirm from '../../components/modal/ModalConfirm';
+import LayoutDashboard from '../../components/LayoutDashboard';
+import { customButton, customTable } from '../../helpers/flowbiteCustomTheme';
 
 const ManageAdmin = () => {
     const navigate = useNavigate();
@@ -19,8 +20,6 @@ const ManageAdmin = () => {
         add: false,
         delete: false,
     });
-
-    
 
     const getAdmin = async () => {
         setIsLoading(true);
@@ -42,7 +41,7 @@ const ManageAdmin = () => {
                         <TableCell className='space-y-1'>
                             <p className='text-blue-600' onClick={() => navigate(`/manage/admin/profile?key=${item.uuid}`)}>Edit</p>
                             <p className='text-blue-600' onClick={() => navigate(`/manage/admin/password?key=${item.uuid}`)}>Change Password</p>
-                            <p className='text-red-600' onClick={() => {setOpenModal({...openModal, delete: true});  setUUID(item.uuid) }}>Delete</p>
+                            <p className='text-red-600' onClick={() => { setOpenModal({ ...openModal, delete: true }); setUUID(item.uuid) }}>Delete</p>
                         </TableCell>
                     </TableRow>
                 )
@@ -56,7 +55,7 @@ const ManageAdmin = () => {
         if (res) {
             toast.success('Admin deleted successfully');
             setUUID('');
-            setOpenModal({...openModal, delete: false});
+            setOpenModal({ ...openModal, delete: false });
             getAdmin();
         }
     };
@@ -92,31 +91,30 @@ const ManageAdmin = () => {
     }, []);
 
     return <>
-        <div className='flex flex-row container bg-blue-100 min-w-[360px] h-max min-h-screen'>
-            <AdminSidebar />
+		<LayoutDashboard>
             <LoadingSpinner isLoading={isLoading} size={16} />
             <ModalConfirm
-                    show={openModal.delete}
-                    type={'submit'}
-                    onClose={() => setOpenModal({...openModal, delete: false})}
-                    onConfirm={() => handleDelete(UUID)}
-                    header={'Delete Admin'}
-                    message={'Are you sure you want to delete admin account?'}
-                />
+                show={openModal.delete}
+                type={'submit'}
+                onClose={() => setOpenModal({ ...openModal, delete: false })}
+                onConfirm={() => handleDelete(UUID)}
+                header={'Delete Admin'}
+                message={'Are you sure you want to delete admin account?'}
+            />
             <LayoutPageAdmin title='Manage Admin'>
                 <div className='mb-3 mt-3'>
-                    <Button size={'xs'} color='blue' onClick={() => setOpenModal({...openModal, add: true })}>
+                    <Button theme={customButton} size={'xs'} color='secondary' onClick={() => setOpenModal({ ...openModal, add: true })}>
                         <IoMdAdd className='mr-1 w-4 h-4' />
                         Add Admin
                     </Button>
                     <ModalAdminStore
                         show={openModal.add}
                         onSubmit={(val) => handleAddButton(val)}
-                        onClose={() => setOpenModal({...openModal, add: false })}
+                        onClose={() => setOpenModal({ ...openModal, add: false })}
                     />
                 </div>
                 <div className='grid grid-cols-1 overflow-x-auto '>
-                    <Table>
+                    <Table theme={customTable} striped>
                         <TableHead>
                             <TableHeadCell>#</TableHeadCell>
                             <TableHeadCell>Name</TableHeadCell>
@@ -129,7 +127,7 @@ const ManageAdmin = () => {
                     </Table>
                 </div>
             </LayoutPageAdmin>
-        </div>
+		</LayoutDashboard>
     </>
 };
 

@@ -1,11 +1,10 @@
-import AdminSidebar from '../components/AdminSidebar';
+import LayoutDashboard from '../components/LayoutDashboard';
 
 const AdminDashboard = () => {
   return <>
-    <div className='flex flex-row container bg-slate-200 min-w-[360px] h-max min-h-screen'>
-      <AdminSidebar />
+    <LayoutDashboard>
       <h1>ini Dashboard Admin</h1>;
-    </div>
+    </LayoutDashboard>
   </>
 };
 
