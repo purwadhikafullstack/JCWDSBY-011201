@@ -8,6 +8,7 @@ import { customSidebar } from '../helpers/flowbiteCustomTheme';
 import { IoSettingsOutline, IoPower, IoCloseSharp } from "react-icons/io5";
 import { menu } from '../constants/sidebarMenu'
 import logo from '../assets/cosmo-logo.svg';
+import CosmoTextLogo from './CosmoTextLogo';
 
 const MobileSidebar = ({ show, onClose }) => {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ const MobileSidebar = ({ show, onClose }) => {
               <div className='grid grid-flow-col'>
                 <div className='flex gap-2 items-center'>
                   <img src={logo} className='w-9 h-9' />
-                  <p className='self-center text-3xl font-extrabold font-roboto bg-clip-text bg-gradient-to-br from-fuchsia-500 to-cyan-500 text-transparent'>cosmo</p>
+                  <CosmoTextLogo size={'text-3xl'}/>
                 </div>
                 <IoCloseSharp size={28} className='self-center place-self-end' onClick={onClose} />
               </div>

@@ -1,6 +1,4 @@
 import { Avatar, Dropdown, Sidebar } from 'flowbite-react';
-// import { GiHamburgerMenu } from 'react-icons/gi';
-
 import { FaUserCheck, FaUserCog } from 'react-icons/fa';
 import { TbReportMoney, TbReportAnalytics } from "react-icons/tb";
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -9,6 +7,7 @@ import { customSidebar } from '../helpers/flowbiteCustomTheme';
 import { IoSettingsOutline, IoPower } from "react-icons/io5";
 import logo from '../assets/cosmo-logo.svg';
 import { menu } from '../constants/sidebarMenu'
+import CosmoTextLogo from './CosmoTextLogo';
 
 const AdminSidebar = () => {
   const navigate = useNavigate();
@@ -23,7 +22,7 @@ const AdminSidebar = () => {
             <div className='grid justify-center'>
               <div className='flex gap-2 items-center'>
                 <img src={logo} className='w-11 h-11' />
-                <p className='self-center text-5xl font-extrabold font-roboto bg-clip-text bg-gradient-to-br from-fuchsia-500 to-cyan-500 text-transparent'>cosmo</p>
+                <CosmoTextLogo size={'text-5xl'}/>
               </div>
             </div>
             <Sidebar.ItemGroup className='flex-1'>

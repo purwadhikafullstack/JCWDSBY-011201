@@ -1,5 +1,6 @@
 import logo from '../../assets/cosmo-logo.svg';
 import { GiHamburgerMenu } from 'react-icons/gi';
+import CosmoTextLogo from '../CosmoTextLogo';
 
 const DashboardHeader = ({onClick}) => {
   return <>
@@ -10,7 +11,7 @@ const DashboardHeader = ({onClick}) => {
       <div className='flex flex-1 justify-center '>
         <div className='flex gap-2 items-center'>
           <img src={logo} className='w-9 h-9' />
-          <p className='self-center text-3xl font-extrabold font-roboto bg-clip-text bg-gradient-to-br from-fuchsia-500 to-cyan-500 text-transparent'>cosmo</p>
+          <CosmoTextLogo size={'text-3xl'}/>
         </div>
       </div>
     </div>
