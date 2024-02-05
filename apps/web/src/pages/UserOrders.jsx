@@ -75,6 +75,12 @@ const UserOrders = () => {
             checking
           </div>
         );
+      case 'refunded':
+        return (
+          <div className="font-semibold text-xl capitalize text-red-500 ">
+            refunded
+          </div>
+        );
 
       default:
         break;

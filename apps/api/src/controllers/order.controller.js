@@ -108,7 +108,11 @@ export const getAllTransactions = async (req, res, next) => {
   }
 };
 
-export const updateOrderStatusForAdminController = async (req, res, next) => {
+export const updateOrderStatusForAdminTransferController = async (
+  req,
+  res,
+  next,
+) => {
   await DB.initialize();
   const dir = './src/assets/proof/';
   try {
@@ -133,6 +137,35 @@ export const updateOrderStatusForAdminController = async (req, res, next) => {
         .status(200)
         .json(resTemplate(200, true, 'Order Acceptance Success'));
     }
+  } catch (error) {
+    console.log(error);
+    next(resTemplate(error.status, true, error.message));
+  }
+};
+export const cancelOrdersForAdminController = async (req, res, next) => {
+  await DB.initialize();
+  const dir = './src/assets/proof/';
+  try {
+    const result = await getOneTransaction(req);
+    await DB.db.sequelize.transaction(async (t) => {
+      await updateProofImgAdmin(req, t, null, req.body.status);
+    });
+    if (result?.paymentProofImg) {
+      if (fs.existsSync(dir + result?.paymentProofImg)) {
+        fs.unlinkSync(dir + result?.paymentProofImg);
+      }
+    }
+    return res
+      .status(200)
+      .json(resTemplate(200, true, 'order rejection success'));
+    //  else if (req.body.status === 'paid') {
+    //   await DB.db.sequelize.transaction(async (t) => {
+    //     await updateTransactionStatus(req, t);
+    //   });
+    //   return res
+    //     .status(200)
+    //     .json(resTemplate(200, true, 'Order Acceptance Success'));
+    // }
   } catch (error) {
     console.log(error);
     next(resTemplate(error.status, true, error.message));

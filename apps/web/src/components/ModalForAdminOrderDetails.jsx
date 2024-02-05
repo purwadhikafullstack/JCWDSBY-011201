@@ -4,12 +4,7 @@ import { reduceTotalPrice } from '../helpers/orders/reduceTotalPrice';
 import { IMG_URL_PROOF } from '../constants/imageURL';
 import API_CALL from '../helpers/API';
 import customToast from '../utils/toast';
-export function ModalForAdminOrderDetails({
-  openModal,
-  setOpenModal,
-  order,
-  fetchOrders,
-}) {
+export function ModalForAdminOrderDetails({ openModal, setOpenModal, order }) {
   console.log('🚀 ~ ModalForAdminOrderDetails ~ order:', order);
   const totalPrice = reduceTotalPrice(order);
   const updateStatusForTransferAdmin = async (status, invoice) => {
@@ -23,6 +18,24 @@ export function ModalForAdminOrderDetails({
           },
         },
       );
+      customToast('success', response.data.message);
+      setOpenModal(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const cancelOrdersForAdmin = async (status, invoice) => {
+    try {
+      const response = await API_CALL.patch(
+        '/transaction/admin/cancel',
+        { status, invoice },
+        {
+          headers: {
+            Authorization: 'Bearer ' + localStorage.getItem('authToken'),
+          },
+        },
+      );
+      console.log("🚀 ~ cancelOrdersForAdmin ~ response:", response)
       customToast('success', response.data.message);
       setOpenModal(false);
     } catch (error) {
@@ -56,7 +69,9 @@ export function ModalForAdminOrderDetails({
               <p>Status</p>
               <p
                 className={`capitalize ${
-                  order?.status === 'canceled' ? 'text-red-500' : ''
+                  order?.status === 'canceled' || order?.status === 'rejected'
+                    ? 'text-red-500 font-bold'
+                    : ''
                 }`}
               >
                 {order?.status}
@@ -88,11 +103,17 @@ export function ModalForAdminOrderDetails({
           {order?.img && order?.paymentMethod === 'transfer' && (
             <Card className="mt-2 shadow-md">
               <p className="font-semibold capitalize">bukti transfer</p>
-              <img
-                className="object-scale-down"
-                alt={order?.img}
-                src={`${IMG_URL_PROOF}${order?.img}`}
-              />
+              {order?.status === 'rejected' ? (
+                <p className="text-2xl text-red-500 font-bold self-center">
+                  REJECTED
+                </p>
+              ) : (
+                <img
+                  className="w-80 h-80 self-center object-scale-down"
+                  alt={order?.img}
+                  src={`${IMG_URL_PROOF}${order?.img}`}
+                />
+              )}
               {order?.status === 'checking' && (
                 <div className="flex flex-col justify-center w-full gap-y-4">
                   <Button
@@ -116,13 +137,21 @@ export function ModalForAdminOrderDetails({
             </Card>
           )}
         </div>
-        {order?.status !== 'sending' && order?.status !== 'finished' && (
-          <Card className="flex flex-col justify-center w-full mt-5">
-            <Button color="failure" onClick={() => {}}>
-              CANCEL ORDER
-            </Button>
-          </Card>
-        )}
+        {order?.status !== 'sending' &&
+          order?.status !== 'finished' &&
+          order?.status !== 'refunded' &&
+          order?.status !== 'rejected' && (
+            <Card className="flex flex-col justify-center w-full mt-5">
+              <Button
+                color="failure"
+                onClick={() => {
+                  cancelOrdersForAdmin('refunded', order?.invoice);
+                }}
+              >
+                CANCEL ORDER
+              </Button>
+            </Card>
+          )}
       </Modal.Body>
     </Modal>
   );

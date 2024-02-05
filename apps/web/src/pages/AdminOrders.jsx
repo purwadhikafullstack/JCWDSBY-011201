@@ -12,6 +12,8 @@ import { ModalForAdminOrderDetails } from '../components/ModalForAdminOrderDetai
 import { getStore } from '../helpers/queryData';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { getOrderDetails } from '../helpers/orders/getOrdersByInvoice';
+import { caseStatus } from '../constants/ordersStatusCase';
+
 
 const AdminOrders = () => {
   const [order, setOrder] = useState([]);
@@ -46,7 +48,7 @@ const AdminOrders = () => {
   useEffect(() => {
     fetchOrders();
     getStore(setStoreData, setIsLoading);
-  }, [searchParams,openModal]);
+  }, [searchParams, openModal]);
 
   const onPageChange = (page) => {
     setSearchParams((prev) => {
@@ -65,37 +67,7 @@ const AdminOrders = () => {
     setSearchParams(searchParams);
   };
 
-  const caseStatus = (status) => {
-    switch (status) {
-      case 'pending':
-        return (
-          <div className="font-semibold text-xl capitalize text-amber-500 ">
-            pending
-          </div>
-        );
-      case 'paid':
-        return (
-          <div className="font-semibold text-xl capitalize text-green-500 ">
-            Paid
-          </div>
-        );
-      case 'rejected':
-        return (
-          <div className="font-semibold text-xl capitalize text-red-500 ">
-            rejected
-          </div>
-        );
-      case 'checking':
-        return (
-          <div className="font-semibold text-xl capitalize text-amber-500 ">
-            checking
-          </div>
-        );
-
-      default:
-        break;
-    }
-  };
+ 
 
   return (
     <LayoutDashboard>
@@ -130,14 +102,14 @@ const AdminOrders = () => {
             </span>
           </div>
           <div className="flex flex-col lg:flex-row gap-x-4">
-            <label className="flex flex-col mb-4 font-bold">
+            <label className="flex flex-col mb-4 font-bold gap-y-3">
               Payment Status
               <select
                 id="payment"
                 defaultValue={'default'}
                 onChange={(e) => {
                   setSearchParams((value) => {
-                    value.delete('page');
+                    value.set('page', 1);
                     if (e.target.value === 'reset') {
                       value.delete('status');
                     } else {
@@ -151,12 +123,23 @@ const AdminOrders = () => {
                 <option value={'default'} disabled>
                   Choose payment status
                 </option>
-                <option value={'reset'}>clear</option>
                 <option value={'rejected'}>rejected</option>
                 <option value={'pending'}>pending</option>
                 <option value={'paid'}>paid</option>
                 <option value={'checking'}>checking</option>
               </select>
+              <Button
+                className="w-20 h-10"
+                color="blue"
+                onClick={() => {
+                  setSearchParams((value) => {
+                    value.delete('status');
+                    return value;
+                  });
+                }}
+              >
+                Clear
+              </Button>
             </label>
             <DatepickerForOrders setSearchParams={setSearchParams} />
             <SortBar

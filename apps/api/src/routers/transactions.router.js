@@ -2,8 +2,9 @@ import { Router } from 'express';
 import { validateAdmin, validateToken } from '../middleware/tokenValidation';
 
 import {
+  cancelOrdersForAdminController,
   getAllTransactions,
-  updateOrderStatusForAdminController,
+  updateOrderStatusForAdminTransferController,
 } from '../controllers/order.controller';
 import {
   createTransactionController,
@@ -13,6 +14,7 @@ import {
   patchTransactionStatusController,
 } from '../controllers/transactions.controller';
 import uploader from '../helper/uploader';
+import { getOneTransaction } from '../services/transactions.service';
 
 const transactionRouter = Router();
 //Post
@@ -44,10 +46,28 @@ transactionRouter.patch(
   patchTransactionStatusController,
 );
 transactionRouter.patch(
+  '/admin/cancel',
+  validateToken,
+  validateAdmin,
+  async (req, res, next) => {
+    try {
+      const result = await getOneTransaction(req);
+      if (result?.paymentStatus === 'sending') {
+        throw { rc: 401, message: 'context forbidden' };
+      }
+      next()
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  cancelOrdersForAdminController,
+);
+
+transactionRouter.patch(
   '/proof/update',
   validateToken,
   validateAdmin,
-  updateOrderStatusForAdminController,
+  updateOrderStatusForAdminTransferController,
 );
 
 export { transactionRouter };
