@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { validateSuper, validateToken } from '../middleware/tokenValidation';
+import { validateSuper, validateToken, validateAdmin } from '../middleware/tokenValidation';
 import getStores from './stores/getStores';
 import getStoreDetail from './stores/getStoreDetail';
 import createStore from './stores/createStore';
@@ -13,7 +13,7 @@ const storesRouter = Router();
 
 storesRouter.get('/', validateToken, validateSuper, getStores);
 storesRouter.get('/main', validateToken, validateSuper, getMainStore);
-storesRouter.get('/UUID/:UUID', validateToken, validateSuper, getStoreByUUID);
+storesRouter.get('/UUID/:UUID', validateToken, validateAdmin, getStoreByUUID);
 storesRouter.get('/:id', validateToken, validateSuper, getStoreDetail);
 storesRouter.post('/', validateToken, validateSuper, createStore);
 storesRouter.patch('/:id', validateToken, validateSuper, updateStore);
