@@ -9,7 +9,7 @@ const CartPlusMinusNoFunc = (props) => {
         onClick={props.onclickminus}
       />
       <span className="text-sm">{props.amountstate}</span>
-      {props.amountstate < props.stock && props.amountstate !== 10 ? (
+      {props.amountstate < props.stock ? (
         <FaPlus
           size={'16px'}
           className="text-blue-600"

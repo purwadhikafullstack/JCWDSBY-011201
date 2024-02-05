@@ -13,12 +13,12 @@ export const addCarts = async (req, res, t) => {
 
 export const incrementCartAmountBy1 = async (req, t) => {
   return await carts.increment('amount', {
-    where: { inventoryId: req.body.inventoryId },
+    where: { userId: req.tokenData.id, inventoryId: req.body.inventoryId },
     transaction: t,
   });
 };
 export const findOneCartByInventoryId = async (req) => {
-  return await carts.findOne({ where: { inventoryId: req.body.inventoryId } });
+  return await carts.findOne({ where: { userId:req.tokenData.id,inventoryId: req.body.inventoryId } });
 };
 export const findOneCartById = async (req) => {
   return await carts.findOne({ where: { id: req.params.id }, raw: true });
@@ -99,17 +99,15 @@ export const getCarts = async (req, storeId) => {
   });
 };
 
-export const deleteOneProductInCart = async (req, t) => {
-  console.log('paramo', req.params.id);
+export const deleteOneProductInCart = async (req, t) =>
   await carts.destroy({
     where: { id: req.params.id },
     transaction: t,
   });
-};
 
 export const deleteCheckedItemInCart = async (req, t) =>
   await carts.destroy({
-    where: { inventoryId: req.body.inventoryIdArray },
+    where: { userId:req.tokenData.id,inventoryId: req.body.inventoryIdArray },
     transaction: t,
   });
 

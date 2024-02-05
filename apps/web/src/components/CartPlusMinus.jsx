@@ -24,7 +24,7 @@ export function CartPlusMinus(props) {
 
   const deleteItem = async (cartId) => {
     try {
-      const response = await API_CALL.delete(`/cart/${cartId}`, {
+      const response = await API_CALL.delete(`/cart/delete/${cartId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('authToken')}`,
         },

@@ -94,6 +94,7 @@ export const UpdateAmountInCloud = (id, amount, storeUUID) => {
           },
         },
       );
+      console.log("🚀 ~ return ~ response:", response)
       dispatch(fetchCartItems(storeUUID));
     } catch (error) {
       console.log(error);
