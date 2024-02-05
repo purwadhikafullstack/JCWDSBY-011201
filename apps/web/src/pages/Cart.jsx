@@ -33,11 +33,11 @@ const Cart = () => {
 
   return (
     <UserLayout>
-      <div className="container mx-auto max-w-sm h-[100svh] font-roboto overflow-y-auto">
+      <div className="container mx-auto max-w-sm h-screen  font-roboto overflow-y-auto">
         <div className="flex tracking-tight justify-center mb-3 ">
           <h1 className="text-xl font-bold">Cart</h1>
         </div>
-        <div className="">
+        <div className="flex flex-col">
           <CartProductLists arrays={cartItems} />
         </div>
       </div>

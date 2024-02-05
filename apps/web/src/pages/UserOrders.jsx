@@ -84,8 +84,8 @@ const UserOrders = () => {
   return (
     <UserLayout>
       <div className="w-full">
-        <div className="container mx-auto max-w-[640px] h-[100vh] font-roboto  bg-gray-50 p-3 ">
-          <div className="search bg-white flex flex-grow items-center border-2 py-2 px-4 rounded-full gap-2 mb-4">
+        <div className="container mx-auto max-w-[640px] font-roboto  bg-gray-50 p-3 ">
+          <div className="search bg-white flex items-center border-2 py-2 px-4 rounded-full gap-2 mb-4">
             <input
               type="search"
               placeholder="invoice code or payment method"

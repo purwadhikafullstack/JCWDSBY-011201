@@ -4,6 +4,7 @@ import { IoMdListBox } from 'react-icons/io';
 import { BsBoxFill } from 'react-icons/bs';
 import { FaUser } from 'react-icons/fa';
 import { TbDiscount2 } from "react-icons/tb";
+import { FaClipboardList } from "react-icons/fa";
 
 export const menu = [
   {
@@ -43,5 +44,10 @@ export const menu = [
   {
     title: 'Report',
     icon: HiDocumentReport,
+  },
+  {
+    title: 'Orders',
+    icon: FaClipboardList,
+    page: '/manage/orders'
   },
 ];

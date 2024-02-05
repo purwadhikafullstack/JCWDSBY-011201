@@ -1,7 +1,10 @@
 import { Router } from 'express';
 import { validateAdmin, validateToken } from '../middleware/tokenValidation';
 
-import { getAllTransactions } from '../controllers/order.controller';
+import {
+  getAllTransactions,
+  updateOrderStatusForAdminController,
+} from '../controllers/order.controller';
 import {
   createTransactionController,
   getTransactionDetailsController,
@@ -39,6 +42,12 @@ transactionRouter.patch(
   '/:order_id',
   validateToken,
   patchTransactionStatusController,
+);
+transactionRouter.patch(
+  '/proof/update',
+  validateToken,
+  validateAdmin,
+  updateOrderStatusForAdminController,
 );
 
 export { transactionRouter };

@@ -1,15 +1,15 @@
-import { Button, Card } from 'flowbite-react';
+import { Button, Card, Modal } from 'flowbite-react';
 import React, { useEffect, useRef, useState } from 'react';
-import { HiChevronLeft, HiOutlinePencilSquare } from 'react-icons/hi2';
+import { HiChevronLeft } from 'react-icons/hi2';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import API_CALL from '../helpers/API';
-import { GrDocumentImage } from 'react-icons/gr';
+import { UserCancelOrderModal } from '../components/UserCancelOrderModal';
+
 const UserOrderDetails = () => {
   const [order, setOrder] = useState(null);
-  console.log("🚀 ~ UserOrderDetails ~ order:", order)
   const [proofUpload, setProofUpload] = useState(null);
-  console.log('🚀 ~ OrderDetails ~ proofUpload:', proofUpload);
   const [uploaded, setUploaded] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
   const inputRef = useRef(null);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -24,10 +24,10 @@ const UserOrderDetails = () => {
   };
 
   useEffect(() => {
-    if (orderId) {
+    if (orderId && !openModal) {
       getOrderDetails(orderId);
     }
-  }, [orderId]);
+  }, [orderId, openModal]);
 
   const handleFile = (e) => {
     setProofUpload(e.target.files[0]);
@@ -36,23 +36,10 @@ const UserOrderDetails = () => {
     inputRef.current.click();
   };
 
-  const paymentMethodChanger = (method) => {
-    switch (method) {
-      case 'upload':
-        return 'manual transfer'
-        
-      case 'gopay':
-        return 'gopay';
-      case 'gopay':
-        return 'gopay';
-    }
-  };
-
   const totalPrice = order?.items.reduce(
     (total, items) => total + items.price * items.amount,
     0,
   );
-  console.log('🚀 ~ OrderDetails ~ totalPrice:', totalPrice);
 
   const handleUploadProof = async () => {
     try {
@@ -73,7 +60,7 @@ const UserOrderDetails = () => {
   };
 
   return (
-    <div>
+    <div className="pb-4">
       <div className="sticky top-0 w-full bg-white flex items-center p-5 shadow-md">
         <div className="md:hidden items-center cursor-pointer">
           <span
@@ -91,36 +78,55 @@ const UserOrderDetails = () => {
       </div>
       <div className="container mx-auto max-w-[480px] h-[100vh] font-roboto overflow-y-auto p-2 ">
         <Card className="mt-2 shadow-md">
+          <p className="font-bold text-lg capitalize">Information</p>
           <div className="flex justify-between">
             <p>Invoice</p>
             <p>{order?.invoice}</p>
           </div>
           <div className="flex justify-between">
+            <p>Tipe Pembayaran</p>
+            <p className={`capitalize`}>
+              {order?.paymentMethod === 'transfer'
+                ? 'manual transfer'
+                : order?.paymentMethod}
+            </p>
+          </div>
+          <div className="flex justify-between">
             <p>Status</p>
-            <p>{order?.status}</p>
+            <p
+              className={`capitalize ${
+                order?.status === 'canceled' ? 'text-red-500' : ''
+              }`}
+            >
+              {order?.status}
+            </p>
           </div>
         </Card>
         <Card className="mt-2 shadow-md">
+          <p className="font-bold text-lg capitalize">rincian pesanan</p>
           <div className="flex flex-col">
             {order?.items.map((val, idx) => {
               return (
-                <div key={idx} className="flex justify-between mb-2">
+                <div key={idx} className="flex justify-between mb-2 ">
                   <div className="flex gap-x-3">
                     <div>{val.amount ?? 1}x</div>
-                    <div className="capitalize">{val.name}</div>
+                    <div className="capitalize break-words w-40 sm:w-full">
+                      {val.name}
+                    </div>
                   </div>
-                  <div>{val.price}</div>
+                  <div>Rp {val.price.toLocaleString('id-ID')}</div>
                 </div>
               );
             })}
           </div>
           <div className="flex justify-between">
-            <p>Total</p>
-            <p>50000</p>
+            <p className="font-semibold text-base">Total</p>
+            <p>Rp {totalPrice?.toLocaleString('id-ID')}</p>
           </div>
         </Card>
-        {!order?.img && order?.paymentMethod === 'upload' && (
+        {!order?.img && order?.paymentMethod === 'transfer' && (
           <Card className="mt-2 shadow-md">
+            <p className="font-semibold capitalize">upload bukti transfer</p>
             {proofUpload && (
               <img
                 className="w-full h-full object-cover"
@@ -152,7 +158,19 @@ const UserOrderDetails = () => {
             />
           </Card>
         )}
+        {order?.paymentMethod === 'transfer' && order?.status === 'pending' && (
+          <Card className="shadow-none border-none">
+            <Button color="failure" onClick={() => setOpenModal(!openModal)}>
+              <p className="capitalize text-base">cancel order</p>
+            </Button>
+          </Card>
+        )}
       </div>
+      <UserCancelOrderModal
+        openModal={openModal}
+        setOpenModal={setOpenModal}
+        order={order}
+      />
     </div>
   );
 };
