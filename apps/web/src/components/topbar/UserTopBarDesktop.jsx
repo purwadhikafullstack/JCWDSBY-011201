@@ -8,6 +8,7 @@ import NearestSTore from '../NearestStore';
 import ProfileMenu from './ProfileMenu';
 import { useEffect, useState } from 'react';
 import API_CALL from '../../helpers/API';
+import CosmoTextLogo from '../CosmoTextLogo';
 
 const UserTopbarDesktop = (props) => {
   const currStore = useSelector((reducer) => reducer.storeReducer);
@@ -22,14 +23,14 @@ const UserTopbarDesktop = (props) => {
       <div
         className={`navbar-line-one flex w-full gap-6 px-8 lg:px-32 py-4 items-center`}
       >
-        <span
+        <div
           className="text-blue-800 font-extrabold text-4xl cursor-pointer"
           onClick={() => {
             navigate('/');
           }}
         >
-          Cosmo
-        </span>
+          <CosmoTextLogo size={'text-4xl'}/>
+        </div>
 
         <NearestSTore storeData={currStore} />
 

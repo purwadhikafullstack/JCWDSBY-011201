@@ -12,6 +12,7 @@ import ButtonSeeAll from '../components/ButtonSeeAll';
 import HeroFooter from '../components/views/HeroFooterViews';
 import { Button } from 'flowbite-react';
 import MiniHeroViews from '../components/views/MiniHeroVIews';
+import { discountPrice, promo } from '../helpers/discount';
 
 const Landing = () => {
   const currStore = useSelector((reducer) => reducer.storeReducer);
@@ -19,8 +20,6 @@ const Landing = () => {
   const [heroData, setHeroData] = useState(null);
   const navigate = useNavigate();
   const [productData, setProductData] = useState([]);
-
-  console.log(productData);
 
   useEffect(() => {
     getCategoryData();
@@ -47,7 +46,7 @@ const Landing = () => {
   const getProductData = async () => {
     const res = await API_CALL.get('inventory', {
       params: {
-        store: currStore.storeId,
+        store: currStore.storeId, limit: 'none'
       },
     });
     if (res) {
@@ -115,7 +114,8 @@ const Landing = () => {
                   productName={value.product.name}
                   productUnit={value.product.weight + value.product.unit}
                   price={value.product.price}
-                  discountPrice={7400}
+                  discountPrice={discountPrice(value)}
+                  isPromo={promo(value)}
                   stock={value.stock}
                   onClickProduct={() => {
                     navigate(`/product/${value.product.name}`);
@@ -156,7 +156,8 @@ const Landing = () => {
                   productName={value.product.name}
                   productUnit={value.product.weight + value.product.unit}
                   price={value.product.price}
-                  discountPrice={7400}
+                  discountPrice={discountPrice(value)}
+                  isPromo={promo(value)}
                   stock={value.stock}
                   onClickProduct={() => {
                     navigate(`/product/${value.product.name}`);
