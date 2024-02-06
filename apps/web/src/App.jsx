@@ -211,7 +211,7 @@ function App() {
         <Route path="/product/:name" element={<UserProductDetail />} />
 
         {/* Afra */}
-        {/* <Route
+         <Route
           path="/cart"
           element={
             <PrivateRoute role={'user'} navigate={'/login'}>
