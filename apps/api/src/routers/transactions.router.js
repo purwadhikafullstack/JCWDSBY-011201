@@ -1,10 +1,16 @@
 import { Router } from 'express';
-import { validateAdmin, validateToken } from '../middleware/tokenValidation';
+import {
+  validateAdmin,
+  validateToken,
+  validateUser,
+} from '../middleware/tokenValidation';
 
 import {
+  adminSendingOrders,
   cancelOrdersForAdminController,
   getAllTransactions,
   updateOrderStatusForAdminTransferController,
+  userFinishOrders,
 } from '../controllers/order.controller';
 import {
   createTransactionController,
@@ -40,11 +46,7 @@ transactionRouter.patch(
   uploader('/proof', 1).single('proofUpload'),
   patchPaymentProofController,
 );
-transactionRouter.patch(
-  '/:order_id',
-  validateToken,
-  patchTransactionStatusController,
-);
+
 transactionRouter.patch(
   '/admin/cancel',
   validateToken,
@@ -55,12 +57,18 @@ transactionRouter.patch(
       if (result?.paymentStatus === 'sending') {
         throw { rc: 401, message: 'context forbidden' };
       }
-      next()
+      next();
     } catch (error) {
       console.log(error);
     }
   },
   cancelOrdersForAdminController,
+);
+transactionRouter.patch(
+  '/admin/sending',
+  validateToken,
+  validateAdmin,
+  adminSendingOrders,
 );
 
 transactionRouter.patch(
@@ -68,6 +76,17 @@ transactionRouter.patch(
   validateToken,
   validateAdmin,
   updateOrderStatusForAdminTransferController,
+);
+transactionRouter.patch(
+  '/orders/finish',
+  validateToken,
+  validateUser,
+  userFinishOrders,
+);
+transactionRouter.patch(
+  '/:order_id',
+  validateToken,
+  patchTransactionStatusController,
 );
 
 export { transactionRouter };

@@ -165,6 +165,13 @@ const UserOrderDetails = () => {
             </Button>
           </Card>
         )}
+        {order?.status === 'sending' && (
+          <Card className="shadow-none border-none">
+            <Button color="success" onClick={() => {}}>
+              <p className="capitalize text-base">selesaikan pesanan</p>
+            </Button>
+          </Card>
+        )}
       </div>
       <UserCancelOrderModal
         openModal={openModal}

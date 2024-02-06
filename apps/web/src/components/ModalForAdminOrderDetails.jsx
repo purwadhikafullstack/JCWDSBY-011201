@@ -24,6 +24,25 @@ export function ModalForAdminOrderDetails({ openModal, setOpenModal, order }) {
       console.log(error);
     }
   };
+  const sendingOrderForAdmin = async (status, invoice) => {
+    try {
+        
+      const response = await API_CALL.patch(
+        '/transaction/admin/sending',
+        { status, invoice },
+        {
+          headers: {
+            Authorization: 'Bearer ' + localStorage.getItem('authToken'),
+          },
+        },
+      );
+      console.log("🚀 ~ sendingOrderForAdmin ~ response:", response)
+      customToast('success', response.data.message);
+      setOpenModal(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const cancelOrdersForAdmin = async (status, invoice) => {
     try {
       const response = await API_CALL.patch(
@@ -35,7 +54,6 @@ export function ModalForAdminOrderDetails({ openModal, setOpenModal, order }) {
           },
         },
       );
-      console.log("🚀 ~ cancelOrdersForAdmin ~ response:", response)
       customToast('success', response.data.message);
       setOpenModal(false);
     } catch (error) {
@@ -137,6 +155,18 @@ export function ModalForAdminOrderDetails({ openModal, setOpenModal, order }) {
             </Card>
           )}
         </div>
+        {order?.status === 'paid' && (
+          <Card className="flex flex-col justify-center w-full mt-5">
+            <Button
+              color="blue"
+              onClick={() => {
+                sendingOrderForAdmin('sending', order?.invoice);
+              }}
+            >
+              SEND ORDER
+            </Button>
+          </Card>
+        )}
         {order?.status !== 'sending' &&
           order?.status !== 'finished' &&
           order?.status !== 'refunded' &&

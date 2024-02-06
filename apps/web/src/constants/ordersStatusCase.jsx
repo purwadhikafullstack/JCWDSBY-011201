@@ -30,6 +30,24 @@ export const caseStatus = (status) => {
           refunded
         </div>
       );
+    case 'sending':
+      return (
+        <div className="font-semibold text-xl capitalize text-blue-400 ">
+          sending
+        </div>
+      );
+    case 'arrived':
+      return (
+        <div className="font-semibold text-xl capitalize text-emerald-500 ">
+          arrived
+        </div>
+      );
+    case 'finished':
+      return (
+        <div className="font-semibold text-xl capitalize text-green-500 ">
+          finished
+        </div>
+      );
     default:
       break;
   }

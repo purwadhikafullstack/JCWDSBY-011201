@@ -5,10 +5,15 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { HiOutlineArrowRight, HiOutlineMagnifyingGlass } from 'react-icons/hi2';
 import { Button, Datepicker, Pagination } from 'flowbite-react';
 import { DatepickerForOrders } from '../components/DatepickerForOrders';
+import { caseStatus } from '../constants/ordersStatusCase';
+import { UserFinishOrderModal } from '../components/UserFinishOrderModal';
+import { getOrderDetails } from '../helpers/orders/getOrdersByInvoice';
 const UserOrders = () => {
   const [order, setOrder] = useState([]);
   const [totalPage, setTotalPage] = useState(1);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [openModalUser, setOpenModalUser] = useState(false);
+  const [orderDetails, setOrderDetails] = useState(null);
   const navigate = useNavigate();
   const fetchOrders = async () => {
     const response = await API_CALL.get('/transaction/orders', {
@@ -23,7 +28,7 @@ const UserOrders = () => {
         page: searchParams.get('page'),
       },
     });
-    console.log('🚀 ~ fetchOrders ~ response:', response);
+
     if (response) {
       setOrder(response.data.result);
       setTotalPage(Math.ceil(response.data.count / 5));
@@ -38,53 +43,6 @@ const UserOrders = () => {
       prev.set('page', page);
       return prev;
     });
-  };
-
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-      /* you can also use 'auto' behaviour 
-         in place of 'smooth' */
-    });
-  };
-
-  const caseStatus = (status) => {
-    switch (status) {
-      case 'pending':
-        return (
-          <div className="font-semibold text-xl capitalize text-amber-500 ">
-            pending
-          </div>
-        );
-      case 'paid':
-        return (
-          <div className="font-semibold text-xl capitalize text-green-500 ">
-            Paid
-          </div>
-        );
-      case 'rejected':
-        return (
-          <div className="font-semibold text-xl capitalize text-red-500 ">
-            rejected
-          </div>
-        );
-      case 'checking':
-        return (
-          <div className="font-semibold text-xl capitalize text-amber-500 ">
-            checking
-          </div>
-        );
-      case 'refunded':
-        return (
-          <div className="font-semibold text-xl capitalize text-red-500 ">
-            refunded
-          </div>
-        );
-
-      default:
-        break;
-    }
   };
 
   return (
@@ -192,7 +150,20 @@ const UserOrders = () => {
                       {caseStatus(val.paymentStatus)}
                     </div>
                   </div>
-                  <div className="flex justify-end">
+                  <div className="flex justify-end gap-x-3">
+                    {(val.paymentStatus === 'sending' ||
+                      val.paymentStatus === 'arrived') && (
+                      <Button
+                        color="success"
+                        className="hover:cursor-pointer"
+                        onClick={() => {
+                          getOrderDetails(val?.invoice, setOrderDetails);
+                          setOpenModalUser(!openModalUser);
+                        }}
+                      >
+                        Finish Order
+                      </Button>
+                    )}
                     <Button
                       color="blue"
                       className="hover:cursor-pointer"
@@ -217,6 +188,11 @@ const UserOrders = () => {
           </div>
         </div>
       </div>
+      <UserFinishOrderModal
+        openModalUser={openModalUser}
+        setOpenModalUser={setOpenModalUser}
+        order={orderDetails}
+      />
     </UserLayout>
   );
 };
