@@ -28,7 +28,6 @@ const UserOrders = () => {
         page: searchParams.get('page'),
       },
     });
-
     if (response) {
       setOrder(response.data.result);
       setTotalPage(Math.ceil(response.data.count / 5));

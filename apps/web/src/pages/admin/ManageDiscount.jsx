@@ -21,7 +21,7 @@ const ManageDiscount = () => {
 
   useEffect(() => {
     getDiscount(setDiscountData, setIsLoading, setTotalPage);
-  }, []);
+  }, [setDiscountData]);
 
   const onPageChange = (page) => {
     setSearchParams((prev) => {
@@ -43,9 +43,9 @@ const ManageDiscount = () => {
       <LayoutPageAdmin title='Manage Discount'>
         <div className='grid grid-cols-1 max-w-full overflow-x-auto mb-5 pt-2'>
           <div className="flex justify-between">
-            <Button theme={customButton} color="primary" onClick={() => navigate('/manage/discount/create')}>Create Discount</Button>
+            <Button theme={customButton} color="secondary" onClick={() => navigate('/manage/discount/create')}>Create Discount</Button>
           </div>
-          <div className="mt-5 grid gap-6 lg:grid-cols-4 lg:gap-y-10">
+          <div className="mt-5 grid gap-4 lg:grid-cols-4 lg:gap-y-10">
             {discountData && discountData.map((val, idx) => <CardManageDiscount key={idx} data={val} onDelete={() => { setOpenModal(true); setDiscID(val.id) }} onEdit={() => navigate(`/manage/discount/edit/${val.UUID}`)} />)}
           </div>
         </div>

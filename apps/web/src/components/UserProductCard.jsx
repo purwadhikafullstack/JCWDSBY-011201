@@ -1,6 +1,6 @@
 import { DrawerForUserProductCard } from './DrawerForUserProductCard';
 import { useState } from 'react';
-import { HiHeart, HiOutlineHeart, HiOutlinePlus } from 'react-icons/hi2';
+import { HiHeart, HiOutlinePlus } from 'react-icons/hi2';
 import { useSelector } from 'react-redux';
 import { BsFillCartCheckFill } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
@@ -32,9 +32,21 @@ const UserProductCard = ({
   return (
     <div className="flex flex-col w-full h-60 md:h-64 lg:h-80 border-2 rounded-lg relative cursor-pointer overflow-hidden">
       {discountPrice && (
-        <span className="text-xs font-semibold absolute top-5 -left-5 py-1 pl-6 pr-2 rounded-sm bg-blue-800 text-white shadow-xl">
-          {(((price - discountPrice) / price) * 100).toFixed() + '%'}
-        </span>
+        <div className='mt-3 absolute'>
+          <div className='flex'>
+            {isPromo && <Badge color={'success'} className='rounded-e-md rounded-s-none'>Buy 1 Get 1</Badge>}
+          </div>
+          <span className="text-xs mt-1 font-semibold absolute top-5 -left-5 py-1 pl-6 pr-2 rounded-e-md bg-blue-800 text-white shadow-xl">
+            {(((price - discountPrice) / price) * 100).toFixed() + '%'}
+          </span>
+        </div>
+      )}
+      {!discountPrice && isPromo && (
+        <div className='mt-3 absolute'>
+          <div className='flex'>
+            <Badge color={'success'} className='rounded-e-md rounded-s-none'>Buy 1 Get 1</Badge>
+          </div>
+        </div>
       )}
       {wishlist ? (
         <HiHeart
@@ -42,8 +54,8 @@ const UserProductCard = ({
           onClick={onRemoveWishList}
         />
       ) : (
-        <HiOutlineHeart
-          className="w-6 h-6 absolute top-5 right-2 text-gray-600 cursor-pointer"
+        <HiHeart
+          className="w-6 h-6 absolute top-5 right-2 text-gray-400 opacity-80 cursor-pointer"
           onClick={onAddWishList}
         />
       )}
@@ -62,9 +74,6 @@ const UserProductCard = ({
               {productName}
             </span>
           </div>
-          <div className='flex'>
-            {!discountPrice && isPromo && <Badge color={'success'}>Buy 1 Get 1</Badge>}
-          </div>
           {discountPrice ? (
             <div className="flex flex-col">
               <div className='flex gap-2'>
@@ -75,7 +84,6 @@ const UserProductCard = ({
                     maximumFractionDigits: 0,
                   })}
                 </span>
-                {isPromo && <Badge color={'success'}>Buy 1 Get 1</Badge>}
               </div>
               <div className="flex">
                 <span className="text-lg font-bold text-blue-800">
