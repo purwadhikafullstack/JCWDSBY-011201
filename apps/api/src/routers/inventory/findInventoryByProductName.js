@@ -1,11 +1,12 @@
 import { findOneInventory } from "../../controllers/inventory.controller";
-import { Op } from 'sequelize';
+import { Op, col } from 'sequelize';
 import resTemplate from "../../helper/resTemplate";
 import categories from "../../models/categories.model";
 import productImage from "../../models/product-image.model";
 import product from "../../models/product.model";
 import stores from "../../models/stores.model";
 import users from "../../models/users.model";
+import discount from "../../models/discount.model";
 
 export default async function (req, res, next) {
     const storeUUID = req.query.store?? '';
@@ -48,8 +49,15 @@ export default async function (req, res, next) {
                         },
                     ],
                 },
+                {
+					model: discount,
+					required: false,
+					attributes: {
+						exclude: ['createdAt', 'updatedAt', 'deletedAt'],
+					}
+				}
             ],
-            attributes: ['id', 'discountId', 'stock'],
+            attributes: ['id', [col('product.price'), 'productPrice'],'stock'],
         });
         if(!result) throw resTemplate(404, false, 'Inventory not found');
 

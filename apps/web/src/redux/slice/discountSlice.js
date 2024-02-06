@@ -16,7 +16,7 @@ const discountSlice = createSlice({
     percentage: '',
     voucherCode: '',
     startTime: '',
-    endTime: ''
+    endTime: '',
   },
   reducers: {
     setDiscountData: (state, action) => {
@@ -36,7 +36,12 @@ const discountSlice = createSlice({
     },
     clearDiscountData: (state) => {
       for (const key in state) {
-        state[key] = '';
+        state[key] = false;
+        // if(key.includes('error')){
+        //   state[key] = false;
+        // }else {
+        //   state[key] = '';
+        // }
       }
     },
     onChangeDiscountTerm: (state, action) => {
@@ -75,6 +80,9 @@ const discountSlice = createSlice({
     onChangeDiscountLimit: (state, action) => {
       state.limit = action.payload
     },
+    // setErrorName: (state, action) => {
+    //   state.errorName = action.payload
+    // }
   }
 })
 
@@ -115,6 +123,7 @@ export const fetchDiscountData = (UUID) => {
 export const updateDiscount = (updateData) => {
   return async (dispatch) => {
     try {
+      // if (updateData.errorName) return dispatch(setErrorName(true))
       const discountId = updateData.id;
       let data = { ...updateData }
       delete data.id;
