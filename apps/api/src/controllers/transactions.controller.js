@@ -61,7 +61,6 @@ export const getTransactionDetailsController = async (req, res, next) => {
     const transData = await getOneTransaction(req);
     if (transData) {
       const detailsData = await getTransactionDetails(req, transData.id);
-      console.log('🚀 ~ transactionRouter.get ~ detailsData:', detailsData);
       const processedRes = detailsData.map((val, idx) => {
         return {
           amount: val.amount,
@@ -115,7 +114,7 @@ export const patchPaymentProofController = async (req, res, next) => {
     if (req.file?.filename) {
       const result = await DB.db.sequelize.transaction(async (t) => {
         const transData = await getOneTransaction(req);
-        await updateProofImg(req, t, req.file?.filename);
+        await updateProofImg(req, t, req.file?.filename,'checking');
         if (transData?.paymentProofImg) {
           fs.unlinkSync(dir + transData?.paymentProofImg);
         }

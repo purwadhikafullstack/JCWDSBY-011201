@@ -132,7 +132,8 @@ export const handleMidtrans = async (req, userData) => {
 
 export const getOneTransaction = async (req) => {
   return await transactions.findOne({
-    where: { invoice: req.params.order_id ?? req.body.invoice },raw:true
+    where: { invoice: req.params.order_id ?? req.body.invoice },
+    raw: true,
   });
 };
 
@@ -164,13 +165,28 @@ export const getTransactionDetails = async (req, transactionId) => {
 export const updateTransactionStatus = async (req, t) => {
   return await transactions.update(
     { paymentStatus: req.body.status },
-    { where: { invoice: req.params.order_id }, transaction: t },
+    {
+      where: { invoice: req.params.order_id ?? req.body.invoice },
+      transaction: t,
+    },
   );
 };
 
-export const updateProofImg = async (req, t, filename) => {
+export const updateProofImg = async (req, t, filename, status) => {
   return await transactions.update(
-    { paymentProofImg: filename,paymentStatus:'checking' },
-    { where: { invoice: req.body.invoice, userId: req.tokenData.id } },
+    { paymentProofImg: filename, paymentStatus: status },
+    {
+      where: { invoice: req.body.invoice, userId: req.tokenData.id },
+      transaction: t,
+    },
+  );
+};
+export const updateProofImgAdmin = async (req, t, filename, status) => {
+  return await transactions.update(
+    { paymentProofImg: filename, paymentStatus: status },
+    {
+      where: { invoice: req.body.invoice },
+      transaction: t,
+    },
   );
 };
