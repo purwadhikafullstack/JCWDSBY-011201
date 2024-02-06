@@ -1,6 +1,7 @@
 import { Label, Button } from "flowbite-react";
 import capitalize from "../../../helpers/capitalize";
 import { useSelector } from "react-redux";
+import { customButton } from "../../../helpers/flowbiteCustomTheme";
 
 const FormDiscSummary = ({
     onBack,
@@ -10,6 +11,7 @@ const FormDiscSummary = ({
     productData,
 }) => {
     const discData = useSelector((state) => state.discountReducer);
+    const currentUser = useSelector((state) => state.userReducer);
 
     const discTerm = (term) =>{
         if(term === 'buy 1 get 1') return 'Buy 1 Get 1';
@@ -43,7 +45,7 @@ const FormDiscSummary = ({
                 <Label className="font-bold">Discount Term</Label>
                 <p>{discTerm(discData.term)}</p>
             </div>
-            <div className="grid gap-1">
+            <div className={`grid gap-1 ${currentUser.role === 'admin' && 'hidden'}`}>
                 <Label className="font-bold">Store</Label>
                 <p>{storeData && storeData.find((val) => discData.storeId === val.UUID).name }</p>
             </div>
@@ -53,7 +55,7 @@ const FormDiscSummary = ({
             </div>
             <div className={`grid gap-1 ${discData.term === 'min transaction' ? '' : 'hidden'}`}>
                 <Label className="font-bold">Minimum Transaction</Label>
-                <p>{discData.minTransaction.toLocaleString('id-Id', {style: 'currency', currency: 'IDR', maximumFractionDigits: 0}) || '-'}</p>
+                <p>{discData.minTransaction?.toLocaleString('id-Id', {style: 'currency', currency: 'IDR', maximumFractionDigits: 0}) || '-'}</p>
             </div>
             <div className={`grid gap-1 ${handleHiddenElement()}`}>
                 <Label className="font-bold">Discount Type</Label>
@@ -77,8 +79,8 @@ const FormDiscSummary = ({
             </div>
         </div>
         <div className="flex justify-between mt-6 mb-4">
-            <Button color="blue" onClick={onBack}>Back</Button>
-            <Button color="blue" onClick={onCreate}>Save</Button>
+            <Button theme={customButton} color="secondary" onClick={onBack}>Back</Button>
+            <Button theme={customButton} color="primary" onClick={onCreate}>Save</Button>
         </div>
     </div>
 }

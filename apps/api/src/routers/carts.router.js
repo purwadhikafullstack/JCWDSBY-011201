@@ -47,13 +47,13 @@ cartRouter.post('/', validateToken, async (req, res, next) => {
       await t.commit();
       return res
         .status(200)
-        .json({ success: true, message: 'Product added to cart' });
+        .json({ success: 'success', message: 'Product added to cart' });
     } else {
       await incrementCartAmountBy1(req, t);
       await t.commit();
       return res
         .status(200)
-        .json({ success: true, message: 'increase product amount by 1' });
+        .json({ success: 'success', message: 'increase product amount by 1' });
     }
   } catch (error) {
     console.log(error);
@@ -73,6 +73,17 @@ cartRouter.patch('/checkall', validateToken, async (req, res, next) => {
     return res
       .status(200)
       .json(resTemplate(200, true, 'change checks all success'));
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
+//Delete
+cartRouter.delete('/:id', validateToken, async (req, res, next) => {
+  await DB.initialize();
+  const t = await DB.db.sequelize.transaction();
+  try {
+    await deleteOneProductInCart(req, t);
   } catch (error) {
     console.log(error);
     next(error);
@@ -112,32 +123,31 @@ cartRouter.patch('/:id', validateToken, async (req, res, next) => {
 });
 
 //Delete
-cartRouter.delete('/:id', validateToken, async (req, res, next) => {
-  await DB.initialize();
-  const t = await DB.db.sequelize.transaction();
-  try {
-    await deleteOneProductInCart(req, t);
-    await t.commit();
-    return res
-      .status(200)
-      .send({ success: true, message: 'Item deleted successfully' });
-  } catch (error) {
-    console.log(error);
-    await t.rollback();
-    next(error);
-  }
-});
 
 cartRouter.delete('/', validateToken, async (req, res, next) => {
   await DB.initialize();
-  const sequelizer = await DB.db.sequelize
   try {
-    await DB.db.sequelize.transaction(async(t) => {
+    await DB.db.sequelize.transaction(async (t) => {
       await deleteCheckedItemInCart(req, t);
     });
     return res
       .status(200)
       .json({ success: true, message: 'checked items deleted successfully' });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
+
+cartRouter.delete('/delete/:id', validateToken, async (req, res, next) => {
+  await DB.initialize();
+  try {
+    await DB.db.sequelize.transaction(async (t) => {
+      await deleteOneProductInCart(req, t);
+    });
+    return res
+      .status(200)
+      .json({ success: true, message: 'Item deleted successfully' });
   } catch (error) {
     console.log(error);
     next(error);

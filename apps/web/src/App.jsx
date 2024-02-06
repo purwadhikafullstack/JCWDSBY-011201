@@ -43,7 +43,11 @@ import UserChangeEmail from './pages/UserChangeEmail';
 import VerifyEmail from './pages/VerifyEmail';
 import TesCheckOut from './pages/TesCheckOut';
 import { fetchCartItems } from './redux/slice/cartSlice';
+import Checkout from './pages/Checkout';
 import Cart from './pages/Cart';
+import UserOrders from './pages/UserOrders';
+import UserOrderDetails from './pages/UserOrderDetails';
+import AdminOrders from './pages/AdminOrders';
 import StockReport from './pages/admin/StockReport';
 import ManageDiscount from './pages/admin/ManageDiscount';
 import ManageDiscountAdd from './pages/admin/ManageDiscountAdd';
@@ -212,6 +216,46 @@ function App() {
           element={
             <PrivateRoute role={'user'} navigate={'/login'}>
               <Cart />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/checkout"
+          element={
+            <PrivateRoute role={'user'} navigate={'/login'}>
+              <Checkout />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/orders"
+          element={
+            <PrivateRoute role={'user'} navigate={'/login'}>
+              <UserOrders />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/order-details"
+          element={
+            <PrivateRoute role={'user'} navigate={'/login'}>
+              <UserOrderDetails />
+            </PrivateRoute>
+          }
+        />
+         <Route
+          path="/manage/orders"
+          element={
+            <PrivateRoute role={['admin', 'super']}>
+              <AdminOrders />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/order-details"
+          element={
+            <PrivateRoute role={['admin', 'super']}>
+              <UserOrderDetails />
             </PrivateRoute>
           }
         />

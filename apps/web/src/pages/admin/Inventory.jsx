@@ -84,7 +84,7 @@ const Inventory = () => {
           Authorization: `Bearer ${localStorage.getItem('authToken')}`,
         },
       });
-      setCategory(resCategory.data);
+      setCategory(resCategory.data.result.rows);
       setIsLoading(false);
     } catch (error) {
       console.error(error);

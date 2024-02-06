@@ -2,6 +2,7 @@ import { Label, Select, Button, Datepicker, TextInput } from "flowbite-react";
 import CurrencyInput from "react-currency-input-field";
 import { useDispatch, useSelector } from "react-redux";
 import { onChangeDiscountEndTime, onChangeDiscountName, onChangeDiscountNominal, onChangeDiscountPercentage, onChangeDiscountProduct, onChangeDiscountStartTime, onChangeDiscountStore, onChangeDiscountType } from "../../../redux/slice/discountSlice";
+import { customButton } from "../../../helpers/flowbiteCustomTheme";
 
 const FormDiscProduct = ({
     onNext,
@@ -12,10 +13,12 @@ const FormDiscProduct = ({
     isError,
     errorName,
     hidden,
+    hiddenBackButton,
 }) => {
     const dispatch = useDispatch();
     const discData = useSelector((state) => state.discountReducer);
     const discountTerm = useSelector((state) => state.discountReducer.term);
+    const currentUser = useSelector((state) => state.userReducer);
     const handleRequiredField = () => {
         if (isError) return "p-2.5 text-sm bg-gray-50 rounded-lg border disabled:cursor-not-allowed disabled:opacity-50 border-red-500 bg-red-50 text-red-900 placeholder-red-700 focus:border-red-500 focus:ring-red-500 dark:border-red-400 dark:bg-red-100 dark:focus:border-red-500 dark:focus:ring-red-500"
         return "p-2.5 text-sm bg-gray-50 rounded-lg border disabled:cursor-not-allowed disabled:opacity-50 border-gray-300 text-gray-900 focus:border-cyan-500 focus:ring-cyan-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-cyan-500 dark:focus:ring-cyan-500"
@@ -34,7 +37,7 @@ const FormDiscProduct = ({
                 />
                 <p className="text-sm text-red-600" hidden={!errorName}>Name is required!</p>
             </div>
-            <div className="grid gap-2">
+            <div className={`grid gap-2 ${currentUser.role !== 'super' && 'hidden'}`}>
                 <Label className="font-bold">Store</Label>
                 <Select onChange={(e) => dispatch(onChangeDiscountStore(e.target.value))} value={discData.storeId}>
                     {storeData && storeData.map((val, index) => <option key={index} value={val.UUID}>{val.name}</option>)}
@@ -103,9 +106,9 @@ const FormDiscProduct = ({
                 <p className="text-sm text-red-600" hidden={!errorDate}>End time should be greater than start time!</p>
             </div>
         </form>
-        <div className="flex justify-between mt-6 mb-4">
-            <Button color="blue" onClick={onBack}>Back</Button>
-            <Button color="blue" onClick={onNext}>Next</Button>
+        <div className={`flex mt-6 mb-4 ${hiddenBackButton ? 'justify-end' : 'justify-between'}`}>
+            <Button theme={customButton} color="secondary" onClick={onBack} className={`${hiddenBackButton && 'hidden'}`}>Back</Button>
+            <Button theme={customButton} color="primary" onClick={onNext}>Next</Button>
         </div>
     </div>
 };

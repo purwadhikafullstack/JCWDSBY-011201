@@ -7,6 +7,7 @@ import API_CALL from '../helpers/API';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCartItems } from '../redux/slice/cartSlice';
 import ButtonWithLoading from './ButtonWithLoading';
+import customToast from '../utils/toast';
 
 export function DrawerForUserProductCard({
   openDrawer,
@@ -36,8 +37,9 @@ export function DrawerForUserProductCard({
           },
         },
       );
-      console.log('🚀 ~ onHandleSubmitAddToCart ~ response:', response);
+      console.log("🚀 ~ onHandleSubmitAddToCart ~ response:", response.data.success)
       dispatch(fetchCartItems(storeUUID));
+      customToast(response.data.success,response.data.message)
       setIsLoading(false);
       toggleDrawer(false);
     } catch (error) {
@@ -50,7 +52,8 @@ export function DrawerForUserProductCard({
       open={openDrawer}
       onClose={toggleDrawer}
       direction="bottom"
-      className=" w-full sm:max-w-xl max-h-72 mx-auto shadow-inner shadow-blue-500 rounded-t-lg p-5"
+      
+      className=" w-full sm:max-w-xl !h-[40vh] sm:h-72 mx-auto shadow-inner shadow-blue-500 rounded-t-lg p-5"
     >
       <div className="flex flex-col gap-y-3">
         <div className="w-full h-16 flex gap-x-6">
@@ -88,7 +91,7 @@ export function DrawerForUserProductCard({
               }
             }}
             onclickplus={() => {
-              if (amount < 10 && amount < stock) {
+              if (amount < stock) {
                 setAmount((prev) => prev + 1);
               }
             }}

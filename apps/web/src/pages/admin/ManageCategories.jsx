@@ -1,14 +1,19 @@
 import { useEffect, useState, useRef } from 'react';
 import LayoutPageAdmin from '../../components/LayoutPageAdmin';
-import BoxAddItem from '../../components/BoxAddItem';
-import CardManage from '../../components/CardManage';
+import { IoMdAdd } from "react-icons/io";
 import API_CALL from '../../helpers/API';
 import ModalCategory from '../../components/modal/ModalCategory';
 import { MAX_SIZE, REGEX_FILE_TYPE } from '../../constants/file';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { useSelector } from 'react-redux';
-import { IMG_URL_CATEGORY } from '../../constants/imageURL';
 import LayoutDashboard from '../../components/LayoutDashboard';
+import { Button } from 'flowbite-react';
+import { customButton } from '../../helpers/flowbiteCustomTheme';
+import ManageCategoryTable from '../../components/table/ManageCategoryTable';
+import { getCategory } from '../../helpers/queryData';
+import ResponsivePagination from '../../components/ResponsivePagination';
+import { useSearchParams } from 'react-router-dom';
+import { handleAddButton, handleDeleteButton, handleEditButton, onCloseModal } from '../../helpers/dashboard/manageCategory';
 
 const ManageCategories = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -23,28 +28,22 @@ const ManageCategories = () => {
   const [isLoading, setIsLoading] = useState(false);
   const hiddenFileInput = useRef(null);
   const currentUserRole = useSelector((reducer) => reducer.userReducer.role);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [totalPage, setTotalPage] = useState(1);
+  const queryParam = { 
+    limit: 4, 
+    page: searchParams.get('page') 
+  }
 
   useEffect(() => {
-    getCategory();
-  }, []);
+    getCategory(setCategory, setIsLoading, setTotalPage, queryParam);
+  }, [searchParams.get('page'), setCategory]);
 
-  const getCategory = async () => {
-    setIsLoading(true);
-    const res = await API_CALL.get('category');
-    if (res) {
-      setIsLoading(false);
-      setCategory(res.data);
-    }
-  };
-
-  const onCloseModal = () => {
-    setOpenModal(false);
-    setOnEdit(false);
-    setCategoryName('');
-    setPrevCategoryName('');
-    setCategoryId(null);
-    setFile(null);
-    setError({ size: false, requiredName: false, requiredFile: false, ext: false, duplicate: false });
+  const onPageChange = (page) => {
+    setSearchParams((prev) => {
+      prev.set('page', page);
+      return prev;
+    });
   };
 
   const handleSaveButton = async () => {
@@ -63,78 +62,44 @@ const ManageCategories = () => {
           return;
         }
         if (prevCategoryName == categoryName) {
-          console.log('Duplicate category name');
           const formData = new FormData();
           formData.append('categoryUpload', file);
-          await API_CALL.patch('category/' + categoryId, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+          await API_CALL.patch('category/' + categoryId, formData, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+              'Content-Type': 'multipart/form-data'
+            }
+          });
         } else {
           const formData = new FormData();
           formData.append('name', categoryName);
           formData.append('categoryUpload', file);
-          await API_CALL.patch('category/' + categoryId, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+          await API_CALL.patch('category/' + categoryId, formData, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+              'Content-Type': 'multipart/form-data'
+            }
+          });
         }
       } else {
-        await API_CALL.patch('category/' + categoryId, { name: categoryName });
+        await API_CALL.patch('category/' + categoryId, { name: categoryName }, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+            'Content-Type': 'multipart/form-data'
+          }
+        });
       }
       setOpenModal(false);
       setCategoryName('');
       setFile(null);
       setError({ ...error, size: false, requiredName: false, ext: false, duplicate: false });
-      getCategory();
+      getCategory(setCategory, setIsLoading, setTotalPage, queryParam);
     } catch (error) {
       if (error.response.status === 409) {
         return setError({ ...error, duplicate: true });
       }
     }
 
-  };
-
-  const handleAddButton = async () => {
-    try {
-      if (categoryName === '') {
-        return setError({ ...error, requiredName: true });
-      }
-      if (file) {
-        if (file.size > MAX_SIZE) {
-          return setError({ ...error, size: true, requiredName: false });
-        }
-        if (!file.type.match(REGEX_FILE_TYPE)) {
-          return setError({ ...error, ext: true, requiredName: false });
-        }
-        const formData = new FormData();
-        formData.append('name', categoryName);
-        formData.append('categoryUpload', file);
-        await API_CALL.post('category', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
-      } else {
-        return setError({ ...error, requiredFile: true });
-      }
-      setOpenModal(false);
-      setCategoryName('');
-      setFile(null);
-      setError({ size: false, requiredName: false, requiredFile: false, ext: false, duplicate: false });
-      getCategory();
-    } catch (error) {
-      if (error.response.status === 409) {
-        return setError({ ...error, duplicate: true, requiredName: false });
-      }
-    }
-  };
-
-  const handleDeleteButton = async (id) => {
-    await API_CALL.delete(`category/${id}`);
-    getCategory();
-  };
-
-  const handleEditButton = async (id) => {
-    const res = await API_CALL.get(`category/${id}`);
-    if (res) {
-      setOnEdit(true);
-      setCategoryName(res.data.name);
-      setPrevCategoryName(res.data.name);
-      setCategoryId(res.data.id);
-      setImageSrc(res.data.image ? IMG_URL_CATEGORY + res.data.image : '/defaultImage.jpg');
-      setOpenModal(true);
-    }
   };
 
   const handleOnChangeFile = (event) => {
@@ -159,11 +124,13 @@ const ManageCategories = () => {
     <LayoutDashboard>
       <LoadingSpinner size={16} isLoading={isLoading} />
       <LayoutPageAdmin title='Manage Categories'>
-        <div className='grid grid-cols-2 lg:grid-cols-6 justify-between gap-y-5'>
-          {currentUserRole === 'super' && <BoxAddItem title='Add Category' onClick={() => setOpenModal(true)} />}
+        <div className='my-5'>
+          {currentUserRole === 'super' && <Button theme={customButton} size={'responsive'} color='secondary' onClick={() => setOpenModal(true)}> <IoMdAdd className='mr-1 w-4 h-4' /> Add Category</Button>}
+        </div>
+        <div className='grid grid-cols-1 mb-24'>
           <ModalCategory
             show={openModal}
-            onClose={onCloseModal}
+            onClose={() => onCloseModal(setOpenModal, setOnEdit, setCategoryName, setPrevCategoryName, setCategoryId, setFile, setError)}
             onEdit={onEdit}
             onEditImage={() => hiddenFileInput.current.click()}
             refImage={hiddenFileInput}
@@ -176,18 +143,21 @@ const ManageCategories = () => {
             categoryName={categoryName}
             onChangeCategory={(event) => { setCategoryName(event.target.value); setError({ ...error, requiredName: false }) }}
             onChangeFile={handleOnChangeFile}
-            onAdd={handleAddButton}
+            onAdd={() => handleAddButton(categoryName, setError, error, file, MAX_SIZE, REGEX_FILE_TYPE, setOpenModal, setCategoryName, setFile, getCategory, setCategory, setIsLoading, setTotalPage, queryParam)}
             onSave={handleSaveButton}
           />
-          {category && category.map((item, index) => {
-            return <CardManage
-                key={index}
-                src={item.image ? IMG_URL_CATEGORY + item.image : '/defaultImage.jpg'}
-                name={item.name}
-                onEdit={() => handleEditButton(item.id)}
-                onDelete={() => handleDeleteButton(item.id)}
-              />
-          })}
+          <div className='mb-5'>
+            <ManageCategoryTable
+              data={category}
+              onEdit={(id) => handleEditButton(id, setOnEdit, setCategoryName, setPrevCategoryName, setCategoryId, setImageSrc, setOpenModal)}
+              onDelete={(id) => handleDeleteButton(id, getCategory, setCategory, setIsLoading, setTotalPage, queryParam)}
+            />
+          </div>
+          <ResponsivePagination
+            currentPage={Number(searchParams.get('page')) || 1}
+            totalPages={totalPage}
+            onPageChange={onPageChange}
+          />
         </div>
       </LayoutPageAdmin>
     </LayoutDashboard>

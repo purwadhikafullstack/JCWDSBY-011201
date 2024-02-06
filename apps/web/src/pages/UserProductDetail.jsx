@@ -1,4 +1,4 @@
-import { Carousel } from 'flowbite-react';
+import { Badge, Carousel } from 'flowbite-react';
 import UserLayout from '../components/UserLayout';
 import UserProductCard from '../components/UserProductCard';
 import Footer from '../components/Footer';
@@ -11,6 +11,7 @@ import { IMG_URL_PRODUCT } from '../constants/imageURL';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { useSelector } from 'react-redux';
 import { DrawerForUserProductCard } from '../components/DrawerForUserProductCard';
+import { discountPrice, promo } from '../helpers/discount';
 
 const UserProductDetail = () => {
   const location = useLocation();
@@ -29,9 +30,9 @@ const UserProductDetail = () => {
       getProductData();
     }, 1000);
   }, [params.name]);
-
   const getProductData = async () => {
     const res = await API_CALL.get(`inventory/${location.pathname.split('/product/')[1]}`)
+    console.log('RES >>>', res.data.result);
     if (res) {
       setProductData(res.data.result);
       const relatedProduct = await API_CALL.get(`/inventory?store=${currStore.storeId}&category=${res.data.result.product.category.name}&limit=10`); //! need to change limit
@@ -39,7 +40,7 @@ const UserProductDetail = () => {
     }
     setIsLoading(false);
   };
-
+  // console.log('productData', productData.product.price);
   return (
     <UserLayout>
       <LoadingSpinner isLoading={isLoading} size={16} />
@@ -51,7 +52,6 @@ const UserProductDetail = () => {
                 key={index}
                 className="w-full h-full md:object-contain"
                 src={IMG_URL_PRODUCT + value.image}
-                alt="..."
               />
             ))}
           </Carousel>
@@ -63,29 +63,40 @@ const UserProductDetail = () => {
                 {productData && productData.product.name}
               </span>
               <div className="flex">
-                {/* {productData.discountPrice ? (
+                {productData && discountPrice(productData) ? (
                   <div className="flex gap-2 items-baseline">
                     <span className="font-bold text-xl md:text-2xl text-blue-800">
-                      {productData.discountPrice.toLocaleString('ID', {
+                      {discountPrice(productData).toLocaleString('ID', {
                         style: 'currency',
                         currency: 'IDR',
+                        maximumFractionDigits: 0,
                       })}
                     </span>
                     <span className="text-base text-red-500 line-through">
-                      {productData.productPrice.toLocaleString('ID', {
+                      {productData?.productPrice.toLocaleString('id-ID', {
                         style: 'currency',
                         currency: 'IDR',
+                        maximumFractionDigits: 0,
                       })}
                     </span>
+                    <div className='flex'>
+                      {promo(productData) && <Badge color={'success'}>Buy 1 Get 1</Badge>}
+                    </div>
                   </div>
                 ) : (
-                  <span className="text-xl font-bold">
-                    {productData.productPrice.toLocaleString('ID', {
-                      style: 'currency',
-                      currency: 'IDR',
-                    })}
-                  </span>
-                )} */}
+                  <div className="flex gap-2 items-baseline">
+                    <span className="text-xl font-bold">
+                      {productData?.productPrice.toLocaleString('ID', {
+                        style: 'currency',
+                        currency: 'IDR',
+                        maximumFractionDigits: 0,
+                      })}
+                    </span>
+                    <div className='flex'>
+                      {promo(productData) && <Badge color={'success'}>Buy 1 Get 1</Badge>}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
             <div
@@ -126,7 +137,8 @@ const UserProductDetail = () => {
                 productName={value.product.name}
                 productUnit={value.product.weight + value.product.unit}
                 price={value.product.price}
-                // discountPrice={7400}
+                discountPrice={discountPrice(value)}
+                isPromo={promo(value)}
                 stock={value.stock}
                 onClickProduct={() => navigate(`/product/${value.product.name}`)}
               />
@@ -134,35 +146,30 @@ const UserProductDetail = () => {
           </div>
         </div>
         <div className="sticky w-full bottom-0 max-sm:bottom-[4.5rem]">
-          <div className="flex w-full justify-between items-center px-2 py-3 bg-blue-50">
+          <div className="flex w-full justify-between items-center px-5 py-3 bg-blue-50">
             <div className="flex">
-              {/* {productData.discountPrice ? (
+              {productData && discountPrice(productData) ? (
                 <div className="flex gap-2 items-center">
                   <span className="text-white text-base font-semibold bg-blue-800 p-1 rounded-md">
-                    {'Save ' +
-                      (
-                        ((productData.productPrice -
-                          productData.discountPrice) /
-                          productData.productPrice) *
-                        100
-                      ).toFixed() +
-                      '%'}
+                    {`Save ${productData.discounts.type === 'percentage' ? productData.discounts.percentage * 100 : ((productData.productPrice - discountPrice(productData)) / productData.productPrice * 100).toFixed()} %`}
                   </span>
                   <span className="font-bold text-xl text-blue-800">
-                    {productData.discountPrice.toLocaleString('ID', {
+                    {discountPrice(productData).toLocaleString('ID', {
                       style: 'currency',
                       currency: 'IDR',
+                      maximumFractionDigits: 0,
                     })}
                   </span>
                 </div>
               ) : (
                 <span className="text-xl font-bold">
-                  {productData.productPrice.toLocaleString('ID', {
+                  {productData?.productPrice.toLocaleString('ID', {
                     style: 'currency',
                     currency: 'IDR',
+                    maximumFractionDigits: 0,
                   })}
                 </span>
-              )} */}
+              )}
             </div>
             <button
               className={`${productData && productData.stock ? 'bg-blue-700' : 'bg-gray-200'} text-base font-semibold text-white rounded-md p-2 bg-blue-700`}
@@ -171,6 +178,7 @@ const UserProductDetail = () => {
             >
               Add to cart
             </button>
+          </div>
             <DrawerForUserProductCard
               inventoryid={productData && productData.id}
               openDrawer={openDrawer}
@@ -180,12 +188,10 @@ const UserProductDetail = () => {
               productName={productData && productData.product.name}
               stock={productData && productData.stock}
             />
-          </div>
         </div>
       </div>
       <Footer />
     </UserLayout>
   );
 };
-
 export default UserProductDetail;
