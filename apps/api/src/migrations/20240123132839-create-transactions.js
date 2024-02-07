@@ -21,6 +21,9 @@ module.exports = {
       transactionDate: {
         type: Sequelize.DATE,
       },
+      shipmentName: {
+        type: Sequelize.STRING,
+      },
       shipmentTotal: {
         type: Sequelize.INTEGER,
       },

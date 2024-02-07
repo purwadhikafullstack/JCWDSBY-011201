@@ -21,6 +21,7 @@ export const init = (sequelize) => {
       userId: DataTypes.INTEGER,
       invoice: DataTypes.STRING,
       transactionDate: DataTypes.STRING,
+      shipmentName: DataTypes.STRING,
       shipmentTotal: DataTypes.INTEGER,
       paymentMethod: DataTypes.STRING,
       paymentProofImg: DataTypes.STRING,
