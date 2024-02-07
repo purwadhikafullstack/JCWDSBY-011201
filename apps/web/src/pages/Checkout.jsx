@@ -11,7 +11,10 @@ import SelectCourierCheckout from '../components/SelectCourierCheckout';
 import { useSnap } from '../hooks/useMidtrans';
 import SelectPayment from '../components/SelectPayment';
 import { useNavigate } from 'react-router-dom';
-import { updateTransactionStatus } from '../helpers/checkout/updateTransaction';
+import {
+  handleSuccessCheckout,
+  updateTransactionStatus,
+} from '../helpers/checkout/updateTransaction';
 import { deleteCheckedItemInCloud } from '../redux/slice/cartSlice';
 const Checkout = () => {
   const [address, setAddress] = useState(null);
@@ -72,10 +75,10 @@ const Checkout = () => {
     selectedCourier?.price;
 
   const handlePay = async () => {
-    //   if (!address||!courier) {
-    //     alert("harap lengkapi semua opsi")
-    //     return
-    //   }
+    if (!address || !courier) {
+      customToast('error', 'harap lengkapi semua opsi');
+      return;
+    }
     const response = await API_CALL.post(
       '/transaction',
       {
@@ -96,25 +99,21 @@ const Checkout = () => {
       console.log('🚀 ~ handlePay ~ response:', response.data.result.invoice);
       setShowSnap(true);
       dispatch(deleteCheckedItemInCloud(itemsInvId, currStore.storeId));
-      if (selectedPayment.name=='transfer') {
-        navigate(`/order-details?order_id=${response.data.result.invoice}`)
-        return
+      if (selectedPayment.name == 'transfer') {
+        navigate(`/order-details?order_id=${response.data.result.invoice}`);
+        return;
       }
       snapEmbed(response.data.result.token, 'snap-container', {
         onSuccess: (result) => {
-          updateTransactionStatus(response.data.result.invoice, 'paid');
-          console.log(result);
-          navigate('/');
+          handleSuccessCheckout(response.data.result.invoice, 'paid');
           setShowSnap(false);
         },
         onPending: (result) => {
           console.log(result);
-          //   navigate('/');
           setShowSnap(false);
         },
         onClose: (result) => {
           console.log(result);
-          //   navigate('/');
           setShowSnap(false);
         },
       });
