@@ -30,6 +30,9 @@ module.exports = {
       paymentProofImg: {
         type: Sequelize.STRING,
       },
+      resi: {
+        type: Sequelize.STRING,
+      },
       userAddressId: {
         type: Sequelize.INTEGER,
       },
