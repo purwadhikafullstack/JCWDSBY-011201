@@ -8,19 +8,20 @@ import {
 import {
   adminSendingOrders,
   cancelOrdersForAdminController,
-  getAllTransactions,
   updateOrderStatusForAdminTransferController,
   userFinishOrders,
-} from '../controllers/order.controller';
+} from '../controllers/order2.controller';
 import {
   createTransactionController,
   getTransactionDetailsController,
   midtransController,
   patchPaymentProofController,
   patchTransactionStatusController,
+  patchTransactionSuccess,
 } from '../controllers/transactions.controller';
 import uploader from '../helper/uploader';
-import { getOneTransaction } from '../services/transactions.service';
+import { getOneTransaction } from '../services/transactionAndOrder/transactions.service';
+import { getAllTransactions } from '../controllers/order.controller';
 
 const transactionRouter = Router();
 //Post
@@ -82,6 +83,11 @@ transactionRouter.patch(
   validateToken,
   validateUser,
   userFinishOrders,
+);
+transactionRouter.patch(
+  '/success/:order_id',
+  validateToken,
+  patchTransactionSuccess,
 );
 transactionRouter.patch(
   '/:order_id',

@@ -21,6 +21,9 @@ module.exports = {
       transactionDate: {
         type: Sequelize.DATE,
       },
+      shipmentName: {
+        type: Sequelize.STRING,
+      },
       shipmentTotal: {
         type: Sequelize.INTEGER,
       },
@@ -28,6 +31,9 @@ module.exports = {
         type: Sequelize.STRING,
       },
       paymentProofImg: {
+        type: Sequelize.STRING,
+      },
+      resi: {
         type: Sequelize.STRING,
       },
       userAddressId: {

@@ -48,6 +48,12 @@ export const caseStatus = (status) => {
           finished
         </div>
       );
+    case 'canceled':
+      return (
+        <div className="font-semibold text-xl capitalize text-red-600 ">
+          canceled
+        </div>
+      );
     default:
       break;
   }

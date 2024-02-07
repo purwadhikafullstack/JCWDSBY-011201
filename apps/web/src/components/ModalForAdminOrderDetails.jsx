@@ -1,11 +1,12 @@
-import React from 'react';
-import { Button, Modal, Card } from 'flowbite-react';
+import React, { useState } from 'react';
+import { Button, Modal, Card, FloatingLabel } from 'flowbite-react';
 import { reduceTotalPrice } from '../helpers/orders/reduceTotalPrice';
 import { IMG_URL_PROOF } from '../constants/imageURL';
 import API_CALL from '../helpers/API';
 import customToast from '../utils/toast';
 export function ModalForAdminOrderDetails({ openModal, setOpenModal, order }) {
-  console.log('🚀 ~ ModalForAdminOrderDetails ~ order:', order);
+  const [resi, setResi] = useState('');
+  console.log('🚀 ~ ModalForAdminOrderDetails ~ resi:', resi);
   const totalPrice = reduceTotalPrice(order);
   const updateStatusForTransferAdmin = async (status, invoice) => {
     try {
@@ -24,19 +25,18 @@ export function ModalForAdminOrderDetails({ openModal, setOpenModal, order }) {
       console.log(error);
     }
   };
-  const sendingOrderForAdmin = async (status, invoice) => {
+  const sendingOrderForAdmin = async (status, invoice, resi) => {
     try {
-        
       const response = await API_CALL.patch(
         '/transaction/admin/sending',
-        { status, invoice },
+        { status, invoice, resi },
         {
           headers: {
             Authorization: 'Bearer ' + localStorage.getItem('authToken'),
           },
         },
       );
-      console.log("🚀 ~ sendingOrderForAdmin ~ response:", response)
+      console.log('🚀 ~ sendingOrderForAdmin ~ response:', response);
       customToast('success', response.data.message);
       setOpenModal(false);
     } catch (error) {
@@ -156,11 +156,27 @@ export function ModalForAdminOrderDetails({ openModal, setOpenModal, order }) {
           )}
         </div>
         {order?.status === 'paid' && (
-          <Card className="flex flex-col justify-center w-full mt-5">
+          <Card className="flex flex-col justify-center w-full mt-5 gap-y-4">
+            <div>
+              <label
+                htmlFor="resi"
+                className="block font-semibold text-gray-900 text-base mb-1"
+              >
+                Resi
+              </label>
+              <input
+                type="text"
+                id="resi"
+                name="resi"
+                onChange={(e) => setResi(e.target.value)}
+                placeholder="Masukkan Nomer Resi"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+              />
+            </div>
             <Button
               color="blue"
               onClick={() => {
-                sendingOrderForAdmin('sending', order?.invoice);
+                sendingOrderForAdmin('sending', order?.invoice, resi);
               }}
             >
               SEND ORDER

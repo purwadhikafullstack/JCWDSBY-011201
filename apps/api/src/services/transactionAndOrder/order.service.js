@@ -1,9 +1,9 @@
-import transactions from '../models/transactions.model';
-import transactionDetails from '../models/transactionDetails.model';
-import user_addresses from '../models/user-addresses.model';
-import users from '../models/users.model';
-import inventory from '../models/inventory.model';
-import stores from '../models/stores.model';
+import transactions from '../../models/transactions.model';
+import transactionDetails from '../../models/transactionDetails.model';
+import user_addresses from '../../models/user-addresses.model';
+import users from '../../models/users.model';
+import inventory from '../../models/inventory.model';
+import stores from '../../models/stores.model';
 import { Op } from 'sequelize';
 
 export const getPagination = (page, size) => {
@@ -31,6 +31,7 @@ export const getOrdersAdmin = async (
   payment,
   from,
   to,
+  sort,
 ) => {
   return transactions.findAndCountAll({
     limit,
@@ -51,6 +52,7 @@ export const getOrdersAdmin = async (
     },
     raw: true,
     nest: true,
+    order: [sort],
     include: [
       {
         model: stores,
@@ -71,7 +73,8 @@ export const getOrdersUser = async (
   status,
   payment,
   from,
-  to
+  to,
+  sort,
 ) => {
   return transactions.findAndCountAll({
     limit,
@@ -91,6 +94,7 @@ export const getOrdersUser = async (
     },
     raw: true,
     nest: true,
+    order: [sort],
     include: [
       {
         model: stores,
@@ -102,4 +106,12 @@ export const getOrdersUser = async (
   });
 };
 
-
+export const inputResi = (req, t) => {
+  return transactions.update(
+    { resi: req.body.resi },
+    {
+      where: { invoice: req.params.order_id ?? req.body.invoice },
+      transaction: t,
+    },
+  );
+};

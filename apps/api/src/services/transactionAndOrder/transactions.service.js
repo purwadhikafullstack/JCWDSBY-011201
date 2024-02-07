@@ -1,14 +1,14 @@
-import transactions from '../models/transactions.model';
-import transactionDetails from '../models/transactionDetails.model';
-import user_addresses from '../models/user-addresses.model';
-import users from '../models/users.model';
-import inventory from '../models/inventory.model';
+import transactions from '../../models/transactions.model';
+import transactionDetails from '../../models/transactionDetails.model';
+import user_addresses from '../../models/user-addresses.model';
+import users from '../../models/users.model';
+import inventory from '../../models/inventory.model';
 import { literal } from 'sequelize';
 import midtransClient from 'midtrans-client';
-import { APP_URL, MIDTRANS_KEY } from '../config';
-import { invoiceNamer } from '../routers/utils/invoiceNamer';
-import product from '../models/product.model';
-import stores from '../models/stores.model';
+import { APP_URL, MIDTRANS_KEY } from '../../config';
+import { invoiceNamer } from '../../routers/utils/invoiceNamer';
+import product from '../../models/product.model';
+import stores from '../../models/stores.model';
 
 //Get
 export const findUserAddressIdForTransaction = async (req) => {
@@ -59,18 +59,14 @@ export const transactionDetailsBulkCreate = async (req, t, latestTransId) => {
   }
 };
 
-export const reduceStock = async (req, t) => {
-  const promiseReduceStock = req.body.checkoutItems.map(async (val, idx) => {
-    return await inventory.decrement(
-      { stock: Math.abs(val.quantity) },
+export const raiseBookedStock = async (req, t,items) => {
+  const promiseRaiseBookedStock = items.map(async (val, idx) => {
+    return await inventory.increment(
+      { bookedStock: Math.abs(val.amount) },
       { where: { id: val.inventoryId }, transaction: t },
     );
   });
-  console.log(
-    '🚀 ~ promiseReduceStock ~ promiseReduceStock:',
-    promiseReduceStock,
-  );
-  return Promise.all(promiseReduceStock);
+  return Promise.all(promiseRaiseBookedStock);
 };
 
 export const findUserDataForTransaction = async (req) => {
