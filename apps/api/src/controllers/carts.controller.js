@@ -3,6 +3,7 @@ import inventory from '../models/inventory.model';
 import product from '../models/product.model';
 import productImage from '../models/product-image.model';
 import stores from '../models/stores.model';
+import discount from '../models/discount.model';
 
 export const addCarts = async (req, res, t) => {
   return await carts.create(
@@ -18,7 +19,9 @@ export const incrementCartAmountBy1 = async (req, t) => {
   });
 };
 export const findOneCartByInventoryId = async (req) => {
-  return await carts.findOne({ where: { userId:req.tokenData.id,inventoryId: req.body.inventoryId } });
+  return await carts.findOne({
+    where: { userId: req.tokenData.id, inventoryId: req.body.inventoryId },
+  });
 };
 export const findOneCartById = async (req) => {
   return await carts.findOne({ where: { id: req.params.id }, raw: true });
@@ -79,6 +82,12 @@ export const getCarts = async (req, storeId) => {
         attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
         include: [
           {
+            model: discount,
+            as: 'discounts',
+            required: true,
+            attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
+          },
+          {
             model: product,
             as: 'product',
             required: true,
@@ -107,7 +116,7 @@ export const deleteOneProductInCart = async (req, t) =>
 
 export const deleteCheckedItemInCart = async (req, t) =>
   await carts.destroy({
-    where: { userId:req.tokenData.id,inventoryId: req.body.inventoryIdArray },
+    where: { userId: req.tokenData.id, inventoryId: req.body.inventoryIdArray },
     transaction: t,
   });
 
@@ -116,3 +125,12 @@ export const deleteAllProductInCartSpecificStore = async (req, t) =>
     where: { userId: req.tokenData.id, storeId: req.body.storeId },
     transaction: t,
   });
+
+export const getItemInCartDiscount = async (itemArray) => {
+  return await discount.findAll({
+    where: { inventoryId: itemArray },
+    raw: true,
+    nest:true,
+    attributes: { exclude: ['createdAt', 'updatedAt'] },
+  });
+};

@@ -8,6 +8,7 @@ import {
   findOneCartByInventoryId,
   findStoreIdFromUUID,
   getCarts,
+  getItemInCartDiscount,
   incrementCartAmountBy1,
   updateCartsAmount,
   updateChecks,
@@ -15,7 +16,7 @@ import {
 } from '../controllers/carts.controller';
 import { validateToken } from '../middleware/tokenValidation';
 import resTemplate from '../helper/resTemplate';
-import { processedCartGetData } from './cart/getResult';
+import { fuseDiscountAndItems, processedCartGetData } from './cart/getResult';
 import { getResultFilterer } from './cart/uniqueGet';
 const cartRouter = Router();
 //GET
@@ -23,13 +24,16 @@ cartRouter.get('/', validateToken, async (req, res, next) => {
   try {
     const storeData = await findStoreIdFromUUID(req);
     const result = await getCarts(req, storeData.id);
-    // const productIdArray = result.map((val,idx)=>val.inventory.productId)
     const uniqueRes = getResultFilterer(result);
+    const invIdRes = uniqueRes.map((item) => item.inventoryId);
+    const discounts = await getItemInCartDiscount(invIdRes);
     const trueRes = processedCartGetData(uniqueRes);
+    const fusedRes = fuseDiscountAndItems(trueRes,discounts)
+    console.log('🚀 ~ fusedArray ~ fusedArray:', fusedRes);
     res.status(200).json({
       success: true,
       message: 'cart fetched successfully',
-      data: trueRes,
+      data: fusedRes,
     });
   } catch (error) {
     console.log(error);
@@ -78,17 +82,17 @@ cartRouter.patch('/checkall', validateToken, async (req, res, next) => {
     next(error);
   }
 });
-//Delete 
-cartRouter.delete("/:id",validateToken,async (req,res,next) => {
+//Delete
+cartRouter.delete('/:id', validateToken, async (req, res, next) => {
   await DB.initialize();
-  const t = await DB.db.sequelize.transaction()
+  const t = await DB.db.sequelize.transaction();
   try {
-    await deleteOneProductInCart(req,t)
+    await deleteOneProductInCart(req, t);
   } catch (error) {
-    console.log(error)
+    console.log(error);
     next(error);
   }
-})
+});
 
 cartRouter.patch('/:id', validateToken, async (req, res, next) => {
   await DB.initialize();
