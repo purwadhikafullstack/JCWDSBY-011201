@@ -5,10 +5,16 @@ import { useState, useEffect } from 'react';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import LayoutDashboard from '../../components/LayoutDashboard';
 import { customTable } from '../../helpers/flowbiteCustomTheme';
+import { useSearchParams } from 'react-router-dom';
+import ResponsivePagination from '../../components/ResponsivePagination';
+import { onPageChange } from '../../helpers/pagination';
 
 const RegisteredUser = () => {
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+	const [totalPage, setTotalPage] = useState(1);
+	const queryParam = { limit: 13, page: searchParams.get('page') }
 
   useEffect(() => {
     getUsers();
@@ -44,7 +50,7 @@ const RegisteredUser = () => {
       <LoadingSpinner isLoading={isLoading} size={16} />
       <LayoutPageAdmin title='Registered User'>
         <div className='grid grid-cols-1 overflow-x-auto '>
-          <Table theme={customTable} striped>
+          <Table theme={customTable} >
             <TableHead>
               <TableHeadCell>#</TableHeadCell>
               <TableHeadCell>Name</TableHeadCell>
@@ -55,6 +61,13 @@ const RegisteredUser = () => {
               {printUser()}
             </TableBody>
           </Table>
+        </div>
+        <div>
+        <ResponsivePagination
+					currentPage={Number(searchParams.get('page')) || 1}
+					totalPages={totalPage}
+					onPageChange={(page) => onPageChange(page, setSearchParams)}
+				/>
         </div>
       </LayoutPageAdmin>
     </LayoutDashboard>
