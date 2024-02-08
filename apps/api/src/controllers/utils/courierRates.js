@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { BITESHIP_API_KEY, BITESHIP_API_URL } from '../../config';
+import resTemplate from '../../helper/resTemplate';
 
 export default async function (req, res, next) {
   try {
@@ -29,12 +30,9 @@ export default async function (req, res, next) {
         price: value.price,
       };
     });
-    return res.status(201).json({
-      rc: 201,
-      success: true,
-      message: 'Success get couriers list',
-      result: finalResult,
-    });
+    return res
+      .status(201)
+      .json(resTemplate(201, true, 'Success get couriers list', finalResult));
   } catch (error) {
     next(error);
   }

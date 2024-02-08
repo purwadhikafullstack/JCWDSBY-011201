@@ -1,23 +1,40 @@
 import { Router } from 'express';
 import { validateSuper, validateToken } from '../middleware/tokenValidation';
-import getStores from './stores/getStores';
-import getStoreDetail from './stores/getStoreDetail';
-import createStore from './stores/createStore';
-import updateStore from './stores/updateStore';
-import updateMainBranch from './stores/updateMainBranch';
-import deleteStore from './stores/deleteStore';
-import getMainStore from './stores/getMainStore';
-import { getStoreByUUID } from '../controllers/store.controller';
+import {
+  createStoreController,
+  deleteStoreController,
+  getMainStoreController,
+  getStoreByUUID,
+  getStoreDetailController,
+  getStoresController,
+  updateMainBranchController,
+  updateStoreController,
+} from '../controllers/store.controller';
 
 const storesRouter = Router();
 
-storesRouter.get('/', validateToken, validateSuper, getStores);
-storesRouter.get('/main', validateToken, validateSuper, getMainStore);
+storesRouter.get('/', validateToken, validateSuper, getStoresController);
+storesRouter.get('/main', validateToken, validateSuper, getMainStoreController);
 storesRouter.get('/UUID/:UUID', validateToken, validateSuper, getStoreByUUID);
-storesRouter.get('/:id', validateToken, validateSuper, getStoreDetail);
-storesRouter.post('/', validateToken, validateSuper, createStore);
-storesRouter.patch('/:id', validateToken, validateSuper, updateStore);
-storesRouter.patch('/:id/main', validateToken, validateSuper, updateMainBranch);
-storesRouter.delete('/:id', validateToken, validateSuper, deleteStore);
+storesRouter.get(
+  '/:id',
+  validateToken,
+  validateSuper,
+  getStoreDetailController,
+);
+storesRouter.post('/', validateToken, validateSuper, createStoreController);
+storesRouter.patch('/:id', validateToken, validateSuper, updateStoreController);
+storesRouter.patch(
+  '/:id/main',
+  validateToken,
+  validateSuper,
+  updateMainBranchController,
+);
+storesRouter.delete(
+  '/:id',
+  validateToken,
+  validateSuper,
+  deleteStoreController,
+);
 
 export { storesRouter };

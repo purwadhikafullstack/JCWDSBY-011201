@@ -1,16 +1,12 @@
-import { createUser, findOneUser } from '../../controllers/user.controller';
 import jwt from 'jsonwebtoken';
-import { APP_URL, SCRT_KEY } from '../../config';
+import { findOneUserByEmailService } from '../../services/user/user.service';
 import { verifyPassword } from '../../helper/hash';
-import { Op } from 'sequelize';
+import { SCRT_KEY } from '../../config';
+import resTemplate from '../../helper/resTemplate';
 
-export default async function googleLogin(req, res, next) {
+const googleLogin = async (req, res, next) => {
   try {
-    const isExist = await findOneUser({
-      where: {
-        [Op.and]: [{ email: req.body.email }, { type: 'google' }],
-      },
-    });
+    const isExist = await findOneUserByEmailService(req.body.email, 'google');
     if (!isExist) {
       throw { rc: 404, message: 'User not found' };
     }
@@ -31,26 +27,21 @@ export default async function googleLogin(req, res, next) {
       SCRT_KEY,
       { expiresIn: '7d' },
     );
-    return res.status(201).json({
-      rc: 201,
-      success: true,
-      message: 'Login with google is success',
-      result: {
+    return res.status(201).json(
+      resTemplate(201, true, 'Login with google is success', {
         name,
         email,
         role,
         image,
         type,
         token,
-      },
-    });
+      }),
+    );
   } catch (error) {
-    console.log(error.message);
-    return res.status(error.rc || 500).json({
-      rc: error.rc || 500,
-      success: false,
-      message: error.message,
-      result: null,
-    });
+    return res
+      .status(error.rc || 500)
+      .json(resTemplate(error.rc || 500, false, error.message, null));
   }
-}
+};
+
+export default googleLogin;

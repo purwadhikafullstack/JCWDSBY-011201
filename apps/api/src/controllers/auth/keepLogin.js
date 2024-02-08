@@ -1,7 +1,7 @@
 import { SCRT_KEY } from '../../config';
 import resTemplate from '../../helper/resTemplate';
-import adminService from '../../services/user/admin.service';
-import userService from '../../services/user/user.service';
+import { findOneAdminByUsernameService } from '../../services/user/admin.service';
+import { findOneUserByEmailService } from '../../services/user/user.service';
 import jwt from 'jsonwebtoken';
 
 const keepLogin = async (req, res, next) => {
@@ -12,39 +12,35 @@ const keepLogin = async (req, res, next) => {
     const resultResponse = {};
     const signedData = {};
     if (req.tokenData.role === 'admin' || req.tokenData.role === 'super') {
-      const result = await adminService.findOneAdminByUsername(
-        req.tokenData.email,
-      );
-      if (!result.success) throw { message: result.result };
+      const result = await findOneAdminByUsernameService(req.tokenData.email);
       if (!result.result) throw { rc: 401, message: 'Unauthorized user' };
-      signedData.id = result.result.dataValues.id;
-      signedData.role = result.result.dataValues.role;
-      signedData.name = result.result.dataValues.name;
-      signedData.email = result.result.dataValues.email;
-      signedData.type = result.result.dataValues.type;
-      signedData.image = result.result.dataValues.image;
-      signedData.storeId = result.result.dataValues.store?.id || null;
-      signedData.storeUUID = result.result.dataValues.store?.UUID || null;
-      resultResponse.role = result.result.dataValues.role;
-      resultResponse.name = result.result.dataValues.name;
-      resultResponse.email = result.result.dataValues.email;
-      resultResponse.type = result.result.dataValues.type;
-      resultResponse.image = result.result.dataValues.image;
+      signedData.id = result.dataValues.id;
+      signedData.role = result.dataValues.role;
+      signedData.name = result.dataValues.name;
+      signedData.email = result.dataValues.email;
+      signedData.type = result.dataValues.type;
+      signedData.image = result.dataValues.image;
+      signedData.storeId = result.dataValues.store?.id || null;
+      signedData.storeUUID = result.dataValues.store?.UUID || null;
+      resultResponse.role = result.dataValues.role;
+      resultResponse.name = result.dataValues.name;
+      resultResponse.email = result.dataValues.email;
+      resultResponse.type = result.dataValues.type;
+      resultResponse.image = result.dataValues.image;
     } else {
-      const result = await userService.findOneUserByEmail(req.tokenData.email);
-      if (!result.success) throw { message: result.result };
-      if (!result.result) throw { rc: 401, message: 'Unauthorized user' };
-      signedData.id = result.result.dataValues.id;
-      signedData.role = result.result.dataValues.role;
-      signedData.name = result.result.dataValues.name;
-      signedData.email = result.result.dataValues.email;
-      signedData.type = result.result.dataValues.type;
-      signedData.image = result.result.dataValues.image;
-      resultResponse.role = result.result.dataValues.role;
-      resultResponse.name = result.result.dataValues.name;
-      resultResponse.email = result.result.dataValues.email;
-      resultResponse.type = result.result.dataValues.type;
-      resultResponse.image = result.result.dataValues.image;
+      const result = await findOneUserByEmailService(req.tokenData.email);
+      if (!result) throw { rc: 401, message: 'Unauthorized user' };
+      signedData.id = result.dataValues.id;
+      signedData.role = result.dataValues.role;
+      signedData.name = result.dataValues.name;
+      signedData.email = result.dataValues.email;
+      signedData.type = result.dataValues.type;
+      signedData.image = result.dataValues.image;
+      resultResponse.role = result.dataValues.role;
+      resultResponse.name = result.dataValues.name;
+      resultResponse.email = result.dataValues.email;
+      resultResponse.type = result.dataValues.type;
+      resultResponse.image = result.dataValues.image;
     }
     signedData.method = 'AUTHORIZATION';
     const token = jwt.sign(signedData, SCRT_KEY, { expiresIn: '7d' });

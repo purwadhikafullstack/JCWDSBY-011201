@@ -2,22 +2,25 @@ import { APP_URL, SCRT_KEY } from '../../config';
 import { DB } from '../../db';
 import resTemplate from '../../helper/resTemplate';
 import { sendResetPasswordEmail } from '../../helper/sendTemplateEmail';
-import tokenService from '../../services/token/token.service';
-import userService from '../../services/user/user.service';
+import {
+  createTokenService,
+  deactivateTokenService,
+} from '../../services/token/token.service';
+import { findOneUserByEmailService } from '../../services/user/user.service';
 import jwt from 'jsonwebtoken';
 
 const forgotPassword = async (req, res, next) => {
   await DB.initialize();
   const t = await DB.db.sequelize.transaction();
   try {
-    const isExist = await userService.findOneUserByEmail(req.body.email);
-    if (!isExist.result) throw { rc: 404, message: 'Account is not found' };
-    if (isExist.result.dataValues.type !== 'regular')
+    const isExist = await findOneUserByEmailService(req.body.email);
+    if (!isExist) throw { rc: 404, message: 'Account is not found' };
+    if (isExist.dataValues.type !== 'regular')
       throw {
         rc: 401,
         message: 'Cannot reset account registered with social account',
       };
-    const { id, name, email, role } = isExist.result.dataValues;
+    const { id, name, email, role } = isExist.dataValues;
     const token = jwt.sign(
       {
         id,
@@ -29,21 +32,15 @@ const forgotPassword = async (req, res, next) => {
       SCRT_KEY,
       { expiresIn: '1h' },
     );
-    const deactivateToken = await tokenService.deactivateToken(
+    const deactiveToken = await deactivateTokenService(
       id,
       'FORGOT_PASSWORD',
       t,
     );
-    if (!deactivateToken.success) throw { message: deactivateToken.result };
-    const createToken = await tokenService.createToken(
-      token,
-      id,
-      'FORGOT_PASSWORD',
-      t,
-    );
-    if (!createToken.success) throw { message: createToken.result };
+    if (!deactiveToken[0]) throw { message: 'Token not found' };
+    const saveToken = await createTokenService(token, id, 'FORGOT_PASSWORD', t);
     await sendResetPasswordEmail(
-      isExist.result.dataValues.email,
+      isExist.dataValues.email,
       APP_URL + `/forgot/reset-password?key=` + token,
     );
     await t.commit();
