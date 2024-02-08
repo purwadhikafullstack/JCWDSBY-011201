@@ -1,3 +1,4 @@
+import { discountPrice, promo } from '../../helpers/discount';
 import UserProductCard from '../UserProductCard';
 
 const LandingProductViews = ({ productData }) => {
@@ -16,7 +17,8 @@ const LandingProductViews = ({ productData }) => {
               productName={value.product.name}
               productUnit={value.product.weight + value.product.unit}
               price={value.product.price}
-              discountPrice={7400}
+              isPromo={promo(value)}
+              discountPrice={discountPrice(value)}
               stock={value.stock}
               onClickProduct={() => {
                 navigate(`/product/${value.product.name}`);

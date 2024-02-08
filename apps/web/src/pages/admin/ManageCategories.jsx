@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef } from 'react';
-import AdminSidebar from '../../components/AdminSidebar';
 import LayoutPageAdmin from '../../components/LayoutPageAdmin';
 import BoxAddItem from '../../components/BoxAddItem';
 import CardManage from '../../components/CardManage';
@@ -9,195 +8,190 @@ import { MAX_SIZE, REGEX_FILE_TYPE } from '../../constants/file';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { useSelector } from 'react-redux';
 import { IMG_URL_CATEGORY } from '../../constants/imageURL';
-import ContainerAdmin from '../../components/ContainerAdmin';
+import LayoutDashboard from '../../components/LayoutDashboard';
 
 const ManageCategories = () => {
-    const [openModal, setOpenModal] = useState(false);
-    const [categoryName, setCategoryName] = useState('');
-    const [prevCategoryName, setPrevCategoryName] = useState('');
-    const [imageSrc, setImageSrc] = useState(null);
-    const [categoryId, setCategoryId] = useState(null);
-    const [file, setFile] = useState(null);
-    const [error, setError] = useState({ size: false, requiredName: false, requiredFile: false, ext: false, duplicate: false });
-    const [category, setCategory] = useState(null);
-    const [onEdit, setOnEdit] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const hiddenFileInput = useRef(null);
-    const currentUserRole = useSelector((reducer) => reducer.userReducer.role);
+  const [openModal, setOpenModal] = useState(false);
+  const [categoryName, setCategoryName] = useState('');
+  const [prevCategoryName, setPrevCategoryName] = useState('');
+  const [imageSrc, setImageSrc] = useState(null);
+  const [categoryId, setCategoryId] = useState(null);
+  const [file, setFile] = useState(null);
+  const [error, setError] = useState({ size: false, requiredName: false, requiredFile: false, ext: false, duplicate: false });
+  const [category, setCategory] = useState(null);
+  const [onEdit, setOnEdit] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const hiddenFileInput = useRef(null);
+  const currentUserRole = useSelector((reducer) => reducer.userReducer.role);
 
-    useEffect(() => {
-        getCategory();
-    }, []);
+  useEffect(() => {
+    getCategory();
+  }, []);
 
-    const getCategory = async () => {
-        setIsLoading(true);
-        const res = await API_CALL.get('category');
-        if (res) {
-            setIsLoading(false);
-            setCategory(res.data);
+  const getCategory = async () => {
+    setIsLoading(true);
+    const res = await API_CALL.get('category');
+    if (res) {
+      setIsLoading(false);
+      setCategory(res.data);
+    }
+  };
+
+  const onCloseModal = () => {
+    setOpenModal(false);
+    setOnEdit(false);
+    setCategoryName('');
+    setPrevCategoryName('');
+    setCategoryId(null);
+    setFile(null);
+    setError({ size: false, requiredName: false, requiredFile: false, ext: false, duplicate: false });
+  };
+
+  const handleSaveButton = async () => {
+    try {
+      if (!categoryName) {
+        setError({ ...error, requiredName: true });
+        return;
+      }
+      if (file) {
+        if (file.size > MAX_SIZE) {
+          setError({ ...error, size: true, ext: false });
+          return;
         }
-    };
-
-    const onCloseModal = () => {
-        setOpenModal(false);
-        setOnEdit(false);
-        setCategoryName('');
-        setPrevCategoryName('');
-        setCategoryId(null);
-        setFile(null);
-        setError({ size: false, requiredName: false, requiredFile: false, ext: false, duplicate: false });
-    };
-
-    const handleSaveButton = async () => {
-        try {
-            if (!categoryName) {
-                setError({ ...error, requiredName: true });
-                return;
-            }
-            if (file) {
-                if (file.size > MAX_SIZE) {
-                    setError({ ...error, size: true, ext: false });
-                    return;
-                }
-                if (!file.type.match(REGEX_FILE_TYPE)) {
-                    setError({ ...error, ext: true, size: false });
-                    return;
-                }
-                if (prevCategoryName == categoryName) {
-                    console.log('Duplicate category name');
-                    const formData = new FormData();
-                    formData.append('categoryUpload', file);
-                    await API_CALL.patch('category/' + categoryId, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
-                } else {
-                    const formData = new FormData();
-                    formData.append('name', categoryName);
-                    formData.append('categoryUpload', file);
-                    await API_CALL.patch('category/' + categoryId, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
-                }
-            } else {
-                await API_CALL.patch('category/' + categoryId, { name: categoryName });
-            }
-            setOpenModal(false);
-            setCategoryName('');
-            setFile(null);
-            setError({ ...error, size: false, requiredName: false, ext: false, duplicate: false });
-            getCategory();
-        } catch (error) {
-            if (error.response.status === 409) {
-                return setError({ ...error, duplicate: true });
-            }
+        if (!file.type.match(REGEX_FILE_TYPE)) {
+          setError({ ...error, ext: true, size: false });
+          return;
         }
-
-    };
-
-    const handleAddButton = async () => {
-        try {
-            if (categoryName === '') {
-                return setError({ ...error, requiredName: true });
-            }
-            if (file) {
-                if (file.size > MAX_SIZE) {
-                    return setError({ ...error, size: true, requiredName: false });
-                }
-                if (!file.type.match(REGEX_FILE_TYPE)) {
-                    return setError({ ...error, ext: true, requiredName: false });
-                }
-                const formData = new FormData();
-                formData.append('name', categoryName);
-                formData.append('categoryUpload', file);
-                await API_CALL.post('category', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
-            } else {
-                return setError({ ...error, requiredFile: true });
-            }
-            setOpenModal(false);
-            setCategoryName('');
-            setFile(null);
-            setError({ size: false, requiredName: false, requiredFile: false, ext: false, duplicate: false });
-            getCategory();
-        } catch (error) {
-            if (error.response.status === 409) {
-                return setError({ ...error, duplicate: true, requiredName: false });
-            }
+        if (prevCategoryName == categoryName) {
+          console.log('Duplicate category name');
+          const formData = new FormData();
+          formData.append('categoryUpload', file);
+          await API_CALL.patch('category/' + categoryId, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+        } else {
+          const formData = new FormData();
+          formData.append('name', categoryName);
+          formData.append('categoryUpload', file);
+          await API_CALL.patch('category/' + categoryId, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
         }
-    };
+      } else {
+        await API_CALL.patch('category/' + categoryId, { name: categoryName });
+      }
+      setOpenModal(false);
+      setCategoryName('');
+      setFile(null);
+      setError({ ...error, size: false, requiredName: false, ext: false, duplicate: false });
+      getCategory();
+    } catch (error) {
+      if (error.response.status === 409) {
+        return setError({ ...error, duplicate: true });
+      }
+    }
 
-    const handleDeleteButton = async (id) => {
-        await API_CALL.delete(`category/${id}`);
-        getCategory();
-    };
+  };
 
-    const handleEditButton = async (id) => {
-        const res = await API_CALL.get(`category/${id}`);
-        if (res) {
-            setOnEdit(true);
-            setCategoryName(res.data.name);
-            setPrevCategoryName(res.data.name);
-            setCategoryId(res.data.id);
-            setImageSrc(res.data.image ? IMG_URL_CATEGORY + res.data.image : '/defaultImage.jpg');
-            setOpenModal(true);
+  const handleAddButton = async () => {
+    try {
+      if (categoryName === '') {
+        return setError({ ...error, requiredName: true });
+      }
+      if (file) {
+        if (file.size > MAX_SIZE) {
+          return setError({ ...error, size: true, requiredName: false });
         }
-    };
-
-    const handleOnChangeFile = (event) => {
-        const value = event.target.files[0];
-        if (!value.type.match(REGEX_FILE_TYPE)) {
-            return setError({ ...error, ext: true, size: false });
+        if (!file.type.match(REGEX_FILE_TYPE)) {
+          return setError({ ...error, ext: true, requiredName: false });
         }
-        if (value.size > MAX_SIZE) {
-            return setError({ ...error, size: true, ext: false });
-        }
-        if (onEdit) {
-            setFile(value);
-            setImageSrc(URL.createObjectURL(value));
-            setError({ ...error, size: false, ext: false });
-            return;
-        }
-        setError({ ...error, size: false, ext: false, requiredFile: false });
-        setFile(value)
-    };
+        const formData = new FormData();
+        formData.append('name', categoryName);
+        formData.append('categoryUpload', file);
+        await API_CALL.post('category', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+      } else {
+        return setError({ ...error, requiredFile: true });
+      }
+      setOpenModal(false);
+      setCategoryName('');
+      setFile(null);
+      setError({ size: false, requiredName: false, requiredFile: false, ext: false, duplicate: false });
+      getCategory();
+    } catch (error) {
+      if (error.response.status === 409) {
+        return setError({ ...error, duplicate: true, requiredName: false });
+      }
+    }
+  };
 
-    return <>
-        <ContainerAdmin>
-            <AdminSidebar />
-            <LoadingSpinner size={16} isLoading={isLoading} />
-            <LayoutPageAdmin title='Manage Categories'>
-                <div className='grid grid-cols-2 lg:grid-cols-6 justify-between gap-y-5'>
-                    {currentUserRole === 'super' && <BoxAddItem title='Add Category' onClick={() => setOpenModal(true)} />}
-                    <ModalCategory
-                        show={openModal}
-                        onClose={onCloseModal}
-                        onEdit={onEdit}
-                        onEditImage={() => hiddenFileInput.current.click()}
-                        refImage={hiddenFileInput}
-                        src={imageSrc}
-                        errorRequiredName={error.requiredName}
-                        errorRequiredFile={error.requiredFile}
-                        errorSize={error.size}
-                        errorExt={error.ext}
-                        errorDuplicate={error.duplicate}
-                        categoryName={categoryName}
-                        onChangeCategory={(event) => { setCategoryName(event.target.value); setError({ ...error, requiredName: false }) }}
-                        onChangeFile={handleOnChangeFile}
-                        onAdd={handleAddButton}
-                        onSave={handleSaveButton}
-                    />
-                    {category && category.map((item, index) => {
-                        return (
-                            <CardManage
-                                key={index}
-                                src={item.image ? IMG_URL_CATEGORY + item.image : '/defaultImage.jpg'}
-                                name={item.name}
-                                onEdit={() => handleEditButton(item.id)}
-                                onDelete={() => handleDeleteButton(item.id)}
-                            />
-                        )
-                    })}
-                </div>
-            </LayoutPageAdmin>
-        </ContainerAdmin>
+  const handleDeleteButton = async (id) => {
+    await API_CALL.delete(`category/${id}`);
+    getCategory();
+  };
 
+  const handleEditButton = async (id) => {
+    const res = await API_CALL.get(`category/${id}`);
+    if (res) {
+      setOnEdit(true);
+      setCategoryName(res.data.name);
+      setPrevCategoryName(res.data.name);
+      setCategoryId(res.data.id);
+      setImageSrc(res.data.image ? IMG_URL_CATEGORY + res.data.image : '/defaultImage.jpg');
+      setOpenModal(true);
+    }
+  };
 
-    </>
+  const handleOnChangeFile = (event) => {
+    const value = event.target.files[0];
+    if (!value.type.match(REGEX_FILE_TYPE)) {
+      return setError({ ...error, ext: true, size: false });
+    }
+    if (value.size > MAX_SIZE) {
+      return setError({ ...error, size: true, ext: false });
+    }
+    if (onEdit) {
+      setFile(value);
+      setImageSrc(URL.createObjectURL(value));
+      setError({ ...error, size: false, ext: false });
+      return;
+    }
+    setError({ ...error, size: false, ext: false, requiredFile: false });
+    setFile(value)
+  };
+
+  return <>
+    <LayoutDashboard>
+      <LoadingSpinner size={16} isLoading={isLoading} />
+      <LayoutPageAdmin title='Manage Categories'>
+        <div className='grid grid-cols-2 lg:grid-cols-6 justify-between gap-y-5'>
+          {currentUserRole === 'super' && <BoxAddItem title='Add Category' onClick={() => setOpenModal(true)} />}
+          <ModalCategory
+            show={openModal}
+            onClose={onCloseModal}
+            onEdit={onEdit}
+            onEditImage={() => hiddenFileInput.current.click()}
+            refImage={hiddenFileInput}
+            src={imageSrc}
+            errorRequiredName={error.requiredName}
+            errorRequiredFile={error.requiredFile}
+            errorSize={error.size}
+            errorExt={error.ext}
+            errorDuplicate={error.duplicate}
+            categoryName={categoryName}
+            onChangeCategory={(event) => { setCategoryName(event.target.value); setError({ ...error, requiredName: false }) }}
+            onChangeFile={handleOnChangeFile}
+            onAdd={handleAddButton}
+            onSave={handleSaveButton}
+          />
+          {category && category.map((item, index) => {
+            return <CardManage
+                key={index}
+                src={item.image ? IMG_URL_CATEGORY + item.image : '/defaultImage.jpg'}
+                name={item.name}
+                onEdit={() => handleEditButton(item.id)}
+                onDelete={() => handleDeleteButton(item.id)}
+              />
+          })}
+        </div>
+      </LayoutPageAdmin>
+    </LayoutDashboard>
+  </>
 };
 
 export default ManageCategories;

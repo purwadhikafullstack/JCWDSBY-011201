@@ -1,68 +1,31 @@
-import { Avatar, Sidebar } from 'flowbite-react';
-import { HiHome, HiDocumentReport } from 'react-icons/hi';
-import { MdInventory, MdStore } from 'react-icons/md';
-// import { GiHamburgerMenu } from 'react-icons/gi';
-import { IoMdListBox } from 'react-icons/io';
-import { BsBoxFill } from 'react-icons/bs';
-import { FaUser, FaUserCheck, FaUserCog } from 'react-icons/fa';
-import { TbDiscount2, TbReportMoney, TbReportAnalytics } from "react-icons/tb";
-import { useNavigate } from 'react-router-dom';
+import { Avatar, Dropdown, Sidebar } from 'flowbite-react';
+import { FaUserCheck, FaUserCog } from 'react-icons/fa';
+import { TbReportMoney, TbReportAnalytics } from "react-icons/tb";
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { customSidebar } from '../helpers/flowbiteCustomTheme';
+import { IoSettingsOutline, IoPower } from "react-icons/io5";
+import logo from '../assets/cosmo-logo.svg';
+import { menu } from '../constants/sidebarMenu'
+import CosmoTextLogo from './CosmoTextLogo';
 
 const AdminSidebar = () => {
   const navigate = useNavigate();
   const globalUser = useSelector((reducer) => reducer.userReducer);
-
-  const menu = [
-    {
-      title: 'Dashboard',
-      icon: HiHome,
-      page: '/manage/dashboard',
-    },
-    {
-      title: 'Category',
-      icon: IoMdListBox,
-      page: '/manage/category',
-    },
-    {
-      title: 'Product',
-      icon: BsBoxFill,
-      page: '/manage/product',
-    },
-    {
-      title: 'Inventory',
-      icon: MdInventory,
-      page: '/manage/inventory',
-    },
-    {
-      title: 'User',
-      icon: FaUser,
-    },
-    {
-      title: 'Store',
-      icon: MdStore,
-      page: '/manage/store',
-    },
-    {
-      title: 'Discount',
-      icon: TbDiscount2,
-      page: '/manage/discount',
-    },
-    {
-      title: 'Report',
-      icon: HiDocumentReport,
-    },
-  ];
+  const path = useLocation().pathname.split('/manage/')[1];
 
   return (
     <>
-      <div className="h-screen sticky top-0 z-40">
-        <Sidebar collapsed={true}>
-          <Sidebar.Items className="grid content-between h-full">
-            <Sidebar.ItemGroup>
-              {/* <button className="group flex w-full items-center rounded-lg p-2 text-base font-normal text-gray-900 transition duration-75 dark:text-white dark:hover:bg-gray-700">
-                <GiHamburgerMenu className="h-6 w-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" />
-              </button> */}
+      <div className="h-screen hidden lg:block lg:sticky top-0 z-40">
+        <Sidebar theme={customSidebar}>
+          <Sidebar.Items className="flex flex-col h-full">
+            <div className='grid justify-center'>
+              <div className='flex gap-2 items-center'>
+                <img src={logo} className='w-11 h-11' />
+                <CosmoTextLogo size={'text-5xl'}/>
+              </div>
+            </div>
+            <Sidebar.ItemGroup className='flex-1'>
               {menu.map((item, index) => {
                 if (globalUser.role === 'super' && item.title === 'User') {
                   return (
@@ -74,22 +37,24 @@ const AdminSidebar = () => {
                       <Sidebar.Item
                         icon={FaUserCog}
                         onClick={() => navigate('/manage/admin')}
+                        className={`cursor-pointer ${path.toLowerCase() === 'admin' ? 'bg-indigo-500 text-white font-semibold shadow-lg' : ''}`}
                       >
                         Admin Store
                       </Sidebar.Item>
                       <Sidebar.Item
                         icon={FaUserCheck}
                         onClick={() => navigate('/manage/user')}
+                        className={`cursor-pointer ${path.toLowerCase() === 'user' ? 'bg-indigo-500 text-white font-semibold shadow-lg' : ''}`}
                       >
                         Registered
                       </Sidebar.Item>
                     </Sidebar.Collapse>
                   );
                 }
-                if (globalUser.role === 'admin' && item.title === 'User'){
+                if (globalUser.role === 'admin' && item.title === 'User') {
                   return
                 }
-                if(item.title === 'Report'){
+                if (item.title === 'Report') {
                   return (
                     <Sidebar.Collapse
                       icon={item.icon}
@@ -99,12 +64,14 @@ const AdminSidebar = () => {
                       <Sidebar.Item
                         icon={TbReportAnalytics}
                         onClick={() => navigate('/manage/report/stock')}
+                        className={`cursor-pointer ${path.toLowerCase() === 'report/stock' ? 'bg-indigo-500 text-white font-semibold shadow-lg' : ''}`}
                       >
                         Stock
                       </Sidebar.Item>
                       <Sidebar.Item
                         icon={TbReportMoney}
                         onClick={() => navigate('/manage/report/sales')}
+                        className={`cursor-pointer ${path.toLowerCase() === 'report/sales' ? 'bg-indigo-500 text-white font-semibold shadow-lg' : ''}`}
                       >
                         Sales
                       </Sidebar.Item>
@@ -112,19 +79,38 @@ const AdminSidebar = () => {
                   );
                 }
 
-                return (
-                  <Sidebar.Item
+                return <Sidebar.Item
                     onClick={() => navigate(item.page)}
-                    icon={item.icon}
+                    icon={() => <item.icon />}
                     key={index}
+                    className={`cursor-pointer ${path.toLowerCase() === item.title.toLowerCase() ? 'bg-indigo-500 text-white font-semibold shadow-lg' : ''}`}
                   >
                     {item.title}
-                  </Sidebar.Item>
-                );
+                  </Sidebar.Item>;
               })}
             </Sidebar.ItemGroup>
-            <Sidebar.ItemGroup className="mb-5">
-              <Avatar rounded />
+            <Sidebar.ItemGroup className="grid mb-5">
+              <div className='flex'>
+                <Avatar rounded />
+                <div className='flex-1 grid self-center'>
+                  <span className='font-bold truncate'>{globalUser.name || ''}</span>
+                  <span className='truncate'>{globalUser.email || ''}</span>
+                </div>
+                <div className='grid self-center'>
+                <Dropdown
+                        // placement="left-start"
+                        renderTrigger={() => (
+                            <span className="hover:cursor-pointer">
+                                <IoSettingsOutline className="w-6 h-6" />
+                            </span>
+                        )}
+                    >
+                        <Dropdown.Item icon={IoPower} onClick={() => { localStorage.removeItem('authToken'); navigate('/') }}>
+                            Logout
+                        </Dropdown.Item>
+                    </Dropdown>
+                </div>
+              </div>
             </Sidebar.ItemGroup>
           </Sidebar.Items>
         </Sidebar>

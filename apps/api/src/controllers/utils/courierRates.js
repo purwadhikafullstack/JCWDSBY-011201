@@ -2,6 +2,7 @@ import axios from 'axios';
 import { BITESHIP_API_KEY, BITESHIP_API_URL } from '../../config';
 import resTemplate from '../../helper/resTemplate';
 
+
 export default async function (req, res, next) {
   try {
     const items = req.body.items;
@@ -21,6 +22,7 @@ export default async function (req, res, next) {
         },
       },
     );
+    console.log("🚀 ~ result:", result)
     const finalResult = result.data.pricing.map((value, idx) => {
       return {
         courier_id: value.courier_code + '_' + value.courier_service_code,
@@ -34,6 +36,7 @@ export default async function (req, res, next) {
       .status(201)
       .json(resTemplate(201, true, 'Success get couriers list', finalResult));
   } catch (error) {
+    console.log("error",error);
     next(error);
   }
 }

@@ -5,9 +5,11 @@ import CartContainer from '../components/cart/CartContainer';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from 'flowbite-react';
 import { fetchCartItems, setCarts } from '../redux/slice/cartSlice';
+import { useNavigate } from 'react-router-dom';
 
 const Cart = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const cartItems = useSelector((state) => state.cartReducer.items);
   const storeUUID = useSelector((state) => state.storeReducer.storeId);
   useEffect(() => {
@@ -21,18 +23,25 @@ const Cart = () => {
     }
     return accumulator;
   }, 0);
+  const checkedItemsInvId = cartItems.reduce((accu, item) => {
+    if (item.checked === 1) {
+      accu.push(item.inventoryId);
+    }
+    return accu;
+  }, []);
+  console.log("🚀 ~ checkedItemsInvId ~ checkedItemsInvId:", checkedItemsInvId)
 
   return (
     <UserLayout>
-      <div className="container mx-auto max-w-sm h-[100svh] font-roboto overflow-y-auto">
+      <div className="container mx-auto max-w-sm h-screen  font-roboto overflow-y-auto">
         <div className="flex tracking-tight justify-center mb-3 ">
           <h1 className="text-xl font-bold">Cart</h1>
         </div>
-        <div className="">
+        <div className="flex flex-col">
           <CartProductLists arrays={cartItems} />
         </div>
       </div>
-      <CartContainer className="mt-3 p-3 flex-col rounded-md fixed w-full sm:w-64 top-[72vh] sm:right-36 sm:top-36">
+      <CartContainer className="mt-3 p-3 flex-col rounded-md sm:fixed w-full sm:w-64  sm:right-36 sm:top-36">
         <div className="flex flex-row justify-between">
           <p>
             Total:{' '}
@@ -40,7 +49,15 @@ const Cart = () => {
               Rp{totalPrice.toLocaleString('id-ID')}
             </span>
           </p>
-          <Button color="blue">Checkout</Button>
+          <Button
+            color="blue"
+            disabled={checkedItemsInvId?.length<1?true:false}
+            onClick={() => {
+              navigate('/checkout');
+            }}
+          >
+            Checkout
+          </Button>
         </div>
       </CartContainer>
     </UserLayout>

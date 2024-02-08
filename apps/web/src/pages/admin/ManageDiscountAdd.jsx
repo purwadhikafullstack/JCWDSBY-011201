@@ -5,6 +5,7 @@ import { useState } from "react";
 import Stepper from "../../components/Stepper";
 import API_CALL from "../../helpers/API";
 import ModalConfirm from "../../components/modal/ModalConfirm";
+import LayoutDashboard from "../../components/LayoutDashboard";
 
 const ManageDiscountAdd = () => {
     const navigate = useNavigate();
@@ -31,7 +32,7 @@ const ManageDiscountAdd = () => {
             navigate('/manage/discount');
         } catch (error) {
             console.error(error);
-            if(error.response.status === 409) {
+            if (error.response.status === 409) {
                 setIsLoading(false);
                 setIsOpen(false);
                 return setIsError(true);
@@ -39,24 +40,26 @@ const ManageDiscountAdd = () => {
         }
     };
 
-    return <div className='flex flex-col bg-blue-100 min-w-[360px] h-max min-h-screen'>
-        <TopBar title='Create Discount' prevPage={() => navigate('/manage/discount')} />
-        <LoadingSpinner size={16} isLoading={isLoading} />
-        <div className="mt-5 mx-5">
-            <Stepper
-                onLoading={setIsLoading}
-                onCreate={(val) => handleCreateDiscount(val)}
-                errorDuplicateVoucher={isError}
+    return <LayoutDashboard>
+        <div className="w-full">
+            <TopBar title='Create Discount' prevPage={() => navigate('/manage/discount')} />
+            <LoadingSpinner size={16} isLoading={isLoading} />
+            <div className="mt-5 mx-5">
+                <Stepper
+                    onLoading={setIsLoading}
+                    onCreate={(val) => handleCreateDiscount(val)}
+                    errorDuplicateVoucher={isError}
+                />
+            </div>
+            <ModalConfirm
+                show={isOpen}
+                header={'Create Discount'}
+                message={'Are you sure you want to create a new Discount?'}
+                onClose={() => setIsOpen(false)}
+                onConfirm={handleConfirmButton}
             />
         </div>
-        <ModalConfirm
-        show={isOpen}
-        header={'Create Discount'}
-        message={'Are you sure you want to create a new Discount?'}
-        onClose={() => setIsOpen(false)}
-        onConfirm={handleConfirmButton}
-        />
-    </div>
+    </LayoutDashboard>
 };
 
 export default ManageDiscountAdd;

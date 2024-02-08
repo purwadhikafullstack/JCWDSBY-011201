@@ -11,6 +11,7 @@ export default class inventory extends Model {
     inventory.belongsTo(models.stores);
     inventory.hasMany(models.discount);
     inventory.belongsTo(models.product);
+    inventory.hasMany(models.transactionDetails)
     inventory.hasMany(models.stock_report)
   }
 };

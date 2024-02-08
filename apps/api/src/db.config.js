@@ -15,6 +15,7 @@ const config = {
     host: DB_HOST,
     port: DB_PORT,
     dialect: 'mysql',
+    timezone: "+07:00",
   },
   test: {
     username: DB_USER,

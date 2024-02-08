@@ -9,7 +9,7 @@ import BoxAddImage from "../../components/BoxAddImage";
 import { MAX_SIZE, REGEX_FILE_TYPE } from "../../constants/file";
 import { IMG_URL_PRODUCT } from "../../constants/imageURL";
 import { toast } from "react-toastify";
-import { customTextInputTheme } from "../../constants/flowbiteCustomTheme";
+import { customTextInputTheme } from "../../helpers/flowbiteCustomTheme";
 
 const EditProduct = () => {
     const navigate = useNavigate();

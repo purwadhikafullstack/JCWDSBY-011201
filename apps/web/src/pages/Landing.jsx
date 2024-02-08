@@ -19,8 +19,6 @@ const Landing = () => {
   const navigate = useNavigate();
   const [productData, setProductData] = useState([]);
 
-  console.log(productData);
-
   useEffect(() => {
     getCategoryData();
     if (currStore.storeId) getProductData();
@@ -47,6 +45,7 @@ const Landing = () => {
     const res = await API_CALL.get('inventory', {
       params: {
         store: currStore.storeId,
+        limit: 10,
       },
     });
     if (res) {
