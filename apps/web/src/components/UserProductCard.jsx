@@ -74,9 +74,6 @@ const UserProductCard = ({
               {productName}
             </span>
           </div>
-          <div className='flex'>
-            {!discountPrice && isPromo && <Badge color={'success'}>Buy 1 Get 1</Badge>}
-          </div>
           {discountPrice ? (
             <div className="flex flex-col">
               <div className='flex gap-2'>

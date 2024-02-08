@@ -1,6 +1,3 @@
-import { Op } from "sequelize";
-import category from "../models/categories.model";
-import { unlink, existsSync } from "fs";
 import { createCategoryService, deleteCategoryService, getCategoryDetailService, getCategoryService, updateCategoryService } from "../services/category/category.service";
 import resTemplate from "../helper/resTemplate";
 

@@ -14,6 +14,7 @@ import { getCategory } from '../../helpers/queryData';
 import ResponsivePagination from '../../components/ResponsivePagination';
 import { useSearchParams } from 'react-router-dom';
 import { handleAddButton, handleDeleteButton, handleEditButton, onCloseModal } from '../../helpers/dashboard/manageCategory';
+import { onPageChange } from '../../helpers/pagination';
 
 const ManageCategories = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -30,21 +31,11 @@ const ManageCategories = () => {
   const currentUserRole = useSelector((reducer) => reducer.userReducer.role);
   const [searchParams, setSearchParams] = useSearchParams();
   const [totalPage, setTotalPage] = useState(1);
-  const queryParam = { 
-    limit: 4, 
-    page: searchParams.get('page') 
-  }
+  const queryParam = { limit: 4, page: searchParams.get('page') }
 
   useEffect(() => {
     getCategory(setCategory, setIsLoading, setTotalPage, queryParam);
   }, [searchParams.get('page'), setCategory]);
-
-  const onPageChange = (page) => {
-    setSearchParams((prev) => {
-      prev.set('page', page);
-      return prev;
-    });
-  };
 
   const handleSaveButton = async () => {
     try {
@@ -135,11 +126,7 @@ const ManageCategories = () => {
             onEditImage={() => hiddenFileInput.current.click()}
             refImage={hiddenFileInput}
             src={imageSrc}
-            errorRequiredName={error.requiredName}
-            errorRequiredFile={error.requiredFile}
-            errorSize={error.size}
-            errorExt={error.ext}
-            errorDuplicate={error.duplicate}
+            error={error}
             categoryName={categoryName}
             onChangeCategory={(event) => { setCategoryName(event.target.value); setError({ ...error, requiredName: false }) }}
             onChangeFile={handleOnChangeFile}
@@ -151,12 +138,13 @@ const ManageCategories = () => {
               data={category}
               onEdit={(id) => handleEditButton(id, setOnEdit, setCategoryName, setPrevCategoryName, setCategoryId, setImageSrc, setOpenModal)}
               onDelete={(id) => handleDeleteButton(id, getCategory, setCategory, setIsLoading, setTotalPage, queryParam)}
+              page={(searchParams.get('page') || 1)}
             />
           </div>
           <ResponsivePagination
             currentPage={Number(searchParams.get('page')) || 1}
             totalPages={totalPage}
-            onPageChange={onPageChange}
+            onPageChange={(page) => onPageChange(page, setSearchParams)}
           />
         </div>
       </LayoutPageAdmin>

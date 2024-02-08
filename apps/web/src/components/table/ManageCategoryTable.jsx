@@ -3,7 +3,7 @@ import { HiOutlineTrash, HiPencilSquare, HiMiniEllipsisHorizontal} from 'react-i
 import { customTable } from "../../helpers/flowbiteCustomTheme";
 import { IMG_URL_CATEGORY } from '../../constants/imageURL';
 
-const ManageCategoryTable = ({ data, onEdit, onDelete }) => {
+const ManageCategoryTable = ({ data, onEdit, onDelete, page }) => {
   return <div className="grid overflow-x-auto">
     {data ? !data.length ? <span>Data not available</span> :
       <Table theme={customTable}>
@@ -17,7 +17,7 @@ const ManageCategoryTable = ({ data, onEdit, onDelete }) => {
         <TableBody className="divide-y">
           {data.map((val, index) => {
             return <TableRow key={index}>
-              <TableCell className="text-center">{index + 1}</TableCell>
+              <TableCell className="text-center">{`${(page - 1) * 4 + index + 1}`}</TableCell>
               <TableCell className="text-center">{val.name}</TableCell>
               <TableCell >
                 <img src={IMG_URL_CATEGORY + val.image} className="object-cover w-36 m-auto" />
