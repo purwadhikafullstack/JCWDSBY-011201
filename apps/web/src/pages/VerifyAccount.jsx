@@ -7,6 +7,7 @@ import customToast from '../utils/toast';
 import ButtonWithLoading from '../components/ButtonWithLoading';
 import { useSelector } from 'react-redux';
 import InputPassword from '../components/InputPassword';
+import Container from '../components/Container';
 
 const VerifyAccount = () => {
   const [searchParams] = useSearchParams();
@@ -41,7 +42,11 @@ const VerifyAccount = () => {
           navigate('/login', { replace: true });
         }
       } else {
-        customToast('error', 'Invalid verify token');
+        if (error.response.status !== 500) {
+          customToast('error', error.response.data.message);
+        } else {
+          customToast('error', 'Failed to verify account');
+        }
       }
     } catch (error) {
       console.log(error.message);
@@ -75,7 +80,7 @@ const VerifyAccount = () => {
   });
 
   return (
-    <div className="container lg:w-[1024px] m-auto h-screen">
+    <Container>
       <div className="flex w-full h-full">
         <div className="header flex flex-col w-full h-full">
           <div className="flex w-full h-full justify-center items-center">
@@ -147,7 +152,7 @@ const VerifyAccount = () => {
           </div>
         </div>
       </div>
-    </div>
+    </Container>
   );
 };
 

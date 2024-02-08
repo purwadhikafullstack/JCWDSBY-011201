@@ -6,9 +6,8 @@ import { useSelector } from 'react-redux';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import NearestSTore from '../NearestStore';
 import ProfileMenu from './ProfileMenu';
-import { useEffect, useState } from 'react';
-import API_CALL from '../../helpers/API';
 import CosmoTextLogo from '../CosmoTextLogo';
+import cosmoLogo from '../../assets/cosmo-logo.svg';
 
 const UserTopbarDesktop = (props) => {
   const currStore = useSelector((reducer) => reducer.storeReducer);
@@ -29,7 +28,7 @@ const UserTopbarDesktop = (props) => {
             navigate('/');
           }}
         >
-          <CosmoTextLogo size={'text-4xl'}/>
+          <img src={cosmoLogo} className="w-10 h-10" alt="" />
         </div>
 
         <NearestSTore storeData={currStore} />

@@ -104,25 +104,32 @@ const UserProfileDetail = (props) => {
           </div>
         </div>
         <div className="flex flex-col items-center py-8 lg:px-32 px-4 gap-4">
-          <div className="w-36 h-36 rounded-full border overflow-hidden relative">
-            <img
-              className="w-full h-full object-cover"
-              src={
-                avatarUpload
-                  ? URL.createObjectURL(avatarUpload)
-                  : globalUser.image
-                    ? `${import.meta.env.VITE_IMG_URL}/avatar/${
-                        globalUser.image
-                      }`
-                    : '/defaultImageSquare.jpg'
-              }
-            />
+          <div className="flex flex-col gap-2 items-center">
+            <div className="w-36 h-36 rounded-full border overflow-hidden relative">
+              <img
+                className="w-full h-full object-cover"
+                src={
+                  avatarUpload
+                    ? URL.createObjectURL(avatarUpload)
+                    : globalUser.image
+                      ? `${import.meta.env.VITE_IMG_URL}/avatar/${
+                          globalUser.image
+                        }`
+                      : '/defaultImageSquare.jpg'
+                }
+              />
+            </div>
             <label
-              className="absolute w-8 h-8 p-1 text-center text-white bg-blue-400 text-xs font-semibold top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg backdrop-blur-sm"
+              className=" p-2 w-full text-center text-white bg-blue-700 text-xs font-semibold rounded-lg backdrop-blur-sm cursor-pointer"
               htmlFor="avatarUpload"
             >
-              <HiOutlinePencilSquare size={'100%'} />
+              Pilih Gambar
             </label>
+            <div className="flex flex-col text-xs font-light">
+              <span>Image Size: Max 1MB</span>
+              <span>Format: .jpg, .png, .jpeg, .gif</span>
+            </div>
+
             <input
               className="hidden"
               type="file"
@@ -132,6 +139,7 @@ const UserProfileDetail = (props) => {
               accept=".jpg,.png,.jpeg,.gif"
             />
           </div>
+
           <div className="w-full">
             <div className="mb-2 block">
               <Label htmlFor="name" value="Full Name" />

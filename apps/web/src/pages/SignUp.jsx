@@ -7,6 +7,7 @@ import SignUpWithGoogle from '../components/SignUpWithGoogle';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import { useSelector } from 'react-redux';
+import Container from '../components/Container';
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -31,7 +32,11 @@ const SignUp = () => {
       }
     } catch (error) {
       console.log(error);
-      customToast('error', error.response.data.message);
+      if (error.response.status !== 500) {
+        customToast('error', error.response.data.message);
+      } else {
+        customToast('error', 'Failed to Signup');
+      }
     }
     setIsLoading(false);
   };
@@ -58,7 +63,7 @@ const SignUp = () => {
   });
 
   return (
-    <div className="container lg:w-[1024px] m-auto h-screen">
+    <Container>
       <div className="flex w-full h-full">
         <div className="header flex flex-col w-full h-full">
           <div className="flex w-full h-full justify-center items-center">
@@ -145,7 +150,7 @@ const SignUp = () => {
           </div>
         </div>
       </div>
-    </div>
+    </Container>
   );
 };
 

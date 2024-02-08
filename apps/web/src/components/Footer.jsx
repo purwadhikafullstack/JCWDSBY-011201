@@ -8,15 +8,19 @@ import {
   FaYoutube,
 } from 'react-icons/fa';
 import { HiArrowRight } from 'react-icons/hi2';
+import CosmoTextLogo from './CosmoTextLogo';
 
 const Footer = (props) => {
   return (
     <footer className="flex flex-col w-full px-4 lg:px-32 py-6 gap-3">
       <div className="grid bg-blue-50 grid-cols-1 md:grid-cols-2 lg:grid-cols-4 w-full gap-4 p-4 lg:p-12 rounded-xl">
         <div className="flex flex-1 flex-col gap-3">
-          <span className="text-blue-800 font-extrabold text-4xl drop-shadow-md">
+          <div>
+            <CosmoTextLogo size={'text-4xl'} />
+          </div>
+          {/* <span className="text-blue-800 font-extrabold text-4xl drop-shadow-md">
             Cosmo
-          </span>
+          </span> */}
           <span className="text-gray-600">
             Jl. Gubeng Kertajaya XI-A No-7, Gubeng, Surabaya
           </span>
