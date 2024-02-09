@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import API_CALL from '../helpers/API';
 import UserAddressListCard from '../components/UserAddressListCard';
 import customToast from '../utils/toast';
+import ButtonWithLoading from '../components/ButtonWithLoading';
 
 const UserAddressList = (props) => {
   const location = useLocation();
@@ -135,7 +136,16 @@ const UserAddressList = (props) => {
                 }}
               />
             ))}
-          <Button
+          <ButtonWithLoading
+            func={() => {
+              navigate('/profile/address/create', {
+                state: { previousPath: location.pathname },
+              });
+            }}
+          >
+            Add new address
+          </ButtonWithLoading>
+          {/* <Button
             fullSized={true}
             color="blue"
             onClick={() => {
@@ -145,7 +155,7 @@ const UserAddressList = (props) => {
             }}
           >
             Add new address
-          </Button>
+          </Button> */}
           <Modal
             show={openModal}
             size="md"
