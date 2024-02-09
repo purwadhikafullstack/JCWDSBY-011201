@@ -78,17 +78,17 @@ cartRouter.patch('/checkall', validateToken, async (req, res, next) => {
     next(error);
   }
 });
-//Delete
-cartRouter.delete('/:id', validateToken, async (req, res, next) => {
+//Delete 
+cartRouter.delete("/:id",validateToken,async (req,res,next) => {
   await DB.initialize();
-  const t = await DB.db.sequelize.transaction();
+  const t = await DB.db.sequelize.transaction()
   try {
-    await deleteOneProductInCart(req, t);
+    await deleteOneProductInCart(req,t)
   } catch (error) {
-    console.log(error);
+    console.log(error)
     next(error);
   }
-});
+})
 
 cartRouter.patch('/:id', validateToken, async (req, res, next) => {
   await DB.initialize();

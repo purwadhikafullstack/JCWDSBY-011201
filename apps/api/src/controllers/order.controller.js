@@ -1,12 +1,13 @@
+
 import resTemplate from '../helper/resTemplate';
 import {
   findStoreIdByAdminId,
   getOrdersAdmin,
   getOrdersUser,
   getPagination,
-} from '../services/order.service';
+} from '../services/transactionAndOrder/order.service';
 import { getStoreByUUIDService } from '../services/store/store.service';
-import { addDays, addHours, subDays, subHours } from 'date-fns';
+import { addDays, subHours } from 'date-fns';
 
 export const getAllTransactions = async (req, res, next) => {
   try {
@@ -18,9 +19,7 @@ export const getAllTransactions = async (req, res, next) => {
       req.query.store === 'asc' ? ['createdAt', 'ASC'] : ['createdAt', 'DESC'];
     const { page, size } = req.query;
     const from = new Date(subHours(req.query.from ?? '2000-01-02', 7));
-    console.log("🚀 ~ getAllTransactions ~ from:", from)
-    const to = new Date(subHours(req.query.to ?? addHours(new Date(), 7), 7));
-    console.log('🚀 ~ getAllTransactions ~ to:', to);
+    const to = new Date(subHours(req.query.to ?? addDays(new Date(), 1), 7));
     const { limit, offset } = getPagination(page, size);
     if (req.tokenData.role === 'admin' || req.tokenData.role === 'super') {
       const storeData = await findStoreIdByAdminId(req, req.tokenData.id);
@@ -36,6 +35,7 @@ export const getAllTransactions = async (req, res, next) => {
           payment,
           from,
           to,
+          sort,
         );
         const processedList = SuperOrderList.rows.map((val, idx) => {
           return {
@@ -49,9 +49,6 @@ export const getAllTransactions = async (req, res, next) => {
           count: SuperOrderList.count,
         });
       }
-      //   if (!storeData?.id && req.tokenData.role === 'admin') {
-      //     throw resTemplate(403, false, 'store data not found');
-      //   }
       const orderList = await getOrdersAdmin(
         req,
         storeData?.id ?? 2,
@@ -62,6 +59,7 @@ export const getAllTransactions = async (req, res, next) => {
         payment,
         from,
         to,
+        sort,
       );
 
       const processedList = orderList.rows.map((val, idx) => {
@@ -82,6 +80,7 @@ export const getAllTransactions = async (req, res, next) => {
         payment,
         from,
         to,
+        sort,
       );
       const processedList = userOrderList.rows.map((val, idx) => {
         return {
@@ -99,3 +98,5 @@ export const getAllTransactions = async (req, res, next) => {
     console.log(error);
   }
 };
+
+

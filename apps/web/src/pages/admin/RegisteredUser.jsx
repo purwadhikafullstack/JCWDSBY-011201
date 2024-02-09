@@ -18,13 +18,19 @@ const RegisteredUser = () => {
 
   useEffect(() => {
     getUsers();
-  }, []);
+  }, [searchParams.get('page')]);
 
   const getUsers = async () => {
     setIsLoading(true);
-    const res = await API_CALL.get('/user')
+    const res = await API_CALL.get('/user', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('authToken')}`
+      },
+      params: queryParam
+    })
     if (res) {
-      setUsers(res.data);
+      setUsers(res.data.result.rows);
+      setTotalPage(res.data.result.totalPage)
       setIsLoading(false);
     }
   };
@@ -33,7 +39,7 @@ const RegisteredUser = () => {
     return users.map((user, index) => {
       return (
         <TableRow key={index}>
-          <TableCell>{index + 1}</TableCell>
+          <TableCell className="text-center">{`${(searchParams.get('page') - 1) * 13 + index + 1}`}</TableCell>
           <TableCell>{user.name}</TableCell>
           <TableCell>{user.email}</TableCell>
           {user.isVerified ?
@@ -62,7 +68,7 @@ const RegisteredUser = () => {
             </TableBody>
           </Table>
         </div>
-        <div>
+        <div className='mt-5'>
         <ResponsivePagination
 					currentPage={Number(searchParams.get('page')) || 1}
 					totalPages={totalPage}

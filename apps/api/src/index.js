@@ -69,6 +69,7 @@ const main = () => {
   app.use('/category', express.static(__dirname + '/assets/category'));
   app.use('/product', express.static(__dirname + '/assets/product'));
   app.use('/avatar', express.static(__dirname + '/assets/avatar'));
+  app.use('/proof', express.static(__dirname + '/assets/proof'));
 
   globalAPIErrorHandler(app);
   serveWebProjectBuildResult(app);

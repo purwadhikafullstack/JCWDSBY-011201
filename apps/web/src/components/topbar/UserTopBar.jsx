@@ -1,14 +1,9 @@
 import { Avatar } from 'flowbite-react';
 import { HiChevronLeft } from 'react-icons/hi2';
-import {
-  HiOutlineBuildingStorefront,
-  HiOutlineMagnifyingGlass,
-  HiOutlineReceiptPercent,
-  HiOutlineShoppingCart,
-  HiOutlineSquaresPlus,
-} from 'react-icons/hi2';
+import { HiOutlineMagnifyingGlass } from 'react-icons/hi2';
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import cosmoLogo from '../../assets/cosmo-logo.svg';
 
 const UserTopbar = () => {
   const location = useLocation();
@@ -42,7 +37,7 @@ const UserTopbar = () => {
           navigate('/');
         }}
       >
-        <span className="text-blue-800 font-extrabold text-2xl">Cosmo</span>
+        <img className="w-10 h-10" src={cosmoLogo} alt="" srcset="" />
       </div>
 
       <div

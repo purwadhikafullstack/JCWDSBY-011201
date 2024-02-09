@@ -1,5 +1,6 @@
 import { changePasswordAdminService, deleteAdminService, getAdminDetailService, getAdminService, registerAdminService, updateAdminService } from "../services/user/admin.service";
 import resTemplate from "../helper/resTemplate";
+import { findAllUserService } from "../services/user/user.service";
 
 export const getAdmin = async (req,res,next) => {
   try {
@@ -54,3 +55,14 @@ export const deleteAdmin = async (req,res,next) => {
     next(error);
   }
 };
+
+export default async function getUser(req, res, next) {
+  try {
+    const result = await findAllUserService(req.query);
+    if (result) {
+      res.status(200).json(resTemplate(200, true, 'Get user account success!', result));
+    }
+  } catch (error) {
+    next(error);
+  }
+}

@@ -1,15 +1,16 @@
 import { APP_URL, SCRT_KEY } from '../config';
-import {
-  createToken,
-  findToken,
-  updateToken,
-} from '../controllers/token.controller';
 import jwt from 'jsonwebtoken';
 import {
   sendResetPasswordEmail,
   sendSignUpEmailVerification,
 } from '../helper/sendTemplateEmail';
 import { DB } from '../db';
+import {
+  createTokenService,
+  deactivateTokenService,
+  findValidTokenService,
+} from '../services/token/token.service';
+import resTemplate from '../helper/resTemplate';
 
 export const specialTokenValidation = async (req, res, next) => {
   await DB.initialize();
@@ -17,7 +18,7 @@ export const specialTokenValidation = async (req, res, next) => {
   try {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) throw { rc: 401, message: 'Missing token' };
-    const isExist = await findToken({ where: { token: token, isValid: true } });
+    const isExist = await findValidTokenService(token);
     if (!isExist) throw { rc: 401, message: 'Token not valid' };
     if (
       new Date(isExist.dataValues.validUntil).getTime() <= new Date().getTime()
@@ -46,27 +47,27 @@ export const specialTokenValidation = async (req, res, next) => {
           APP_URL + '/forgot/reset-password?key=' + newToken,
         );
       }
-      await updateToken(
-        { isValid: false },
-        { where: { token: token }, transaction: t },
-      );
-      await createToken(newToken, id, isExist.dataValues.method, t);
+      await deactivateTokenService(id, method, t);
+      await createTokenService(newToken, id, isExist.dataValues.method, t);
       await t.commit();
-      return res.status(401).json({
-        success: false,
-        message: 'Token expired, new token has been sent to your email',
-        result: null,
-      });
+      return res
+        .status(401)
+        .json(
+          resTemplate(
+            401,
+            false,
+            'Token expired, new token has been sent to your email',
+            null,
+          ),
+        );
     }
     const tokenData = jwt.verify(token, SCRT_KEY);
     req.tokenData = tokenData;
     return next();
   } catch (error) {
     await t.rollback();
-    return res.status(error.rc || 500).json({
-      success: false,
-      message: error.message,
-      result: null,
-    });
+    return res
+      .status(error.rc || 500)
+      .json(resTemplate(error.rc || 500, false, error.message, null));
   }
 };

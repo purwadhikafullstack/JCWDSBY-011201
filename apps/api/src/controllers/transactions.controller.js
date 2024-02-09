@@ -7,11 +7,11 @@ import {
   getOneTransaction,
   getTransactionDetails,
   handleMidtrans,
-  reduceStock,
+  raiseBookedStock,
   transactionDetailsBulkCreate,
   updateProofImg,
   updateTransactionStatus,
-} from '../services/transactions.service';
+} from '../services/transactionAndOrder/transactions.service';
 import resTemplate from '../helper/resTemplate';
 import fs from 'fs';
 
@@ -27,7 +27,6 @@ export const createTransactionController = async (req, res, next) => {
       ).toJSON();
       console.log('🚀 ~ result ~ createData:', createData);
       await transactionDetailsBulkCreate(req, t, createData.id);
-      //   await reduceStock(req, t);
       req.transactionData = createData;
     });
     next();
@@ -61,7 +60,6 @@ export const getTransactionDetailsController = async (req, res, next) => {
     const transData = await getOneTransaction(req);
     if (transData) {
       const detailsData = await getTransactionDetails(req, transData.id);
-      console.log('🚀 ~ transactionRouter.get ~ detailsData:', detailsData);
       const processedRes = detailsData.map((val, idx) => {
         return {
           amount: val.amount,
@@ -73,9 +71,9 @@ export const getTransactionDetailsController = async (req, res, next) => {
         resTemplate(200, true, 'get transaction Details success', {
           status: transData.paymentStatus,
           invoice: transData.invoice,
-          paymentMethod:transData.paymentMethod,
-          total:transData.paymentTotal,
-          img:transData.paymentProofImg,
+          paymentMethod: transData.paymentMethod,
+          total: transData.paymentTotal,
+          img: transData.paymentProofImg,
           items: [
             ...processedRes,
             {
@@ -115,7 +113,7 @@ export const patchPaymentProofController = async (req, res, next) => {
     if (req.file?.filename) {
       const result = await DB.db.sequelize.transaction(async (t) => {
         const transData = await getOneTransaction(req);
-        await updateProofImg(req, t, req.file?.filename);
+        await updateProofImg(req, t, req.file?.filename, 'checking');
         if (transData?.paymentProofImg) {
           fs.unlinkSync(dir + transData?.paymentProofImg);
         }
@@ -126,6 +124,25 @@ export const patchPaymentProofController = async (req, res, next) => {
           resTemplate(200, true, 'payment proof has been uploaded', result),
         );
     }
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
+export const patchTransactionSuccess = async (req, res, next) => {
+  await DB.initialize();
+  try {
+    const transaction = await getOneTransaction(req);
+    if (!transaction) {
+      throw resTemplate(404, false, 'order not found');
+    }
+    const details = await getTransactionDetails(req, transaction.id);
+    const result = await DB.db.sequelize.transaction(async (t) => {
+      await updateTransactionStatus(req, t);
+      await raiseBookedStock(req, t, details);
+    });
+    return res.status(200).json(resTemplate(200, true, 'Checkout Success'));
   } catch (error) {
     console.log(error);
     next(error);

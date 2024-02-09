@@ -1,6 +1,8 @@
+import { Op } from 'sequelize';
 import { DB } from '../../db';
 import { hashPassword } from '../../helper/hash';
 import resTemplate from '../../helper/resTemplate';
+import stores from '../../models/stores.model';
 import users from "../../models/users.model";
 
 export const getAdminService = async (queryParam) => {
@@ -138,4 +140,29 @@ export const deleteAdminService = async (uuid) => {
     await t.rollback();
     throw error;
   }
+};
+
+export const findOneAdminByUsernameService = async (username) => {
+  const result = await users.findOne({
+    include: {
+      model: stores,
+      required: false,
+    },
+    where: {
+      [Op.and]: [
+        { email: username },
+        { [Op.or]: [{ role: 'admin' }, { role: 'super' }] },
+      ],
+    },
+  });
+  return result;
+};
+
+export const findOneAdminByUUIDService = async (UUID) => {
+  const result = await users.findOne({
+    where: {
+      UUID: UUID,
+    },
+  });
+  return result;
 };

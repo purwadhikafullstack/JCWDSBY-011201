@@ -1,21 +1,13 @@
-import user_addresses from '../models/user-addresses.model';
+import createAddress from './address/createAddress';
+import deleteAddress from './address/deleteAddress';
+import getAddressDetail from './address/getAddressDetail';
+import getAddresses from './address/getAddresses';
+import updateAddress from './address/updateAddress';
+import updateDefaultAddress from './address/updateDefaultAddress';
 
-export const findAllUserAddress = async (pointer) => {
-  return await user_addresses.findAll(pointer);
-};
-
-export const findOneUserAddress = async (pointer) => {
-  return await user_addresses.findOne(pointer);
-};
-
-export const createUserAddress = async (data, pointer) => {
-  return await user_addresses.create(data, pointer);
-};
-
-export const updateUserAddress = async (data, pointer) => {
-  return await user_addresses.update(data, pointer);
-};
-
-export const deleteUserAddress = async (pointer) => {
-  return await user_addresses.destroy(pointer);
-};
+export const getAddressesController = getAddresses;
+export const getAddressDetailController = getAddressDetail;
+export const createAddressController = createAddress;
+export const updateAddressController = updateAddress;
+export const updateDefaultAddressController = updateDefaultAddress;
+export const deleteAddressController = deleteAddress;

@@ -44,7 +44,6 @@ import VerifyEmail from './pages/VerifyEmail';
 import TesCheckOut from './pages/TesCheckOut';
 import { fetchCartItems } from './redux/slice/cartSlice';
 import Checkout from './pages/Checkout';
-import Cart from './pages/Cart';
 import UserOrders from './pages/UserOrders';
 import UserOrderDetails from './pages/UserOrderDetails';
 import AdminOrders from './pages/AdminOrders';
@@ -52,6 +51,7 @@ import StockReport from './pages/admin/StockReport';
 import ManageDiscount from './pages/admin/ManageDiscount';
 import ManageDiscountAdd from './pages/admin/ManageDiscountAdd';
 import ManageDiscountEdit from './pages/admin/ManageDiscountEdit';
+import Cart from './pages/Cart';
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 function App() {
@@ -87,6 +87,7 @@ function App() {
           if (!authResult) {
             throw 'Authentication failed';
           }
+          console.log(authResult);
           dispatch(login(authResult));
           localStorage.setItem('authToken', authResult.token);
         }
@@ -211,7 +212,7 @@ function App() {
         <Route path="/product/:name" element={<UserProductDetail />} />
 
         {/* Afra */}
-        <Route
+         <Route
           path="/cart"
           element={
             <PrivateRoute role={'user'} navigate={'/login'}>
