@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { validateToken, validateUser } from '../middleware/tokenValidation';
+import { validateSuper, validateToken, validateUser } from '../middleware/tokenValidation';
 import uploader from '../helper/uploader';
-import getAllUser from './admin/getAllUser';
+// import getAllUser from './admin/getAllUser';
 import { specialTokenValidation } from '../middleware/specialTokenValidation';
 import {
   changeEmailController,
@@ -9,6 +9,7 @@ import {
   updateUserUserController,
   verifyEmailController,
 } from '../controllers/user.controller';
+import getUser from '../controllers/admin.controller';
 
 const userRouter = Router();
 
@@ -36,6 +37,6 @@ userRouter.patch(
   specialTokenValidation,
   verifyEmailController,
 );
-userRouter.get('/', getAllUser);
+userRouter.get('/', validateToken, validateSuper, getUser);
 
 export { userRouter };

@@ -1,4 +1,5 @@
 import { Button, Modal, Flowbite } from 'flowbite-react';
+import { customButton } from '../../helpers/flowbiteCustomTheme';
 
 const ModalConfirm = ({
     show,
@@ -24,8 +25,8 @@ const ModalConfirm = ({
                 <Modal.Body>
                     <h3>{message}</h3>
                     <div className="flex justify-end mt-2 gap-4">
-                        <Button onClick={onClose} color='failure'>Cancel</Button>
-                        <Button onClick={onConfirm} type={type || 'button'} form={formRef} color='blue' >Ok</Button>
+                        <Button theme={customButton} onClick={onClose} color='secondary'>Cancel</Button>
+                        <Button theme={customButton} onClick={onConfirm} type={type || 'button'} form={formRef} color='primary' >Ok</Button>
                     </div>
                 </Modal.Body>
             </Modal>

@@ -5,20 +5,32 @@ import { useState, useEffect } from 'react';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import LayoutDashboard from '../../components/LayoutDashboard';
 import { customTable } from '../../helpers/flowbiteCustomTheme';
+import { useSearchParams } from 'react-router-dom';
+import ResponsivePagination from '../../components/ResponsivePagination';
+import { onPageChange } from '../../helpers/pagination';
 
 const RegisteredUser = () => {
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+	const [totalPage, setTotalPage] = useState(1);
+	const queryParam = { limit: 10, page: searchParams.get('page') }
 
   useEffect(() => {
     getUsers();
-  }, []);
+  }, [searchParams.get('page')]);
 
   const getUsers = async () => {
     setIsLoading(true);
-    const res = await API_CALL.get('/user')
+    const res = await API_CALL.get('/user', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('authToken')}`
+      },
+      params: queryParam
+    })
     if (res) {
-      setUsers(res.data);
+      setUsers(res.data.result.rows);
+      setTotalPage(res.data.result.totalPage)
       setIsLoading(false);
     }
   };
@@ -27,7 +39,7 @@ const RegisteredUser = () => {
     return users.map((user, index) => {
       return (
         <TableRow key={index}>
-          <TableCell>{index + 1}</TableCell>
+          <TableCell className="text-center">{`${((searchParams.get('page') || 1) - 1) * 10 + index + 1}`}</TableCell>
           <TableCell>{user.name}</TableCell>
           <TableCell>{user.email}</TableCell>
           {user.isVerified ?
@@ -44,7 +56,7 @@ const RegisteredUser = () => {
       <LoadingSpinner isLoading={isLoading} size={16} />
       <LayoutPageAdmin title='Registered User'>
         <div className='grid grid-cols-1 overflow-x-auto '>
-          <Table theme={customTable} striped>
+          <Table theme={customTable} >
             <TableHead>
               <TableHeadCell>#</TableHeadCell>
               <TableHeadCell>Name</TableHeadCell>
@@ -55,6 +67,13 @@ const RegisteredUser = () => {
               {printUser()}
             </TableBody>
           </Table>
+        </div>
+        <div className='mt-5'>
+        <ResponsivePagination
+					currentPage={Number(searchParams.get('page')) || 1}
+					totalPages={totalPage}
+					onPageChange={(page) => onPageChange(page, setSearchParams)}
+				/>
         </div>
       </LayoutPageAdmin>
     </LayoutDashboard>

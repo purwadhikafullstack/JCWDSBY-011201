@@ -1,17 +1,41 @@
 import { Op } from 'sequelize';
 import users from '../../models/users.model';
 
-export const findAllUserService = async (query = '', page = -1) => {
-  const filter = {
-    where: { name: { [Op.substring]: query }, role: 'user' },
-    attributes: ['name', 'email', 'isVerified'],
-  };
-  if (page > 0) {
-    filter.limit = 8;
-    filter.offset = page * 8 - 8;
+export const findAllUserService = async (queryParam) => {
+  try {
+    const limit = queryParam.limit ?? 'none';
+    const page = queryParam.page ?? 1;
+    const name = queryParam.name ?? '';
+    const email = queryParam.email ?? '';
+
+    const params = {
+      where: {
+        name: {
+          [Op.substring]: name
+        },
+        email: {
+          [Op.substring]: email
+        },
+        role: 'user'
+      },
+      limit: parseInt(limit),
+      offset: page * parseInt(limit) - parseInt(limit),
+      attributes: ['name', 'email', 'isVerified'],
+    };
+
+    if (limit === 'none') {
+      delete params.limit;
+      delete params.offset;
+    }
+
+    const result = await users.findAndCountAll(params);
+
+    if (limit !== 'none') result.totalPage = Math.ceil(result.count / limit);
+
+    return result;
+  } catch (error) {
+    throw error;
   }
-  const result = await findAllUser(filter);
-  return result;
 };
 
 export const findOneUserByIdService = async (userId) => {

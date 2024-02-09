@@ -1,6 +1,8 @@
 import { Label, Select, Radio, Button, Datepicker, TextInput } from "flowbite-react";
 import CurrencyInput from "react-currency-input-field";
 import { useState } from "react";
+import { customButton } from "../../../helpers/flowbiteCustomTheme";
+import { useSelector } from "react-redux";
 
 const FormDiscountMinTransaction = ({
     hidden,
@@ -30,6 +32,7 @@ const FormDiscountMinTransaction = ({
     errorLimit,
 }) => {
     const [voucherCode, setVoucherCode] = useState();
+    const currentUserRole = useSelector((reducer) => reducer.userReducer.role);
 
     const handleErrorAmount = () => {
         if (errorAmount) return "p-2.5 text-sm bg-gray-50 rounded-lg border disabled:cursor-not-allowed disabled:opacity-50 border-red-500 bg-red-50 text-red-900 placeholder-red-700 focus:border-red-500 focus:ring-red-500 dark:border-red-400 dark:bg-red-100 dark:focus:border-red-500 dark:focus:ring-red-500"
@@ -53,7 +56,7 @@ const FormDiscountMinTransaction = ({
                 />
                 <p className="text-sm text-red-600" hidden={!errorName}>Name is required!</p>
             </div>
-            <div className="grid gap-2">
+            <div className={`grid gap-2 ${currentUserRole !== 'super' && 'hidden'}`}>
                 <Label className="font-bold">Store</Label>
                 <Select onChange={(e) => onChangeStore(e)}>
                     {storeData && storeData.map((val, index) => <option key={index} value={val.UUID}>{val.name}</option>)}
@@ -158,8 +161,8 @@ const FormDiscountMinTransaction = ({
             </div>
         </form>
         <div className="flex justify-between mt-6 mb-4">
-            <Button color="blue" onClick={onBack}>Back</Button>
-            <Button color="blue" onClick={onNext}>Next</Button>
+            <Button theme={customButton} color="primary" onClick={onBack}>Back</Button>
+            <Button theme={customButton} color="secondary" onClick={onNext}>Next</Button>
         </div>
     </div>
 };

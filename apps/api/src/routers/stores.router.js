@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { validateSuper, validateToken } from '../middleware/tokenValidation';
+import { validateAdmin, validateSuper, validateToken } from '../middleware/tokenValidation';
 import {
   createStoreController,
   deleteStoreController,
@@ -13,7 +13,7 @@ import {
 
 const storesRouter = Router();
 
-storesRouter.get('/', validateToken, validateSuper, getStoresController);
+storesRouter.get('/', validateToken, validateAdmin, getStoresController);
 storesRouter.get('/main', validateToken, validateSuper, getMainStoreController);
 storesRouter.get('/UUID/:UUID', validateToken, validateSuper, getStoreByUUID);
 storesRouter.get(
