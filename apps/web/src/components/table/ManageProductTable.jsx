@@ -10,7 +10,6 @@ const ManageProductTable = ({ data, onEdit, onDelete, page }) => {
         <TableHead>
           <TableHeadCell >#</TableHeadCell>
           <TableHeadCell >Product</TableHeadCell>
-          <TableHeadCell >Description</TableHeadCell>
           <TableHeadCell >Weight</TableHeadCell>
           <TableHeadCell >Price</TableHeadCell>
           <TableHeadCell >Category</TableHeadCell>
@@ -26,7 +25,6 @@ const ManageProductTable = ({ data, onEdit, onDelete, page }) => {
                   {val.name}
                 </div>
               </TableCell>
-              <TableCell className="text-justify w-[35%]">{val.description}</TableCell>
               <TableCell className="text-center">{val.weight + val.unit}</TableCell>
               <TableCell className="text-center">{val.price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 })}</TableCell>
               <TableCell className="text-center">{val.category.name}</TableCell>

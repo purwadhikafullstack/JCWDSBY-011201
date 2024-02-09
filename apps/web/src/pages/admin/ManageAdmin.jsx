@@ -25,7 +25,7 @@ const ManageAdmin = () => {
 	const [openModal, setOpenModal] = useState({ add: false, edit: false, delete: false });
 	const [searchParams, setSearchParams] = useSearchParams();
 	const [totalPage, setTotalPage] = useState(1);
-	const queryParam = { limit: 11, page: searchParams.get('page') }
+	const queryParam = { limit: 10, page: searchParams.get('page') }
 
 	useEffect(() => {
 		getAdmin();

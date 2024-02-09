@@ -14,7 +14,7 @@ const RegisteredUser = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
 	const [totalPage, setTotalPage] = useState(1);
-	const queryParam = { limit: 13, page: searchParams.get('page') }
+	const queryParam = { limit: 10, page: searchParams.get('page') }
 
   useEffect(() => {
     getUsers();
@@ -39,7 +39,7 @@ const RegisteredUser = () => {
     return users.map((user, index) => {
       return (
         <TableRow key={index}>
-          <TableCell className="text-center">{`${(searchParams.get('page') - 1) * 13 + index + 1}`}</TableCell>
+          <TableCell className="text-center">{`${((searchParams.get('page') || 1) - 1) * 10 + index + 1}`}</TableCell>
           <TableCell>{user.name}</TableCell>
           <TableCell>{user.email}</TableCell>
           {user.isVerified ?

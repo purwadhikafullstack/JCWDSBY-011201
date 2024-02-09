@@ -63,7 +63,6 @@ const Inventory = () => {
 
   const handleDelete = async (id) => {
     setIsLoading(true);
-    // const res = await API_CALL.delete(`/product/inventory/${id}`);
     const res = await API_CALL.delete(`inventory/${id}`,{
       headers: {
         Authorization: `Bearer ${localStorage.getItem('authToken')}`

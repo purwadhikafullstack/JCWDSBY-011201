@@ -48,7 +48,7 @@ const ManageProduct = () => {
     });
     getProduct();
   };
-console.log('PAGE',typeof searchParams.get('page'));
+
   return <>
     <LayoutDashboard>
       <LoadingSpinner isLoading={isLoading} size={16} />

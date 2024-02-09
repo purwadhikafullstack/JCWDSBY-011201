@@ -15,7 +15,7 @@ const ManageAdminTable = ({data, page, onEdit, onDelete, onChangePassword}) => {
       <TableBody className="divide-y">
         {data.map((val, index) => {
           return <TableRow key={index}>
-            <TableCell className="text-center">{`${(page - 1) * 11 + index + 1}`}</TableCell>
+            <TableCell className="text-center">{`${(page - 1) * 10 + index + 1}`}</TableCell>
             <TableCell >{val.name}</TableCell>
             <TableCell >{val.email}</TableCell>
             <TableCell className="text-center">
