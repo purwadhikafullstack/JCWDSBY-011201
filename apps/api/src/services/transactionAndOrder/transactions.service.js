@@ -8,7 +8,8 @@ import midtransClient from 'midtrans-client';
 import { APP_URL, MIDTRANS_KEY } from '../../config';
 import product from '../../models/product.model';
 import stores from '../../models/stores.model';
-import { invoiceNamer } from '../../controllers/utils/invoiceNamer';
+import { invoiceNamer } from '../../helper/invoiceNamer';
+import discount from '../../models/discount.model';
 
 //Get
 export const findUserAddressIdForTransaction = async (req) => {
@@ -136,6 +137,11 @@ export const getTransactionDetails = async (req, transactionId) => {
     nest: true,
     attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
     include: [
+      {
+        model: discount,
+        as: 'discount',
+        attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
+      },
       {
         model: inventory,
         as: 'inventory',

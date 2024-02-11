@@ -46,7 +46,9 @@ export const updateOrderStatusForAdminTransferController = async (
     }
   } catch (error) {
     console.log(error);
-    next(resTemplate(error.status, true, error.message));
+    return res
+      .status(error.rc)
+      .json(resTemplate(error.rc || 500, false, error.message, null));
   }
 };
 export const cancelOrdersForAdminController = async (req, res, next) => {
@@ -72,7 +74,9 @@ export const cancelOrdersForAdminController = async (req, res, next) => {
       .json(resTemplate(200, true, 'order rejection success'));
   } catch (error) {
     console.log(error);
-    next(resTemplate(error.status, true, error.message));
+    return res
+      .status(error.rc)
+      .json(resTemplate(error.rc || 500, false, error.message, null));
   }
 };
 
@@ -84,10 +88,7 @@ export const userFinishOrders = async (req, res, next) => {
     if (!result) {
       throw resTemplate(404, false, 'order not found');
     }
-    if (
-      result.paymentStatus === 'sending' ||
-      result.paymentStatus === 'arrived'
-    ) {
+    if (result.paymentStatus === 'arrived') {
       await DB.db.sequelize.transaction(async (t) => {
         await updateTransactionStatus(req, t);
       });
@@ -97,7 +98,9 @@ export const userFinishOrders = async (req, res, next) => {
     }
   } catch (error) {
     console.log(error);
-    next();
+    return res
+      .status(error.rc)
+      .json(resTemplate(error.rc || 500, false, error.message, null));
   }
 };
 
@@ -109,6 +112,15 @@ export const adminSendingOrders = async (req, res, next) => {
       throw resTemplate(404, false, 'transaction not found');
     }
     const details = await getTransactionDetails(req, result.id);
+    const isStockSufficient = details.every((item) => {
+      return (
+        item.inventory.stock >
+        (item.discount?.term === 'buy 1 get 1' ? item.amount * 2 : item.amount)
+      );
+    });
+    if (!isStockSufficient) {
+      throw { rc: 401, message: 'Stock is not sufficient' };
+    }
     if (req.body.status !== 'sending') {
       throw resTemplate(401, false, 'forbidden');
     } else if (result?.paymentStatus !== 'paid') {
@@ -124,7 +136,9 @@ export const adminSendingOrders = async (req, res, next) => {
       .json(resTemplate(200, true, 'Status Successfully changed to Sending '));
   } catch (error) {
     console.log(error);
-    next(error);
+    return res
+      .status(error.rc)
+      .json(resTemplate(error.rc || 500, false, error.message, null));
   }
 };
 
@@ -149,6 +163,8 @@ export const updateCourierOrderArrival = async (req, res, next) => {
       .json(resTemplate(200, true, 'status has been changed to arrived'));
   } catch (error) {
     console.log(error);
-    next(error);
+    return res
+      .status(error.rc)
+      .json(resTemplate(error.rc || 500, false, error.message, null));
   }
 };

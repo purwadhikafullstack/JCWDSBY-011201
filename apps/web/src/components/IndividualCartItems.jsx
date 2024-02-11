@@ -69,7 +69,7 @@ export function IndividualCartItems({ val, idx, checkall, setCheckallFalse }) {
               </div>
             </div>
           )}
-          {(val.discountTerm === 'buy 1 get 1' || val.isFreeItem) && (
+          {(val.discountTerm === 'buy 1 get 1' || val.hasFreeItem) && (
             <div
               className={`p-1 bg-rose-500 rounded justify-center items-center gap-1 flex`}
             >

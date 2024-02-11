@@ -30,20 +30,18 @@ export const fuseDiscountAndItems = (itemArray, discountsArray) => {
           if (discount?.term === 'buy 1 get 1') {
             return {
               ...item,
-              discountId:discount.id,
+              discountId: discount.id,
               discountExist: true,
               discountTerm: discount.term,
               discountType: discount.term,
-              totalDiscount: Math.ceil(item.amount / 2) * item.productPrice,
-              finalPrice:
-                item.totalPrice -
-                Math.ceil(item.amount / 2) * item.productPrice,
+              // totalDiscount: Math.ceil(item.amount / 2) * item.productPrice,
+              finalPrice: item.totalPrice,
             };
           } else if (discount?.term === 'product') {
             if (discount?.type === 'percentage') {
               return {
                 ...item,
-                discountId:discount.id,
+                discountId: discount.id,
                 discountExist: true,
                 discountPercentage: discount.percentage,
                 discountType: discount.type,
@@ -58,7 +56,7 @@ export const fuseDiscountAndItems = (itemArray, discountsArray) => {
             } else if (discount?.type === 'nominal') {
               return {
                 ...item,
-                discountId:discount.id,
+                discountId: discount.id,
                 discountExist: true,
                 discountType: discount.type,
                 discountNominal: discount.nominal,
@@ -73,7 +71,7 @@ export const fuseDiscountAndItems = (itemArray, discountsArray) => {
         return {
           ...item,
           discountExist: false,
-          finalPrice:item.totalPrice
+          finalPrice: item.totalPrice,
         };
       }
     })
@@ -90,7 +88,7 @@ export const fuseDiscountAndItems = (itemArray, discountsArray) => {
       if (buy1Get1Item) {
         group.map((item) => {
           if (item !== buy1Get1Item) {
-            item.isFreeItem = true;
+            item.hasFreeItem = true;
           } else {
             item.productPrice = 0;
             item.finalPrice = 0;
@@ -99,6 +97,12 @@ export const fuseDiscountAndItems = (itemArray, discountsArray) => {
           }
         });
       }
+    } else if (group.length == 1 && group[0].discountTerm === 'buy 1 get 1') {
+      group.push({ ...group[0], hasFreeItem: true,discountId:null });
+      group[0].productPrice = 0;
+      group[0].finalPrice = 0;
+      group[0].totalPrice = 0;
+      group[0].totalDiscount = 0;
     }
   });
 

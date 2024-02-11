@@ -10,7 +10,7 @@ export default class discount extends Model {
   static associate(models) {
     // define association here
     // Transaction Detail
-    // discount.hasMany(models.transactionDetail)
+    discount.hasMany(models.transactionDetails)
     discount.belongsTo(models.stores)
     discount.belongsTo(models.inventory)
   }

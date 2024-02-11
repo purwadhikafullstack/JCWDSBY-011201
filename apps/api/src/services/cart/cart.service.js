@@ -4,6 +4,7 @@ import productImage from '../../models/product-image.model';
 import stores from '../../models/stores.model';
 import discount from '../../models/discount.model';
 import carts from '../../models/carts.model';
+import { Op } from 'sequelize';
 
 export const addCarts = async (req, res, t) => {
   return await carts.create(
@@ -127,7 +128,7 @@ export const deleteAllProductInCartSpecificStore = async (req, t) =>
 
 export const getItemInCartDiscount = async (itemArray) => {
   return await discount.findAll({
-    where: { inventoryId: itemArray },
+    where: { inventoryId: itemArray, endTime: { [Op.gte]: new Date() } },
     raw: true,
     nest: true,
     attributes: { exclude: ['createdAt', 'updatedAt'] },
