@@ -41,6 +41,7 @@ export function ModalForAdminOrderDetails({ openModal, setOpenModal, order }) {
       setOpenModal(false);
     } catch (error) {
       console.log(error);
+      customToast('error', error.response.data.message);
     }
   };
   const cancelOrdersForAdmin = async (status, invoice) => {
