@@ -41,8 +41,8 @@ router.use('/event', eventRouter);
 
 //Fahmi Ardiansyah
 router.use('/category', categoryRouter);
-router.use('/product', productRouter);
 router.use('/product/image', productImageRouter);
+router.use('/product', productRouter);
 router.use('/admin', adminRouter);
 router.use('/inventory', inventoryRouter);
 router.use('/report/stock', stockReportRouter);

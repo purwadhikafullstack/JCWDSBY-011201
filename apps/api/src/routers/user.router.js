@@ -5,7 +5,7 @@ import {
   validateUser,
 } from '../middleware/tokenValidation';
 import uploader from '../helper/uploader';
-import getAllUser from './admin/getAllUser';
+// import getAllUser from './admin/getAllUser';
 import { specialTokenValidation } from '../middleware/specialTokenValidation';
 import {
   changeEmailController,
@@ -14,6 +14,7 @@ import {
   verifyEmailController,
 } from '../controllers/user.controller';
 import { body } from 'express-validator';
+import getUser from '../controllers/admin.controller';
 
 const userRouter = Router();
 
@@ -22,7 +23,7 @@ userRouter.patch(
   validateToken,
   validateUser,
   uploader('/avatar', 1).single('avatarUpload'),
-  body('name').notEmpty().isString(),
+  body('name').notEmpty().isString().escape(),
   updateUserUserController,
 );
 userRouter.patch(
@@ -49,6 +50,6 @@ userRouter.patch(
   specialTokenValidation,
   verifyEmailController,
 );
-userRouter.get('/', validateToken, validateSuper, getAllUser);
+userRouter.get('/', validateToken, validateSuper, getUser);
 
 export { userRouter };

@@ -43,7 +43,7 @@ const FormStore = ({
           <option value="">-- Select Admin --</option>
           {adminData &&
             adminData.map((value) => (
-              <option key={value.UUID} value={value.UUID}>
+              <option key={value.uuid} value={value.uuid}>
                 {value.name}
               </option>
             ))}

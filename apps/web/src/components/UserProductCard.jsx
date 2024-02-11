@@ -32,7 +32,7 @@ const UserProductCard = ({
   );
   const toggleDrawer = () => setOpenDrawer((prevState) => !prevState);
   return (
-    <div className="flex flex-col w-full h-60 md:h-64 lg:h-80 border-2 rounded-lg relative cursor-pointer overflow-hidden drop-shadow">
+    <div className="flex flex-col w-full h-60 md:h-64 lg:h-80 border-2 rounded-lg relative cursor-pointer overflow-hidden ">
       {discountPrice && (
         <div className="mt-3 absolute">
           <div className="flex">

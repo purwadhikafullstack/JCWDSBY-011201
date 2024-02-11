@@ -61,10 +61,12 @@ const ManageStoreUpdate = () => {
 
   const getAdminList = async () => {
     try {
-      const result = await API_CALL.get('/admin/temp', {
-        params: { store: 'false' },
+      const result = await API_CALL.get('/admin', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+        },
       });
-      setAdminList(result.data.result);
+      setAdminList(result.data.result.rows);
     } catch (error) {
       console.log(error);
     }

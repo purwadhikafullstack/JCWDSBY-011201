@@ -9,11 +9,14 @@ import {
   findOneDistrictService,
   findOneProvinceService,
 } from '../../services/address/address.service';
+import { validationResult } from 'express-validator';
 
 const createAddress = async (req, res, next) => {
   await DB.initialize();
   const t = await DB.db.sequelize.transaction();
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) throw { rc: 400, message: 'Invalid request' };
     const district = await findOneDistrictService(req.body.district);
     const city = await findOneCityService(req.body.city);
     const province = await findOneProvinceService(req.body.province);

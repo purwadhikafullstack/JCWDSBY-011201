@@ -28,7 +28,7 @@ const Landing = () => {
   const getCategoryData = async () => {
     const res = await API_CALL.get('category');
     if (res) {
-      setCategoryData(res.data);
+      setCategoryData(res.data.result.rows);
     }
   };
 

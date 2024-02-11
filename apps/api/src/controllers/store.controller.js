@@ -7,6 +7,7 @@ import getStoreDetail from './store/getStoreDetail';
 import getStores from './store/getStores';
 import updateMainBranch from './store/updateMainBranch';
 import updateStore from './store/updateStore';
+import { validationResult } from 'express-validator';
 
 export const createStoreController = createStore;
 export const deleteStoreController = deleteStore;
@@ -18,6 +19,8 @@ export const updateStoreController = updateStore;
 
 export const getStoreByUUID = async (req, res, next) => {
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) throw { rc: 400, message: 'Invalid request' };
     const result = await getStoreByUUIDService(req.params.UUID);
 
     return res

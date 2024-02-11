@@ -1,5 +1,9 @@
 import { Router } from 'express';
-import { validateSuper, validateToken } from '../middleware/tokenValidation';
+import {
+  validateAdmin,
+  validateSuper,
+  validateToken,
+} from '../middleware/tokenValidation';
 import {
   createStoreController,
   deleteStoreController,
@@ -10,30 +14,80 @@ import {
   updateMainBranchController,
   updateStoreController,
 } from '../controllers/store.controller';
+import { body, param, query } from 'express-validator';
 
 const storesRouter = Router();
 
-storesRouter.get('/', validateToken, validateSuper, getStoresController);
+storesRouter.get(
+  '/',
+  validateToken,
+  validateSuper,
+  query('q').optional().escape(),
+  query('page').optional().escape(),
+  getStoresController,
+);
 storesRouter.get('/main', validateToken, validateSuper, getMainStoreController);
-storesRouter.get('/UUID/:UUID', validateToken, validateSuper, getStoreByUUID);
+storesRouter.get(
+  '/UUID/:UUID',
+  validateToken,
+  validateSuper,
+  param('UUID').notEmpty().escape(),
+  getStoreByUUID,
+);
 storesRouter.get(
   '/:id',
   validateToken,
   validateSuper,
+  param('id').notEmpty().escape(),
   getStoreDetailController,
 );
-storesRouter.post('/', validateToken, validateSuper, createStoreController);
-storesRouter.patch('/:id', validateToken, validateSuper, updateStoreController);
+storesRouter.post(
+  '/',
+  validateToken,
+  validateSuper,
+  body([
+    'storeName',
+    'district',
+    'city',
+    'province',
+    'user',
+    'address',
+    'postalCode',
+  ])
+    .notEmpty()
+    .escape(),
+  createStoreController,
+);
+storesRouter.patch(
+  '/:id',
+  validateToken,
+  validateSuper,
+  param('id').notEmpty().escape(),
+  body([
+    'storeName',
+    'district',
+    'city',
+    'province',
+    'user',
+    'address',
+    'postalCode',
+  ])
+    .notEmpty()
+    .escape(),
+  updateStoreController,
+);
 storesRouter.patch(
   '/:id/main',
   validateToken,
   validateSuper,
+  param('id').notEmpty().escape(),
   updateMainBranchController,
 );
 storesRouter.delete(
   '/:id',
   validateToken,
   validateSuper,
+  param('id').notEmpty().escape(),
   deleteStoreController,
 );
 

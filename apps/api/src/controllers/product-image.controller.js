@@ -1,55 +1,23 @@
 import { assetsDir } from "../constants/assets";
 import productImage from "../models/product-image.model";
 import { unlink, existsSync } from "fs";
+import { createProductImageService, deleteProductImageService } from "../services/product/product-image.service";
+import resTemplate from "../helper/resTemplate";
 
-export const getProductImage = async (id) => {
-    return await productImage.findAll({
-        where: {
-            productId: id,
-        },
-    });
+export const createProductImage = async (req, res, next) => {
+  try {
+    const result = await createProductImageService(req.body.productId, req.files);
+    return res.status(200).json(resTemplate(200, true, 'Create Product Image Success', result));
+  } catch (error) {
+    next(error);
+  }
 };
 
-export const createProductImage = async (productId, image) => {
-    const bulkImage = image.map((image) => ({
-        productId,
-        image: image.filename
-    }));
-
-    return await productImage.bulkCreate(bulkImage);
-};
-
-export const updateProductImage = async (id, image) => {
-    const prevData = await productImage.findByPk(id);
-    const result = await productImage.update(
-        {
-            image: image.filename
-        },
-        {
-            where: {
-                id
-            }
-        }
-    );
-
-    if (result && existsSync(assetsDir + prevData.image)) {
-        unlink(assetsDir + prevData.image, (err) => {
-            if (err) throw Error(err);
-        });
-    }
-};
-
-export const deleteProductImage = async (id) => {
-    const prevData = await productImage.findByPk(id);
-    const result = await productImage.destroy({
-        where: {
-            id
-        }
-    });
-
-    if (result && existsSync(assetsDir + prevData.image)) {
-        unlink(assetsDir + prevData.image, (err) => {
-            if (err) throw Error(err);
-        });
-    }
+export const deleteProductImage = async (req, res, next) => {
+  try {
+    await deleteProductImageService(req.params.id);
+    res.status(204).json(resTemplate(204, true, 'Delete Product Image Success'));
+  } catch (error) {
+    next(error);
+  }
 };

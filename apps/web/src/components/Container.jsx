@@ -1,6 +1,6 @@
 const Container = (props) => {
   return (
-    <div className="container m-auto h-screen overflow-auto">
+    <div className="m-auto h-screen overflow-auto">
       {props.children}
     </div>
   );
