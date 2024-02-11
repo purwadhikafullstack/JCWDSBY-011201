@@ -1,7 +1,9 @@
+import { useNavigate } from 'react-router-dom';
 import { discountPrice, promo } from '../../helpers/discount';
 import UserProductCard from '../UserProductCard';
 
 const LandingProductViews = ({ productData }) => {
+  const navigate = useNavigate();
   if (productData) {
     if (productData.length > 0) {
       return (

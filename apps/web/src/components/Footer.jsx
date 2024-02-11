@@ -1,4 +1,5 @@
 import { Button, FloatingLabel, TextInput } from 'flowbite-react';
+import cosmoLogo from '../assets/cosmo-logo.svg';
 import { BsMailbox } from 'react-icons/bs';
 import {
   FaFacebook,
@@ -15,7 +16,8 @@ const Footer = (props) => {
     <footer className="flex flex-col w-full px-4 lg:px-32 py-6 gap-3">
       <div className="grid bg-blue-50 grid-cols-1 md:grid-cols-2 lg:grid-cols-4 w-full gap-4 p-4 lg:p-12 rounded-xl">
         <div className="flex flex-1 flex-col gap-3">
-          <div>
+          <div className="flex gap-2">
+            <img className="w-10 h-10" src={cosmoLogo} alt="Cosmo Logo" />
             <CosmoTextLogo size={'text-4xl'} />
           </div>
           {/* <span className="text-blue-800 font-extrabold text-4xl drop-shadow-md">
@@ -25,16 +27,16 @@ const Footer = (props) => {
             Jl. Gubeng Kertajaya XI-A No-7, Gubeng, Surabaya
           </span>
           <div className="flex gap-2 mt-2">
-            <span className="p-2 rounded-full bg-white shadow-md">
+            <span className="p-2 rounded-full bg-white shadow-md cursor-pointer">
               <FaFacebookF className="w-8 h-8 text-blue-700" />
             </span>
-            <span className="p-2 rounded-full bg-white shadow-md">
+            <span className="p-2 rounded-full bg-white shadow-md cursor-pointer">
               <FaInstagram className="w-8 h-8 text-blue-700" />
             </span>
-            <span className="p-2 rounded-full bg-white shadow-md">
+            <span className="p-2 rounded-full bg-white shadow-md cursor-pointer">
               <FaTwitter className="w-8 h-8 text-blue-700" />
             </span>
-            <span className="p-2 rounded-full bg-white shadow-md">
+            <span className="p-2 rounded-full bg-white shadow-md cursor-pointer">
               <FaYoutube className="w-8 h-8 text-blue-700 shadow-md" />
             </span>
           </div>
@@ -43,17 +45,29 @@ const Footer = (props) => {
           <span className="text-blue-800 font-bold text-2xl">Useful Links</span>
 
           <div className="flex flex-col gap-2">
-            <span className="font-semibold text-gray-500">Blog</span>
-            <span className="font-semibold text-gray-500">Discounts</span>
+            <span className="font-semibold text-gray-500 cursor-pointer">
+              Blog
+            </span>
+            <span className="font-semibold text-gray-500 cursor-pointer">
+              Discounts
+            </span>
           </div>
         </div>
         <div className="flex flex-1 flex-col gap-3">
           <span className="text-blue-800 font-bold text-2xl">Help & Guide</span>
           <div className="flex flex-col gap-2">
-            <span className="font-semibold text-gray-500">Payments</span>
-            <span className="font-semibold text-gray-500">Term of Service</span>
-            <span className="font-semibold text-gray-500">Return Policy</span>
-            <span className="font-semibold text-gray-500">FAQ</span>
+            <span className="font-semibold text-gray-500 cursor-pointer">
+              Payments
+            </span>
+            <span className="font-semibold text-gray-500 cursor-pointer">
+              Term of Service
+            </span>
+            <span className="font-semibold text-gray-500 cursor-pointer">
+              Return Policy
+            </span>
+            <span className="font-semibold text-gray-500 cursor-pointer">
+              FAQ
+            </span>
           </div>
         </div>
         <div className="flex flex-1 flex-col gap-3">

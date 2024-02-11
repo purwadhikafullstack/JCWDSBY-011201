@@ -23,12 +23,13 @@ const UserTopbarDesktop = (props) => {
         className={`navbar-line-one flex w-full gap-6 px-8 lg:px-32 py-4 items-center`}
       >
         <div
-          className="text-blue-800 font-extrabold text-4xl cursor-pointer"
+          className="flex gap-2 cursor-pointer"
           onClick={() => {
             navigate('/');
           }}
         >
           <img src={cosmoLogo} className="w-10 h-10" alt="" />
+          <CosmoTextLogo size={'text-4xl'} />
         </div>
 
         <NearestSTore storeData={currStore} />

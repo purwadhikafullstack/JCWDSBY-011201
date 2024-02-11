@@ -11,6 +11,7 @@ import API_CALL from '../helpers/API';
 import customToast from '../utils/toast';
 import { logout } from '../redux/slice/userSlice';
 import InputPassword from '../components/InputPassword';
+import CosmoTextLogo from '../components/CosmoTextLogo';
 
 const UserChangeEmail = (props) => {
   const globalUser = useSelector((reducer) => reducer.userReducer);
@@ -68,7 +69,7 @@ const UserChangeEmail = (props) => {
       <div className="flex flex-col h-full w-full">
         <div className="header flex flex-col pt-8 px-4 lg:px-32 pb-4 bg-blue-50 gap-2">
           <div className="flex">
-            <span className="text-blue-800 font-extrabold text-3xl">Cosmo</span>
+            <CosmoTextLogo size={'text-4xl'} />
           </div>
           <div
             className="flex items-center gap-2"

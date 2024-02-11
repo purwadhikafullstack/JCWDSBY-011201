@@ -1,3 +1,4 @@
+import { validationResult } from 'express-validator';
 import { DB } from '../../db';
 import geocode from '../../helper/geocode';
 import resTemplate from '../../helper/resTemplate';
@@ -16,6 +17,8 @@ const createStore = async (req, res, next) => {
   await DB.initialize();
   const t = await DB.db.sequelize.transaction();
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) throw { rc: 400, message: 'invalid request' };
     const district = await findOneDistrictService(req.body.district);
     const city = await findOneCityService(req.body.city);
     const province = await findOneProvinceService(req.body.province);
