@@ -2,131 +2,35 @@ import { Router } from 'express';
 import { DB } from '../db';
 import {
   addCarts,
+  checkAllController,
   deleteCheckedItemInCart,
+  deleteOneCartController,
   deleteOneProductInCart,
   findOneCartById,
   findOneCartByInventoryId,
-  findStoreIdFromUUID,
-  getCarts,
-  getItemInCartDiscount,
+  getCartsController,
   incrementCartAmountBy1,
+  postCartsController,
+  updateCartController,
   updateCartsAmount,
   updateChecks,
   updateChecksAll,
 } from '../controllers/carts.controller';
-import { validateToken } from '../middleware/tokenValidation';
+import { validateToken, validateUser } from '../middleware/tokenValidation';
 import resTemplate from '../helper/resTemplate';
-import { fuseDiscountAndItems, processedCartGetData } from './cart/getResult';
-import { getResultFilterer } from './cart/uniqueGet';
 const cartRouter = Router();
 //GET
-cartRouter.get('/', validateToken, async (req, res, next) => {
-  try {
-    const storeData = await findStoreIdFromUUID(req);
-    const result = await getCarts(req, storeData.id);
-    const uniqueRes = getResultFilterer(result);
-    const invIdRes = uniqueRes.map((item) => item.inventoryId);
-    const discounts = await getItemInCartDiscount(invIdRes);
-    console.log("🚀 ~ cartRouter.get ~ discounts:", discounts)
-    const trueRes = processedCartGetData(uniqueRes);
-    const fusedRes = fuseDiscountAndItems(trueRes, discounts);
-    console.log('🚀 ~ fusedArray ~ fusedArray:', fusedRes);
-    res.status(200).json({
-      success: true,
-      message: 'cart fetched successfully',
-      data: fusedRes.filter((item) => item.productPrice !== 0),
-      freeItems:fusedRes.filter((item) => item.productPrice === 0)
-    });
-  } catch (error) {
-    console.log(error);
-    next(error);
-  }
-});
+cartRouter.get('/', validateToken, validateUser, getCartsController);
 //POST
-cartRouter.post('/', validateToken, async (req, res, next) => {
-  await DB.initialize();
-  const t = await DB.db.sequelize.transaction();
-  try {
-    const result = await findOneCartByInventoryId(req);
-    if (!result) {
-      await addCarts(req, res, t);
-      await t.commit();
-      return res
-        .status(200)
-        .json({ success: 'success', message: 'Product added to cart' });
-    } else {
-      await incrementCartAmountBy1(req, t);
-      await t.commit();
-      return res
-        .status(200)
-        .json({ success: 'success', message: 'increase product amount by 1' });
-    }
-  } catch (error) {
-    console.log(error);
-    await t.rollback();
-    next(error);
-  }
-});
+cartRouter.post('/', validateToken, validateUser, postCartsController);
 
 //PATCH
 
-cartRouter.patch('/checkall', validateToken, async (req, res, next) => {
-  await DB.initialize();
-  try {
-    await DB.db.sequelize.transaction(async (t) => {
-      await updateChecksAll(req, t);
-    });
-    return res
-      .status(200)
-      .json(resTemplate(200, true, 'change checks all success'));
-  } catch (error) {
-    console.log(error);
-    next(error);
-  }
-});
+cartRouter.patch('/checkall', validateToken, checkAllController);
 //Delete
-cartRouter.delete('/:id', validateToken, async (req, res, next) => {
-  await DB.initialize();
-  const t = await DB.db.sequelize.transaction();
-  try {
-    await deleteOneProductInCart(req, t);
-  } catch (error) {
-    console.log(error);
-    next(error);
-  }
-});
+cartRouter.delete('/:id', validateToken,deleteOneCartController )
 
-cartRouter.patch('/:id', validateToken, async (req, res, next) => {
-  await DB.initialize();
-  try {
-    if (req.query.checker) {
-      await DB.db.sequelize.transaction(async (t) => {
-        await updateChecks(req, t);
-      });
-      return res
-        .status(200)
-        .json({ success: true, message: 'update item checked status success' });
-    }
-    const result = await findOneCartById(req);
-    if (result.amount === 1 && req.body.amount < 1) {
-      await DB.db.sequelize.transaction(async (t) => {
-        await deleteOneProductInCart(req, t);
-      });
-      return res
-        .status(200)
-        .json({ success: true, message: 'Item deleted successfully' });
-    }
-    await DB.db.sequelize.transaction(async (t) => {
-      await updateCartsAmount(req, t);
-    });
-    return res
-      .status(200)
-      .json({ success: true, message: 'Update cart Amount success' });
-  } catch (error) {
-    console.log(error);
-    next(error);
-  }
-});
+cartRouter.patch('/:id', validateToken, updateCartController);
 
 //Delete
 

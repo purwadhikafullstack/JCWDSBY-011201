@@ -108,9 +108,7 @@ export const adminSendingOrders = async (req, res, next) => {
     if (!result) {
       throw resTemplate(404, false, 'transaction not found');
     }
-    console.log('🚀 ~ adminSendingOrders ~ result:', result);
     const details = await getTransactionDetails(req, result.id);
-    console.log('🚀 ~ adminSendingOrders ~ details:', details);
     if (req.body.status !== 'sending') {
       throw resTemplate(401, false, 'forbidden');
     } else if (result?.paymentStatus !== 'paid') {
