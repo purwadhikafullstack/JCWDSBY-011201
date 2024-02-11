@@ -27,13 +27,15 @@ cartRouter.get('/', validateToken, async (req, res, next) => {
     const uniqueRes = getResultFilterer(result);
     const invIdRes = uniqueRes.map((item) => item.inventoryId);
     const discounts = await getItemInCartDiscount(invIdRes);
+    console.log("🚀 ~ cartRouter.get ~ discounts:", discounts)
     const trueRes = processedCartGetData(uniqueRes);
-    const fusedRes = fuseDiscountAndItems(trueRes,discounts)
+    const fusedRes = fuseDiscountAndItems(trueRes, discounts);
     console.log('🚀 ~ fusedArray ~ fusedArray:', fusedRes);
     res.status(200).json({
       success: true,
       message: 'cart fetched successfully',
-      data: fusedRes,
+      data: fusedRes.filter((item) => item.productPrice !== 0),
+      freeItems:fusedRes.filter((item) => item.productPrice === 0)
     });
   } catch (error) {
     console.log(error);

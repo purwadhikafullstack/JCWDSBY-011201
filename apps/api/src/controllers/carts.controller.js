@@ -84,7 +84,6 @@ export const getCarts = async (req, storeId) => {
           {
             model: discount,
             as: 'discounts',
-            required: true,
             attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
           },
           {

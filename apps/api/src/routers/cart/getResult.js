@@ -12,6 +12,7 @@ export const processedCartGetData = (result) => {
       stock: r.inventory.stock,
       productName: r.inventory.product.name,
       productPrice: r.inventory.product.price,
+      totalPrice: r.inventory.product.price * r.amount,
       productWeight: r.inventory.product.weight,
       productUnit: r.inventory.product.unit,
       imageLink: `${PRODUCT_URL}/${r.inventory.product.product_images.image}`,
@@ -19,37 +20,88 @@ export const processedCartGetData = (result) => {
   });
 };
 export const fuseDiscountAndItems = (itemArray, discountsArray) => {
-  return itemArray.map((item) => {
-    const discount = discountsArray.find(
-      (discount) => discount.inventoryId === item.inventoryId,
-    );
-    if (discount.type === 'percentage') {
-      return {
-        ...item,
-        discountExist: true,
-        discountType:discount.type,
-        discountedPrice:
-          item.amount * (item.productPrice * discount.percentage),
-      };
-    } else if (discount.type === 'nominal') {
-      return {
-        ...item,
-        discountExist: true,
-        discountType: discount.type,
-        totalDiscount: item.amount * discount.nominal,
-      };
-    } else if (discount.term === 'buy 1 get 1' && item.amount > 1) {
-      return {
-        ...item,
-        discountExist: true,
-        discountType: discount.term,
-        totalDiscount: Math.floor(item.amount / 2) * item.productPrice,
-      };
-    } else {
-      return {
-        ...item,
-        discountExist: false,
-      };
+  const fusedArray = itemArray
+    .map((item) => {
+      const matchingDiscounts = discountsArray.filter(
+        (discount) => discount.inventoryId === item.inventoryId,
+      );
+      if (matchingDiscounts.length > 0) {
+        return matchingDiscounts.map((discount) => {
+          if (discount?.term === 'buy 1 get 1') {
+            return {
+              ...item,
+              discountId:discount.id,
+              discountExist: true,
+              discountTerm: discount.term,
+              discountType: discount.term,
+              totalDiscount: Math.ceil(item.amount / 2) * item.productPrice,
+              finalPrice:
+                item.totalPrice -
+                Math.ceil(item.amount / 2) * item.productPrice,
+            };
+          } else if (discount?.term === 'product') {
+            if (discount?.type === 'percentage') {
+              return {
+                ...item,
+                discountId:discount.id,
+                discountExist: true,
+                discountPercentage: discount.percentage,
+                discountType: discount.type,
+                totalDiscount:
+                  item.amount * (item.productPrice * discount.percentage),
+                discountedPrice:
+                  item.productPrice - item.productPrice * discount.percentage,
+                finalPrice:
+                  item.totalPrice -
+                  item.amount * item.productPrice * discount.percentage,
+              };
+            } else if (discount?.type === 'nominal') {
+              return {
+                ...item,
+                discountId:discount.id,
+                discountExist: true,
+                discountType: discount.type,
+                discountNominal: discount.nominal,
+                totalDiscount: item.amount * discount.nominal,
+                discountedPrice: item.productPrice - discount.nominal,
+                finalPrice: item.totalPrice - item.amount * discount.nominal,
+              };
+            }
+          }
+        });
+      } else {
+        return {
+          ...item,
+          discountExist: false,
+          finalPrice:item.totalPrice
+        };
+      }
+    })
+    .flat();
+  const inventoryIdMap = fusedArray.reduce((acc, item) => {
+    acc[item.inventoryId] = [...(acc[item.inventoryId] || []), item];
+    return acc;
+  }, {});
+  Object.values(inventoryIdMap).map((group) => {
+    if (group.length > 1) {
+      const buy1Get1Item = group.find(
+        (item) => item.discountTerm === 'buy 1 get 1',
+      );
+      if (buy1Get1Item) {
+        group.map((item) => {
+          if (item !== buy1Get1Item) {
+            item.isFreeItem = true;
+          } else {
+            item.productPrice = 0;
+            item.finalPrice = 0;
+            item.totalPrice = 0;
+            item.totalDiscount = 0;
+          }
+        });
+      }
     }
   });
+
+  // Flatten the groups back to an array
+  return Object.values(inventoryIdMap).flat();
 };

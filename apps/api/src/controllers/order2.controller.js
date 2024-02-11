@@ -2,13 +2,18 @@ import { DB } from '../db';
 import resTemplate from '../helper/resTemplate';
 import {
   getOneTransaction,
+  getOneTransactionByResi,
   getTransactionDetails,
   updateProofImgAdmin,
   updateTransactionStatus,
 } from '../services/transactionAndOrder/transactions.service';
 import fs from 'fs';
-import { reduceBookedStock, reduceStock } from '../services/transactionAndOrder/transactions2.service';
+import {
+  reduceBookedStock,
+  reduceStock,
+} from '../services/transactionAndOrder/transactions2.service';
 import { inputResi } from '../services/transactionAndOrder/order.service';
+import transactions from '../models/transactions.model';
 
 export const updateOrderStatusForAdminTransferController = async (
   req,
@@ -50,12 +55,12 @@ export const cancelOrdersForAdminController = async (req, res, next) => {
   try {
     const result = await getOneTransaction(req);
     if (!result) {
-        throw resTemplate(404, false, 'transaction not found');
-      }
-    const details = await getTransactionDetails(req,result.id)
+      throw resTemplate(404, false, 'transaction not found');
+    }
+    const details = await getTransactionDetails(req, result.id);
     await DB.db.sequelize.transaction(async (t) => {
       await updateProofImgAdmin(req, t, null, req.body.status);
-      await reduceBookedStock(req,t,details)
+      await reduceBookedStock(req, t, details);
     });
     if (result?.paymentProofImg) {
       if (fs.existsSync(dir + result?.paymentProofImg)) {
@@ -105,7 +110,7 @@ export const adminSendingOrders = async (req, res, next) => {
     }
     console.log('🚀 ~ adminSendingOrders ~ result:', result);
     const details = await getTransactionDetails(req, result.id);
-    console.log("🚀 ~ adminSendingOrders ~ details:", details)
+    console.log('🚀 ~ adminSendingOrders ~ details:', details);
     if (req.body.status !== 'sending') {
       throw resTemplate(401, false, 'forbidden');
     } else if (result?.paymentStatus !== 'paid') {
@@ -115,11 +120,35 @@ export const adminSendingOrders = async (req, res, next) => {
       await updateTransactionStatus(req, t);
       await inputResi(req, t);
       await reduceStock(req, t, details);
-      
     });
     return res
       .status(200)
       .json(resTemplate(200, true, 'Status Successfully changed to Sending '));
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
+export const updateCourierOrderArrival = async (req, res, next) => {
+  await DB.initialize();
+  try {
+    const result = await getOneTransactionByResi(req.body.resi);
+    if (!result) {
+      throw resTemplate(404, false, 'transaction not found');
+    }
+    if (req.body.status !== 'arrived' && result.paymentStatus !== 'sending') {
+      throw resTemplate(401, false, 'data is incompatible');
+    }
+    await DB.db.sequelize.transaction(async (t) => {
+      await transactions.update(
+        { paymentStatus: req.body.status },
+        { where: { resi: req.body.resi }, transaction: t },
+      );
+    });
+    return res
+      .status(200)
+      .json(resTemplate(200, true, 'status has been changed to arrived'));
   } catch (error) {
     console.log(error);
     next(error);

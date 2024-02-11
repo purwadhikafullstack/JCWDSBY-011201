@@ -68,19 +68,15 @@ export const raiseBookedStock = async (req, t,items) => {
   });
   return Promise.all(promiseRaiseBookedStock);
 };
-
 export const findUserDataForTransaction = async (req) => {
   return users.findOne({ where: { id: req.tokenData.id }, raw: true });
 };
-
 export const handleMidtrans = async (req, userData) => {
   let snap = new midtransClient.Snap({
     // Set to true if you want Production Environment (accept real transaction).
     isProduction: false,
     serverKey: MIDTRANS_KEY,
   });
-  console.log('🚀 ~ handleMidtrans ~ MIDTRANS_KEY:', MIDTRANS_KEY);
-
   const item_details = req.body.checkoutItems.map((val, idx) => {
     return {
       name: val.name,
@@ -185,4 +181,10 @@ export const updateProofImgAdmin = async (req, t, filename, status) => {
       transaction: t,
     },
   );
+};
+export const getOneTransactionByResi = async (resi) => {
+  return await transactions.findOne({
+    where: { resi },
+    raw: true,
+  });
 };
