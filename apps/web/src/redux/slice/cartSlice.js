@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import API_CALL from '../../helpers/API';
 
-const initialState = { items: [], dataToCheckout: {} };
+const initialState = { items: [], freeItems: [], checkoutItems: [] };
 const cartSlice = createSlice({
   name: 'cart',
   initialState,
@@ -9,8 +9,24 @@ const cartSlice = createSlice({
     setCarts: (state, action) => {
       state.items = action.payload;
     },
+    setFreeItems: (state, action) => {
+      state.freeItems = action.payload;
+    },
+    setCheckoutItems: (state, action) => {
+      state.checkoutItems = action.payload;
+    },
     incrementItem: (state, action) => {
       const itemInCart = state.items.find((item) => item.id === action.payload);
+      if (itemInCart) {
+        if (itemInCart.amount !== undefined) {
+          itemInCart.amount++;
+        }
+      }
+    },
+    incrementFreeItem: (state, action) => {
+      const itemInCart = state.freeItems.find(
+        (item) => item.id === action.payload,
+      );
       if (itemInCart) {
         if (itemInCart.amount !== undefined) {
           itemInCart.amount++;
@@ -24,6 +40,20 @@ const cartSlice = createSlice({
           itemInCart.amount--;
         } else if (itemInCart.amount !== undefined && itemInCart.amount === 1) {
           state.items = state.items.filter(
+            (item) => item.id !== action.payload,
+          );
+        }
+      }
+    },
+    decrementFreeItem: (state, action) => {
+      const itemInCart = state.freeItems.find(
+        (item) => item.id === action.payload,
+      );
+      if (itemInCart) {
+        if (itemInCart.amount !== undefined && itemInCart.amount > 1) {
+          itemInCart.amount--;
+        } else if (itemInCart.amount !== undefined && itemInCart.amount === 1) {
+          state.freeItems = state.freeItems.filter(
             (item) => item.id !== action.payload,
           );
         }
@@ -62,6 +92,10 @@ export const {
   checkUncheckItem,
   checkUncheckAll,
   deleteChecked,
+  setFreeItems,
+  incrementFreeItem,
+  decrementFreeItem,
+  setCheckoutItems,
 } = cartSlice.actions;
 export default cartSlice.reducer;
 
@@ -75,6 +109,7 @@ export const fetchCartItems = (storeUUID) => {
           },
         });
         dispatch(setCarts(response.data.data));
+        dispatch(setFreeItems(response.data.freeItems));
       } catch (error) {
         console.log(error);
       }
@@ -94,7 +129,7 @@ export const UpdateAmountInCloud = (id, amount, storeUUID) => {
           },
         },
       );
-      console.log("🚀 ~ return ~ response:", response)
+      console.log('🚀 ~ return ~ response:', response);
       dispatch(fetchCartItems(storeUUID));
     } catch (error) {
       console.log(error);

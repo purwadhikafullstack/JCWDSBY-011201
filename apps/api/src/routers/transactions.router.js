@@ -8,6 +8,7 @@ import {
 import {
   adminSendingOrders,
   cancelOrdersForAdminController,
+  updateCourierOrderArrival,
   updateOrderStatusForAdminTransferController,
   userFinishOrders,
 } from '../controllers/order2.controller';
@@ -89,6 +90,7 @@ transactionRouter.patch(
   validateToken,
   patchTransactionSuccess,
 );
+transactionRouter.patch('/courier/arrival', updateCourierOrderArrival);
 transactionRouter.patch(
   '/:order_id',
   validateToken,

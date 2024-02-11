@@ -10,6 +10,7 @@ import { UserFinishOrderModal } from '../components/UserFinishOrderModal';
 import { getOrderDetails } from '../helpers/orders/getOrdersByInvoice';
 const UserOrders = () => {
   const [order, setOrder] = useState([]);
+  console.log("🚀 ~ UserOrders ~ order:", order)
   const [totalPage, setTotalPage] = useState(1);
   const [searchParams, setSearchParams] = useSearchParams();
   const [openModalUser, setOpenModalUser] = useState(false);
