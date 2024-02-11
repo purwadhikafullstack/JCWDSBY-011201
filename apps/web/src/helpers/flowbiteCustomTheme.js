@@ -29,6 +29,9 @@ export const customButton = {
   color: {
     primary: "font-bold text-white bg-indigo-700 border border-transparent enabled:hover:bg-indigo-900 focus:ring-4 focus:ring-transparent dark:bg-indigo-800 dark:enabled:hover:bg-indigo-700 dark:focus:ring-0 dark:border-indigo-700",
     secondary: "font-bold text-indigo-800 bg-white border-2 border-indigo-800 enabled:hover:bg-indigo-900 enabled:hover:text-white focus:ring-4 focus:ring-transparent",
+  },
+  size: {
+    responsive : "text-xs px-2 py-1 lg:text-sm lg:px-4 lg:py-2"
   }
 }
 

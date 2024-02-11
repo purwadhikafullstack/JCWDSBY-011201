@@ -9,6 +9,7 @@ import API_CALL from '../helpers/API';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../redux/slice/userSlice';
 import InputPassword from '../components/InputPassword';
+import Container from '../components/Container';
 
 const LoginAdmin = () => {
   const navigate = useNavigate();
@@ -36,7 +37,11 @@ const LoginAdmin = () => {
       }
     } catch (error) {
       console.log(error);
-      customToast('error', error.response.data.message);
+      if (error.response.status !== 500) {
+        customToast('error', error.response.data.message);
+      } else {
+        customToast('error', 'Failed to Signup');
+      }
     }
     setIsloading(false);
   };
@@ -60,7 +65,8 @@ const LoginAdmin = () => {
   });
 
   return (
-    <div className="container lg:w-[1024px] m-auto h-screen overflow-auto">
+    <Container>
+      {' '}
       <div className="flex w-full h-full">
         <div className="header flex flex-col w-full h-full">
           <div className="img-container w-full h-[30%] relative">
@@ -140,7 +146,7 @@ const LoginAdmin = () => {
           </div>
         </div>
       </div>
-    </div>
+    </Container>
   );
 };
 

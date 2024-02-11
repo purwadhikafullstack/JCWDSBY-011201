@@ -23,7 +23,7 @@ const UserProfile = (props) => {
             </span>
             <div className="flex w-[40%] justify-end lg:justify-center items-center">
               <Avatar
-                className="flex md:hidden"
+                className="flex md:hidden object-cover"
                 img={
                   globalUser.image
                     ? `${import.meta.env.VITE_IMG_URL}/avatar/${
@@ -35,7 +35,7 @@ const UserProfile = (props) => {
                 rounded
               />
               <Avatar
-                className="hidden md:flex"
+                className="hidden md:flex object-cover"
                 img={
                   globalUser.image
                     ? `${import.meta.env.VITE_IMG_URL}/avatar/${

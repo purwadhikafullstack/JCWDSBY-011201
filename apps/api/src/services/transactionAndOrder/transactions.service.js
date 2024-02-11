@@ -6,9 +6,9 @@ import inventory from '../../models/inventory.model';
 import { literal } from 'sequelize';
 import midtransClient from 'midtrans-client';
 import { APP_URL, MIDTRANS_KEY } from '../../config';
-import { invoiceNamer } from '../../routers/utils/invoiceNamer';
 import product from '../../models/product.model';
 import stores from '../../models/stores.model';
+import { invoiceNamer } from '../../controllers/utils/invoiceNamer';
 
 //Get
 export const findUserAddressIdForTransaction = async (req) => {
@@ -59,7 +59,7 @@ export const transactionDetailsBulkCreate = async (req, t, latestTransId) => {
   }
 };
 
-export const raiseBookedStock = async (req, t,items) => {
+export const raiseBookedStock = async (req, t, items) => {
   const promiseRaiseBookedStock = items.map(async (val, idx) => {
     return await inventory.increment(
       { bookedStock: Math.abs(val.amount) },

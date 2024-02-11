@@ -1,84 +1,50 @@
-import { Op } from "sequelize";
-import category from "../models/categories.model";
-import { unlink, existsSync } from "fs";
+import { createCategoryService, deleteCategoryService, getCategoryDetailService, getCategoryService, updateCategoryService } from "../services/category/category.service";
+import resTemplate from "../helper/resTemplate";
 
 const dir = './src/assets/category/';
 
-export const createCategory = async (data, image) => {
-  const checkCategory = await category.findOne({
-    where: {
-      name: data.name,
-    }
-  });
-  
-  if (checkCategory) {
-    throw {
-      rc: 409,
-      success: false,
-      message: 'Category already exists',
-      result: null,
-    }
+export const getCategory = async (req, res, next) => {
+  try {
+    const result = await getCategoryService(req.query);
+
+    res.status(200).json(resTemplate(201, true, 'Get Category Success', result));
+  } catch (error) {
+    next(error);
   }
-
-  const value = image ? { name: data.name, image: image.filename } : { name: data.name };
-  return await category.create(value);
 };
 
-export const getCategoryData = async () => {
-  return await category.findAll();
-};
-
-export const getCategoryDataById = async (id) => {
-  return await category.findByPk(id);
-};
-
-export const updateCategory = async (id, data, image) => {
-  if(Object.hasOwn(data, 'name')){
-    const checkCategory = await category.findOne({ where: {name: data.name} });
-    if (checkCategory) {
-      throw {
-        rc: 409,
-        success: false,
-        message: 'Category already exists',
-        result: null,
-      }
-    }
+export const createCategory = async (req, res, next) => {
+  try {
+    await createCategoryService(req.body, req.file)
+    res.status(201).json(resTemplate(201, true, 'Create Category Success'));
+  } catch (error) {
+    next(error);
   }
-
-  if (image) {
-    const prevData = await category.findByPk(id);
-
-    await category.update(
-      Object.hasOwn(data, 'name') ? {name: data.name,image: image.filename} : {image: image.filename}
-      ,{
-        where: { id }
-      });
-
-    if (existsSync(dir + prevData.image)) {
-      console.log('updating image');
-      unlink(dir + prevData.image, (err) => {
-        if (err) throw Error(err);
-      });
-    }
-  }
-
-  await category.update(
-    {
-      name: data.name
-    },
-    {
-      where: { id }
-    });
 };
 
-export const deleteCategory = async (id) => {
-  const prevData = await category.findByPk(id);
+export const getCategoryDetail = async (req, res, next) => {
+  try {
+    const result = await getCategoryDetailService(req.params.id);
+    res.status(200).json(resTemplate(200, true, 'Get Category Detail Success', result));
+  } catch (error) {
+    next(error);
+  }
+};
 
-  await category.destroy({ where: { id } });
+export const updateCategory = async (req, res, next) => {
+  try {
+    await updateCategoryService(req.params.id, req.body, req.file);
+    res.status(200).json(resTemplate(200, true, 'Update Category Success'));
+  } catch (error) {
+    next(error);
+  }
+};
 
-  if (existsSync(dir + prevData.image)) {
-    unlink(dir + prevData.image, (err) => {
-      if (err) throw Error(err);
-    });
+export const deleteCategory = async (req, res, next) => {
+  try {
+    await deleteCategoryService(req.params.id);
+    res.status(204).json(resTemplate(204, true, 'Delete Category Success'));
+  } catch (error) {
+    next(error);
   }
 };

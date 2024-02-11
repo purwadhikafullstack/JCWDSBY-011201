@@ -6,54 +6,21 @@ import {
   createCategory,
   updateCategory,
   deleteCategory,
+  getCategory,
+  getCategoryDetail,
 } from '../controllers/category.controller';
+import { validateAdmin, validateToken } from '../middleware/tokenValidation';
 
 const categoryRouter = Router();
 
-categoryRouter.post('/', uploader('/category', 1).single('categoryUpload'), async (req, res, next) => {
-  try {
-    const result = await createCategory(req.body, req.file);
+categoryRouter.post('/', uploader('/category', 1).single('categoryUpload'), createCategory);
 
-    res.status(200).json(result);
-  } catch (error) {
-    next(error);
-  }
-});
+categoryRouter.get('/', getCategory);
 
-categoryRouter.get('/', async (req, res, next) => {
-  try {
-    const result = await getCategoryData();
-    res.status(200).json(result);
-  } catch (error) {
-    next(error);
-  }
-});
+categoryRouter.get('/:id', getCategoryDetail);
 
-categoryRouter.get('/:id', async (req, res, next) => {
-  try {
-    const result = await getCategoryDataById(req.params.id);
-    res.status(200).json(result);
-  } catch (error) {
-    next(error);
-  }
-});
+categoryRouter.patch('/:id', validateToken, validateAdmin, uploader('/category', 1).single('categoryUpload'), updateCategory)
 
-categoryRouter.patch('/:id', uploader('/category', 1).single('categoryUpload'), async (req, res, next) => {
-  try {
-    await updateCategory(req.params.id, req.body, req.file);
-    res.status(200).json('Category updated successfully!');
-  } catch (error) {
-    next(error);
-  }
-})
-
-categoryRouter.delete('/:id', async (req, res, next) => {
-  try {
-    await deleteCategory(req.params.id);
-    res.status(200).json('Category deleted successfully!');
-  } catch (error) {
-    next(error);
-  }
-});
+categoryRouter.delete('/:id', validateToken, validateAdmin, deleteCategory);
 
 export { categoryRouter };

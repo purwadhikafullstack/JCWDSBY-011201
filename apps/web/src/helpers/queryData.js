@@ -85,3 +85,18 @@ export const deleteDiscount = async (ID, setLoading, getUpdatedData) => {
         console.error(error);
     }
 };
+
+export const getCategory = async (setValue, setLoading, setTotalPage, queryParams) => {
+    try {
+        setLoading && setLoading(true);
+        const res = await API_CALL.get('category', {
+            params: queryParams,
+        })
+        setTotalPage && setTotalPage(parseInt(res.data.result?.totalPage || 1))
+        setValue(res.data.result.rows);
+        
+        setLoading && setLoading(false);
+    } catch (error) {
+        console.error(error);
+    }
+};

@@ -7,6 +7,7 @@ import API_CALL from '../helpers/API';
 import customToast from '../utils/toast';
 import ButtonWithLoading from '../components/ButtonWithLoading';
 import { useSelector } from 'react-redux';
+import Container from '../components/Container';
 
 const Forgot = () => {
   const [isLoading, setIsloading] = useState(false);
@@ -51,7 +52,8 @@ const Forgot = () => {
   });
 
   return (
-    <div className="container lg:w-[1024px] m-auto h-screen">
+    <Container>
+      {' '}
       <div className="flex w-full h-full">
         <div className="header flex flex-col w-full h-full">
           <div className="flex w-full h-full justify-center items-center">
@@ -105,7 +107,7 @@ const Forgot = () => {
           </div>
         </div>
       </div>
-    </div>
+    </Container>
   );
 };
 

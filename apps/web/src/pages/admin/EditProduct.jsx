@@ -8,8 +8,11 @@ import { MdDelete } from "react-icons/md";
 import BoxAddImage from "../../components/BoxAddImage";
 import { MAX_SIZE, REGEX_FILE_TYPE } from "../../constants/file";
 import { IMG_URL_PRODUCT } from "../../constants/imageURL";
-import { toast } from "react-toastify";
-import { customTextInputTheme } from "../../helpers/flowbiteCustomTheme";
+import { customButton, customTextInputTheme } from "../../helpers/flowbiteCustomTheme";
+import customToast from "../../utils/toast";
+import CurrencyInput from "react-currency-input-field";
+import { handleRequiredField, handleSaveButton } from "../../helpers/dashboard/manageProduct";
+import LayoutDashboard from "../../components/LayoutDashboard";
 
 const EditProduct = () => {
     const navigate = useNavigate();
@@ -23,16 +26,7 @@ const EditProduct = () => {
     const [deletedImage, setDeletedImage] = useState(null);
     const [uploadImage, setUploadImage] = useState([]);
     const [prevName, setPrevName] = useState('');
-    const [data, setData] = useState({
-        id: null,
-        name: '',
-        price: '',
-        description: '',
-        weight: '',
-        unit: '',
-        categoryId: '',
-        image: null
-    });
+    const [data, setData] = useState({ id: null, name: '', price: '', description: '', weight: '', unit: '', categoryId: '', image: null});
 
     useEffect(() => {
         getCategory();
@@ -44,7 +38,7 @@ const EditProduct = () => {
         const res = await API_CALL.get('category');
         if (res) {
             setIsLoading(false);
-            setCategory(res.data);
+            setCategory(res.data.result.rows);
         }
     };
 
@@ -113,63 +107,11 @@ const EditProduct = () => {
         }
     }
 
-    const handleSaveButton = async () => {
-        if (file.length === 0) return setError({ ...error, requiredFieldFile: true });
-        if (!data.name) return setRequiredField({ ...requiredField, name: true });
-        if (!data.weight) return setRequiredField({ ...requiredField, weight: true });
-        if (!data.price) return setRequiredField({ ...requiredField, price: true });
-        if (!data.description) return setRequiredField({ ...requiredField, description: true });
-        setIsLoading(true);
-        const product = {
-            name: data.name,
-            price: parseInt(data.price),
-            description: data.description,
-            weight: parseInt(data.weight),
-            unit: data.unit,
-            categoryId: parseInt(data.categoryId)
-        }
-
-        if (prevName === data.name) { 
-            delete product.name;
-        }
-        
-        try {
-            await API_CALL.patch(`product/${data.id}`, product, { 
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('authToken')}`
-                }
-            })
-        } catch (error) {
-            setIsLoading(false);
-            if (error.response.status === 304) return toast.error('Product already exists', {
-                position: "bottom-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
-        }
-        if (deletedImage) {
-            await API_CALL.delete(`product/image/${deletedImage.id}`);
-        }
-        if (uploadImage.length) {
-            const formdata = new FormData();
-            formdata.append('productId', data.id);
-            uploadImage.forEach((image) => formdata.append(`productUpload`, image));
-            await API_CALL.post('product/image', formdata);
-        }
-        navigate('/manage/product');
-
-        setIsLoading(false);
-    }
-
-    return <>
-        <div className='flex flex-col container bg-blue-100 min-w-[360px] h-max min-h-screen'>
+    return <LayoutDashboard>
+        <div className='w-full'>
             <TopBar title='Edit Product' prevPage={() => navigate('/manage/product')} />
             <LoadingSpinner size={16} isLoading={isLoading} />
+            <div className="flex flex-col px-2 my-3 py-3 lg:mt-5 lg:w-1/2 border rounded-md m-auto shadow-md">
             <form className={`p-3 ${isLoading && 'hidden'}`}>
                 <div className='grid gap-2 mb-3'>
                     <Label value='Product Name' />
@@ -183,7 +125,6 @@ const EditProduct = () => {
                 </div>
                 <div className='grid gap-2 mb-3'>
                     <Label value='Weight' />
-                    {/* <TextInput type='number' value={data.weight} placeholder='100g' onChange={(e) => { setData({ ...data, weight: e.target.value }); setRequiredField({ ...requiredField, weight: false }) }} color={requiredField.weight && 'failure'} helperText={requiredField.weight && 'Weight is required'} required /> */}
                     <div className='flex disabled:cursor-not-allowed disabled:opacity-50 ' >
                         <div>
                             <TextInput theme={customTextInputTheme} type='number' value={data.weight} placeholder='100g' onChange={(e) => { setData({ ...data, weight: e.target.value }); setRequiredField({ ...requiredField, weight: false }) }} color={requiredField.weight && 'failure'} helperText={requiredField.weight && 'Weight is required'} required />
@@ -198,11 +139,22 @@ const EditProduct = () => {
                 </div>
                 <div className='grid gap-2 mb-3'>
                     <Label value='Price' />
-                    <TextInput type='number' value={data.price} placeholder='Rp.10.000' onChange={(e) => { setData({ ...data, price: e.target.value }); setRequiredField({ ...requiredField, price: false }) }} color={requiredField.price && 'failure'} helperText={requiredField.price && 'Price is required'} required />
+                    <CurrencyInput
+                        className={handleRequiredField(requiredField.price)}
+                        id="input-price"
+                        name="input-price"
+                        placeholder="Please enter product price"
+                        allowDecimals={false}
+                        allowNegativeValue={false}
+                        intlConfig={{ locale: 'id-ID', currency: 'IDR' }}
+                        value={data.price}
+                        onValueChange={(value) => { setData({ ...data, price: value }); setRequiredField({ ...requiredField, price: false }) }}
+                    />
+                    <p className="text-sm text-red-600" hidden={!requiredField.price}>Price is required!</p>
                 </div>
                 <div className='grid gap-2 mb-3'>
                     <Label value='Description' />
-                    <Textarea placeholder='Description' value={data.description} className='p-2' rows={4} onChange={(e) => {setData({ ...data, description: e.target.value }); setRequiredField({...requiredField, description: false}) }} color={requiredField.description && 'failure'} helperText={requiredField.description && 'Description is required'} required />
+                    <Textarea placeholder='Description' value={data.description} className='p-2' rows={4} onChange={(e) => { setData({ ...data, description: e.target.value }); setRequiredField({ ...requiredField, description: false }) }} color={requiredField.description && 'failure'} helperText={requiredField.description && 'Description is required'} required />
                 </div>
                 {/* IMAGE */}
                 <div className='grid gap-2 mb-3'>
@@ -219,12 +171,13 @@ const EditProduct = () => {
                     {handleHelperText()}
                 </div>
                 <div className='mt-10 flex gap-16 justify-center'>
-                    <Button color='blue' onClick={handleSaveButton}>Save</Button>
-                    <Button color='failure' onClick={() => navigate('/manage/product')}>Cancel</Button>
+                    <Button theme={customButton} color='primary' onClick={() => {handleSaveButton(file, data, error, requiredField, setError, setRequiredField, setIsLoading, prevName, customToast, deletedImage, uploadImage); navigate('/manage/product'); }}>Save</Button>
+                    <Button theme={customButton} color='secondary' onClick={() => navigate('/manage/product')}>Cancel</Button>
                 </div>
             </form>
+            </div>
         </div>
-    </>
+    </LayoutDashboard>
 }
 
 export default EditProduct;
