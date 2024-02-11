@@ -11,20 +11,25 @@ export default class inventory extends Model {
     inventory.belongsTo(models.stores);
     inventory.hasMany(models.discount);
     inventory.belongsTo(models.product);
-    inventory.hasMany(models.transactionDetails)
-    inventory.hasMany(models.stock_report)
+    inventory.hasMany(models.transactionDetails, {
+      foreignKey: 'inventoryId',
+    });
+    inventory.hasMany(models.stock_report);
   }
-};
+}
 export const init = (sequelize) => {
-  inventory.init({
-    storeId: DataTypes.INTEGER,
-    productId: DataTypes.INTEGER,
-    stock: DataTypes.INTEGER,
-    bookedStock: DataTypes.INTEGER,
-    deletedAt: DataTypes.DATE,
-  }, {
-    sequelize,
-    modelName: 'inventory',
-    paranoid: true,
-  });
+  inventory.init(
+    {
+      storeId: DataTypes.INTEGER,
+      productId: DataTypes.INTEGER,
+      stock: DataTypes.INTEGER,
+      bookedStock: DataTypes.INTEGER,
+      deletedAt: DataTypes.DATE,
+    },
+    {
+      sequelize,
+      modelName: 'inventory',
+      paranoid: true,
+    },
+  );
 };
