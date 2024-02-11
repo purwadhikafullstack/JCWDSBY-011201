@@ -7,6 +7,7 @@ import API_CALL from '../helpers/API';
 import UserAddressListCard from '../components/UserAddressListCard';
 import customToast from '../utils/toast';
 import ButtonWithLoading from '../components/ButtonWithLoading';
+import CosmoTextLogo from '../components/CosmoTextLogo';
 
 const UserAddressList = (props) => {
   const location = useLocation();
@@ -82,7 +83,7 @@ const UserAddressList = (props) => {
       <div className="flex flex-col h-full w-full">
         <div className="header flex flex-col pt-8 px-4 lg:px-32 pb-4 bg-blue-50 gap-2">
           <div className="flex">
-            <span className="text-blue-800 font-extrabold text-3xl">Cosmo</span>
+            <CosmoTextLogo size={'text-4xl'} />
           </div>
           <div
             className="flex items-center gap-2"

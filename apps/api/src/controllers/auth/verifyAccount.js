@@ -1,3 +1,4 @@
+import { validationResult } from 'express-validator';
 import { APP_URL, SCRT_KEY } from '../../config';
 import { DB } from '../../db';
 import { hashPassword } from '../../helper/hash';
@@ -10,16 +11,19 @@ const verifyAccount = async (req, res, next) => {
   await DB.initialize();
   const t = await DB.db.sequelize.transaction();
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) throw { rc: 400, message: 'Invalid request' };
     if (req.tokenData.method !== 'VERIFY_ACCOUNT') {
       throw { rc: 401, message: 'Unauthorized token' };
     }
     const hashedPassword = await hashPassword(req.body.password, 10);
+    console.log(req.tokenData.email);
     const result = await verifyUserAccountService(
       hashedPassword,
       req.tokenData.email,
       t,
     );
-    if (!result.result[0]) {
+    if (!result[0]) {
       throw { rc: 404, message: 'Account not found' };
     }
     const deactivatedToken = await deactivateTokenService(

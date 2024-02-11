@@ -1,3 +1,4 @@
+import { validationResult } from 'express-validator';
 import { MAX_DISTANCE } from '../../config';
 import calculateDistance from '../../helper/calculateDistance';
 import resTemplate from '../../helper/resTemplate';
@@ -6,6 +7,8 @@ import { getStoreByUUIDService } from '../../services/store/store.service';
 
 export default async function (req, res, next) {
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) throw { rc: 400, message: 'Invalid request' };
     const storeData = await getStoreByUUIDService(req.query.storeId);
     const userAddresses = await findAllUserAddressService(req.tokenData.id);
 

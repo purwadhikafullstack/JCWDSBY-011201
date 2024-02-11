@@ -1,5 +1,9 @@
 import { Router } from 'express';
-import { validateToken, validateUser } from '../middleware/tokenValidation';
+import {
+  validateSuper,
+  validateToken,
+  validateUser,
+} from '../middleware/tokenValidation';
 import uploader from '../helper/uploader';
 import getAllUser from './admin/getAllUser';
 import { specialTokenValidation } from '../middleware/specialTokenValidation';
@@ -9,6 +13,7 @@ import {
   updateUserUserController,
   verifyEmailController,
 } from '../controllers/user.controller';
+import { body } from 'express-validator';
 
 const userRouter = Router();
 
@@ -17,18 +22,26 @@ userRouter.patch(
   validateToken,
   validateUser,
   uploader('/avatar', 1).single('avatarUpload'),
+  body('name').notEmpty().isString(),
   updateUserUserController,
 );
 userRouter.patch(
   '/user/change-password',
   validateToken,
   validateUser,
+  body('currPassword')
+    .notEmpty()
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]+$/),
+  body('newPassword')
+    .notEmpty()
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]+$/),
   changePasswordController,
 );
 userRouter.patch(
   '/user/change-email',
   validateToken,
   validateUser,
+  body('newEmail').notEmpty().isEmail(),
   changeEmailController,
 );
 userRouter.patch(
@@ -36,6 +49,6 @@ userRouter.patch(
   specialTokenValidation,
   verifyEmailController,
 );
-userRouter.get('/', getAllUser);
+userRouter.get('/', validateToken, validateSuper, getAllUser);
 
 export { userRouter };

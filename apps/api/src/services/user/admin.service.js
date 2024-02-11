@@ -26,3 +26,12 @@ export const findOneAdminByUUIDService = async (UUID) => {
   });
   return result;
 };
+
+export const findAllAddminServiceTemp = async () => {
+  const result = await users.findAll({
+    where: {
+      role: 'admin',
+    },
+  });
+  return result;
+};

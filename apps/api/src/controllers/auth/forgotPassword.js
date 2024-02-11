@@ -1,3 +1,4 @@
+import { validationResult } from 'express-validator';
 import { APP_URL, SCRT_KEY } from '../../config';
 import { DB } from '../../db';
 import resTemplate from '../../helper/resTemplate';
@@ -13,6 +14,8 @@ const forgotPassword = async (req, res, next) => {
   await DB.initialize();
   const t = await DB.db.sequelize.transaction();
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) throw { rc: 400, message: 'Invalid request' };
     const isExist = await findOneUserByEmailService(req.body.email);
     if (!isExist) throw { rc: 404, message: 'Account is not found' };
     if (isExist.dataValues.type !== 'regular')
@@ -37,7 +40,6 @@ const forgotPassword = async (req, res, next) => {
       'FORGOT_PASSWORD',
       t,
     );
-    if (!deactiveToken[0]) throw { message: 'Token not found' };
     const saveToken = await createTokenService(token, id, 'FORGOT_PASSWORD', t);
     await sendResetPasswordEmail(
       isExist.dataValues.email,

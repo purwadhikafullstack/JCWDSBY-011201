@@ -1,11 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { Avatar, Label, TextInput } from 'flowbite-react';
+import { Label, TextInput } from 'flowbite-react';
 import UserLayout from '../components/UserLayout';
-import {
-  HiChevronLeft,
-  HiOutlineChevronLeft,
-  HiOutlinePencilSquare,
-} from 'react-icons/hi2';
+import { HiChevronLeft } from 'react-icons/hi2';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import ButtonWithLoading from '../components/ButtonWithLoading';
@@ -16,6 +12,8 @@ import customToast from '../utils/toast';
 import { login } from '../redux/slice/userSlice';
 import { MAX_SIZE } from '../constants/file';
 import { REGEX_FILE_TYPE } from '../constants/file';
+import CosmoTextLogo from '../components/CosmoTextLogo';
+import defaultImage from '../assets/defaultImageSquare.jpg';
 
 const UserProfileDetail = (props) => {
   const dispatch = useDispatch();
@@ -24,8 +22,7 @@ const UserProfileDetail = (props) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [avatarUpload, setAvatarUpload] = useState(null);
-  console.log("🚀 ~ UserProfileDetail ~ avatarUpload:", avatarUpload)
-
+  console.log('🚀 ~ UserProfileDetail ~ avatarUpload:', avatarUpload);
 
   const profileDetailSchema = Yup.object({
     name: Yup.string()
@@ -87,7 +84,7 @@ const UserProfileDetail = (props) => {
       <div className="flex flex-col h-full w-full">
         <div className="header flex flex-col pt-8 px-4 lg:px-32 pb-4 bg-blue-50 gap-2">
           <div className="flex">
-            <span className="text-blue-800 font-extrabold text-3xl">Cosmo</span>
+            <CosmoTextLogo size={'text-4xl'} />
           </div>
           <div
             className="flex items-center gap-2"
@@ -115,7 +112,7 @@ const UserProfileDetail = (props) => {
                       ? `${import.meta.env.VITE_IMG_URL}/avatar/${
                           globalUser.image
                         }`
-                      : '/defaultImageSquare.jpg'
+                      : defaultImage
                 }
               />
             </div>

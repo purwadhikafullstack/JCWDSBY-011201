@@ -1,14 +1,17 @@
 import { Avatar, Button } from 'flowbite-react';
 import { useState } from 'react';
-import { HiBanknotes, HiChevronDown, HiUser } from 'react-icons/hi2';
-import { useSelector } from 'react-redux';
+import { HiBanknotes, HiChevronDown, HiPower, HiUser } from 'react-icons/hi2';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { logout } from '../../redux/slice/userSlice';
+import defaultImage from '../../assets/defaultImageSquare.jpg';
 
 const ProfileMenu = (props) => {
   const location = useLocation();
   const navigate = useNavigate();
   const currUser = useSelector((reducer) => reducer.userReducer);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const dispatch = useDispatch();
   return (
     <>
       {currUser.name ? (
@@ -17,14 +20,14 @@ const ProfileMenu = (props) => {
           onMouseEnter={() => setShowProfileMenu(true)}
           onMouseLeave={() => setShowProfileMenu(false)}
         >
-          <Avatar
-            img={
+          <img
+            className="w-9 h-9 object-cover rounded-full border"
+            src={
               currUser.image
                 ? `${import.meta.env.VITE_IMG_URL}/avatar/${currUser.image}`
-                : '/defaultImageSquare.jpg'
+                : defaultImage
             }
-            size={'sm'}
-            rounded
+            alt=""
           />
           <span>{currUser.name}</span>
           <HiChevronDown className="w-4 h-4" />
@@ -44,9 +47,25 @@ const ProfileMenu = (props) => {
               <HiUser className="w-4 h-4" />
               <span>Profile</span>
             </div>
-            <div className="flex gap-2 items-center font-normal hover:underline underline-offset-1">
+            <div
+              className="flex gap-2 items-center font-normal hover:underline underline-offset-1"
+              onClick={() => {
+                navigate('/orders');
+              }}
+            >
               <HiBanknotes className="w-4 h-4" />
               <span>Orders</span>
+            </div>
+            <div
+              className="flex gap-2 items-center font-normal hover:underline underline-offset-1"
+              onClick={() => {
+                dispatch(logout());
+                localStorage.removeItem('authToken');
+                navigate('/login', { replace: true });
+              }}
+            >
+              <HiPower className="w-4 h-4" />
+              <span>Log Out</span>
             </div>
           </div>
         </span>

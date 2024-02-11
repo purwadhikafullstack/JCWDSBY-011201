@@ -16,6 +16,7 @@ import customToast from '../../utils/toast';
 import { useNavigate, useParams } from 'react-router-dom';
 import FormStore from '../../components/form/formStore';
 import TopBar from '../../components/TopBar';
+import LayoutDashboard from '../../components/LayoutDashboard';
 
 const ManageStoreUpdate = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -32,6 +33,8 @@ const ManageStoreUpdate = () => {
   const [branch, setBranch] = useState('');
   const navigate = useNavigate();
   const params = useParams();
+
+  console.log(admin);
 
   const getStoreDetail = async () => {
     try {
@@ -58,8 +61,10 @@ const ManageStoreUpdate = () => {
 
   const getAdminList = async () => {
     try {
-      const result = await API_CALL.get('/admin');
-      setAdminList(result.data);
+      const result = await API_CALL.get('/admin/temp', {
+        params: { store: 'false' },
+      });
+      setAdminList(result.data.result);
     } catch (error) {
       console.log(error);
     }
@@ -152,48 +157,53 @@ const ManageStoreUpdate = () => {
 
   return (
     <>
-      <div className="flex flex-row container bg-blue-100 min-w-[360px] h-max min-h-screen">
-        <LoadingSpinner isLoading={isLoading} size={16} />
-        <div className="flex flex-col w-full h-full gap-2">
-          <TopBar
-            title={'Update Branch'}
-            prevPage={() => navigate('/manage/store')}
-          />
-          <FormStore
-            province={province}
-            city={city}
-            district={district}
-            branch={branch}
-            admin={admin}
-            address={address}
-            postal={postal}
-            provinceData={provinceList}
-            cityData={cityList}
-            districtData={districtList}
-            adminData={adminList}
-            onProvince={(e) => {
-              setProvince(e.target.value);
-              setCity(null);
-              setDistrict(null);
-            }}
-            onCity={(e) => {
-              setCity(e.target.value);
-              setDistrict(null);
-            }}
-            onDistrict={(e) => {
-              setDistrict(e.target.value);
-            }}
-            onAdmin={(e) => setAdmin(e.target.value)}
-            onBranch={(e) => {
-              setBranch(e.target.value);
-            }}
-            onAddress={(e) => setAddress(e.target.value)}
-            onPostal={(e) => setPostal(e.target.value)}
-            onSubmit={onSubmitData}
-            isLoading={isLoading}
-          />
+      <LayoutDashboard>
+        {' '}
+        <div className="flex flex-row container min-w-[360px] h-max min-h-screen">
+          <LoadingSpinner isLoading={isLoading} size={16} />
+          <div className="flex flex-col w-full h-full gap-2">
+            <TopBar
+              title={'Update Branch'}
+              prevPage={() => navigate('/manage/store')}
+            />
+            <div className="px-8">
+              <FormStore
+                province={province}
+                city={city}
+                district={district}
+                branch={branch}
+                admin={admin}
+                address={address}
+                postal={postal}
+                provinceData={provinceList}
+                cityData={cityList}
+                districtData={districtList}
+                adminData={adminList}
+                onProvince={(e) => {
+                  setProvince(e.target.value);
+                  setCity(null);
+                  setDistrict(null);
+                }}
+                onCity={(e) => {
+                  setCity(e.target.value);
+                  setDistrict(null);
+                }}
+                onDistrict={(e) => {
+                  setDistrict(e.target.value);
+                }}
+                onAdmin={(e) => setAdmin(e.target.value)}
+                onBranch={(e) => {
+                  setBranch(e.target.value);
+                }}
+                onAddress={(e) => setAddress(e.target.value)}
+                onPostal={(e) => setPostal(e.target.value)}
+                onSubmit={onSubmitData}
+                isLoading={isLoading}
+              />
+            </div>
+          </div>
         </div>
-      </div>
+      </LayoutDashboard>
     </>
   );
 };

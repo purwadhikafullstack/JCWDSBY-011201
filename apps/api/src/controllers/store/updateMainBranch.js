@@ -10,6 +10,7 @@ const updateMainBranch = async (req, res, next) => {
   const t = await DB.db.sequelize.transaction();
   try {
     const currDefault = await findMainStoreService();
+    console.log('currDefault', currDefault);
     if (currDefault) {
       await updateStoreService(
         { isMain: false },
@@ -17,11 +18,8 @@ const updateMainBranch = async (req, res, next) => {
         t,
       );
     }
-    const result = await updateStoreService(
-      { isMain: false },
-      req.params.id,
-      t,
-    );
+    console.log('curr Id', req.params.id);
+    const result = await updateStoreService({ isMain: true }, req.params.id, t);
 
     if (!result[0]) {
       throw { rc: 404, message: 'Store not found' };

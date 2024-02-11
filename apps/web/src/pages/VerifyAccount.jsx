@@ -1,4 +1,5 @@
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
+import cosmoLogo from '../assets/cosmo-logo.svg';
 import API_CALL from '../helpers/API';
 import { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
@@ -8,6 +9,7 @@ import ButtonWithLoading from '../components/ButtonWithLoading';
 import { useSelector } from 'react-redux';
 import InputPassword from '../components/InputPassword';
 import Container from '../components/Container';
+import CosmoTextLogo from '../components/CosmoTextLogo';
 
 const VerifyAccount = () => {
   const [searchParams] = useSearchParams();
@@ -83,8 +85,12 @@ const VerifyAccount = () => {
     <Container>
       <div className="flex w-full h-full">
         <div className="header flex flex-col w-full h-full">
-          <div className="flex w-full h-full justify-center items-center">
-            <div className="flex flex-col w-full md:w-[50%] p-8">
+          <div className="flex w-full h-full justify-center items-center py-6">
+            <div className="flex flex-col w-full md:w-[500px] p-6 lg:p-8 border rounded-lg overflow-hidden shadow-lg">
+              <div className="flex items-center justify-center gap-2 py-3 drop-shadow-md">
+                <img className="w-16 h-16" src={cosmoLogo} alt="" />
+                <CosmoTextLogo size={'text-6xl'} />
+              </div>
               <div className="title mb-2">
                 <span className="text-3xl font-bold">Verify Account</span>
               </div>
