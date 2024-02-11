@@ -8,11 +8,14 @@ import {
   findOneUserByEmailAndTypeService,
 } from '../../services/user/user.service';
 import resTemplate from '../../helper/resTemplate';
+import { validationResult } from 'express-validator';
 
 const googleSignUp = async (req, res, next) => {
   await DB.initialize();
   const t = await DB.db.sequelize.transaction();
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) throw { rc: 400, message: 'Invalid request' };
     const isExist = await findOneUserByEmailAndTypeService(
       req.body.email,
       'google',

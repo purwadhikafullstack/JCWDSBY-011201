@@ -1,4 +1,5 @@
 import banner from '../assets/login-banner.jpg';
+import cosmoLogo from '../assets/cosmo-logo.svg';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -10,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../redux/slice/userSlice';
 import InputPassword from '../components/InputPassword';
 import Container from '../components/Container';
+import CosmoTextLogo from '../components/CosmoTextLogo';
 
 const LoginAdmin = () => {
   const navigate = useNavigate();
@@ -66,82 +68,84 @@ const LoginAdmin = () => {
 
   return (
     <Container>
-      {' '}
-      <div className="flex w-full h-full">
-        <div className="header flex flex-col w-full h-full">
-          <div className="img-container w-full h-[30%] relative">
+      <div className="flex w-full h-full justify-center items-center">
+        <div className="flex w-full lg:w-[1000px] border rounded-lg overflow-hidden shadow-lg">
+          <div className="img-container hidden lg:flex w-full h-full] relative">
             <img className="w-full h-full object-cover" src={banner} alt="" />
-            <div className="text-container absolute top-0 w-full h-full flex justify-center items-center">
-              <span className="text-7xl font-bold text-blue-900 drop-shadow-lg">
-                COSMO
-              </span>
-            </div>
           </div>
-          <div className="flex w-full h-full justify-center">
-            <div className="flex flex-col w-full md:w-[50%] p-8">
-              <div className="title mb-2">
-                <span className="text-3xl font-bold">Welcome Cosmo Admin</span>
-              </div>
-              <div className="mb-2">
-                <label
-                  htmlFor="username"
-                  className="block font-semibold text-gray-900 text-sm mb-1"
+          <div className="header flex flex-col w-full h-full py-6">
+            <div className="flex items-center justify-center gap-2 py-3 drop-shadow-md">
+              <img className="w-16 h-16" src={cosmoLogo} alt="" />
+              <CosmoTextLogo size={'text-6xl'} />
+            </div>
+            <div className="flex w-full h-full justify-center">
+              <div className="flex flex-col w-full p-6 lg:p-8">
+                <div className="title mb-2">
+                  <span className="text-3xl font-bold">
+                    Welcome Cosmo Admin
+                  </span>
+                </div>
+                <div className="mb-2">
+                  <label
+                    htmlFor="username"
+                    className="block font-semibold text-gray-900 text-sm mb-1"
+                  >
+                    Admin Username
+                  </label>
+                  <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.username}
+                    placeholder="Input your admin username"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  />
+                  <span
+                    className={`${
+                      formik.touched.username && formik.errors.username
+                        ? ''
+                        : 'invisible'
+                    } text-xs text-red-500`}
+                  >
+                    {formik.errors.username || 'Correct'}
+                  </span>
+                </div>
+                <div className="mb-1">
+                  <label
+                    htmlFor="password"
+                    className="block font-semibold text-gray-900 text-sm mb-1"
+                  >
+                    Password
+                  </label>
+                  <InputPassword
+                    id={'password'}
+                    name={'password'}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.password}
+                    placeholder="Input your password"
+                    HelperText={
+                      <span
+                        className={`${
+                          formik.touched.password && formik.errors.password
+                            ? ''
+                            : 'invisible'
+                        } text-xs text-red-500`}
+                      >
+                        {formik.errors.password || 'Correct'}
+                      </span>
+                    }
+                  />
+                </div>
+                <ButtonWithLoading
+                  isLoading={isLoading}
+                  func={formik.handleSubmit}
                 >
-                  Admin Username
-                </label>
-                <input
-                  type="text"
-                  id="username"
-                  name="username"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.username}
-                  placeholder="Input your admin username"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                />
-                <span
-                  className={`${
-                    formik.touched.username && formik.errors.username
-                      ? ''
-                      : 'invisible'
-                  } text-xs text-red-500`}
-                >
-                  {formik.errors.username || 'Correct'}
-                </span>
+                  Login
+                </ButtonWithLoading>
               </div>
-              <div className="mb-1">
-                <label
-                  htmlFor="password"
-                  className="block font-semibold text-gray-900 text-sm mb-1"
-                >
-                  Password
-                </label>
-                <InputPassword
-                  id={'password'}
-                  name={'password'}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.password}
-                  placeholder="Input your password"
-                  HelperText={
-                    <span
-                      className={`${
-                        formik.touched.password && formik.errors.password
-                          ? ''
-                          : 'invisible'
-                      } text-xs text-red-500`}
-                    >
-                      {formik.errors.password || 'Correct'}
-                    </span>
-                  }
-                />
-              </div>
-              <ButtonWithLoading
-                isLoading={isLoading}
-                func={formik.handleSubmit}
-              >
-                Login
-              </ButtonWithLoading>
             </div>
           </div>
         </div>

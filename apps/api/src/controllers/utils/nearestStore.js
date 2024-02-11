@@ -17,9 +17,13 @@ export default async function (req, res, next) {
       const mainBranch = await findMainStoreService();
       response.message = 'Out of range, nearest store set to main branch';
       mainBranch.dataValues.distance = null;
+      delete mainBranch.dataValues.id;
+      delete mainBranch.dataValues.userId;
       response.result = { ...mainBranch.dataValues };
     } else {
       response.message = `Nearest store set to ${nearest.name}`;
+      delete nearest.id;
+      delete nearest.userId;
       response.result = nearest;
     }
     return res.status(200).json(resTemplate(...Object.values(response)));

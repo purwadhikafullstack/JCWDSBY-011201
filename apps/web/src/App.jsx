@@ -94,7 +94,6 @@ function App() {
         }
         setIsLoading(false);
       } catch (error) {
-        console.log(error);
         dispatch(logout());
         localStorage.removeItem('authToken');
         setIsLoading(false);
@@ -213,7 +212,7 @@ function App() {
         <Route path="/product/:name" element={<UserProductDetail />} />
 
         {/* Afra */}
-         <Route
+        <Route
           path="/cart"
           element={
             <PrivateRoute role={'user'} navigate={'/login'}>
@@ -245,7 +244,7 @@ function App() {
             </PrivateRoute>
           }
         />
-         <Route
+        <Route
           path="/manage/orders"
           element={
             <PrivateRoute role={['admin', 'super']}>
