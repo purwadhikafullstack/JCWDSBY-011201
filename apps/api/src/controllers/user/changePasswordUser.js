@@ -1,14 +1,18 @@
+import { validationResult } from 'express-validator';
 import { hashPassword, verifyPassword } from '../../helper/hash';
 import resTemplate from '../../helper/resTemplate';
 import {
   findOneUserByIdService,
   updateUserDataService,
 } from '../../services/user/user.service';
+import { DB } from '../../db';
 
 const changePassword = async (req, res, next) => {
   await DB.initialize();
   const t = await DB.sequelize.transaction();
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) throw { rc: 400, message: 'Invalid request' };
     const userData = await findOneUserByIdService(req.tokenData.id);
     const isValid = await verifyPassword(
       req.body.currPassword,

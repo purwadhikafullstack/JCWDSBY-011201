@@ -1,5 +1,8 @@
 import { Button } from 'flowbite-react';
 import { useNavigate } from 'react-router-dom';
+import groceryWomanImage from '../../assets/grocery-woman.png';
+import deliveryManImage from '../../assets/delivery-man.png';
+import groceryBagImage from '../../assets/grocery-bag.png';
 
 const MiniHeroViews = () => {
   const navigate = useNavigate();
@@ -26,7 +29,7 @@ const MiniHeroViews = () => {
           </div>
           <img
             className="h-full w-32 md:w-24 lg:w-40 right-2 absolute object-contain drop-shadow-2xl"
-            src="/grocery-woman.png"
+            src={groceryWomanImage}
             alt=""
           />
         </div>
@@ -50,7 +53,7 @@ const MiniHeroViews = () => {
           </div>
           <img
             className="h-full w-32 md:w-24 lg:w-40 right-2 absolute object-contain drop-shadow-2xl"
-            src="/delivery-man.png"
+            src={deliveryManImage}
             alt=""
           />
         </div>
@@ -74,8 +77,8 @@ const MiniHeroViews = () => {
           </div>
           <img
             className="h-full w-32 md:w-24 lg:w-40 right-2 absolute object-contain drop-shadow-2xl"
-            src="/grocery-bag.png"
-            alt=""
+            src={groceryBagImage}
+            alt="Grocery Bag"
           />
         </div>
       </div>

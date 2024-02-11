@@ -1,3 +1,4 @@
+import { validationResult } from 'express-validator';
 import { DB } from '../../db';
 import resTemplate from '../../helper/resTemplate';
 import {
@@ -9,6 +10,8 @@ const updateDefaultAddress = async (req, res, next) => {
   await DB.initialize();
   const t = await DB.db.sequelize.transaction();
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) throw { rc: 400, message: 'Invalid request' };
     const currDefault = await findDefaultUserAddressService(req.tokenData.id);
     if (currDefault) {
       await updateUserAddressService(

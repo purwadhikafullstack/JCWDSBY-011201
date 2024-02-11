@@ -1,8 +1,11 @@
+import { validationResult } from 'express-validator';
 import resTemplate from '../../helper/resTemplate';
 import { findOneUserAddressService } from '../../services/address/address.service';
 
 const getAddressDetail = async (req, res, next) => {
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) throw { rc: 400, message: 'Invalid request' };
     const result = await findOneUserAddressService(
       req.tokenData.id,
       req.params.id,
