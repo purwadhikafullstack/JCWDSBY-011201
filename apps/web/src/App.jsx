@@ -52,6 +52,7 @@ import ManageDiscount from './pages/admin/ManageDiscount';
 import ManageDiscountAdd from './pages/admin/ManageDiscountAdd';
 import ManageDiscountEdit from './pages/admin/ManageDiscountEdit';
 import Cart from './pages/Cart';
+import SalesReport from './pages/admin/SalesReport';
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 function App() {
@@ -87,6 +88,7 @@ function App() {
           if (!authResult) {
             throw 'Authentication failed';
           }
+          console.log(authResult);
           dispatch(login(authResult));
           localStorage.setItem('authToken', authResult.token);
         }
@@ -388,6 +390,14 @@ function App() {
           element={
             <PrivateRoute role={['admin', 'super']}>
               <StockReport />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/report/sales"
+          element={
+            <PrivateRoute role={['admin', 'super']}>
+              <SalesReport />
             </PrivateRoute>
           }
         />

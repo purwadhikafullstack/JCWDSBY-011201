@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { SCRT_KEY } from '../config';
+import resTemplate from '../helper/resTemplate';
 
 export const validateToken = (req, res, next) => {
   try {
@@ -12,11 +13,10 @@ export const validateToken = (req, res, next) => {
     return next();
   } catch (error) {
     console.log(error.message);
-    return res.status(error.rc || 500).json({
-      success: false,
-      message: error.message,
-      result: null,
-    });
+    resTemplate(error.rc || 500, false, error.message, null);
+    return res
+      .status(error.rc || 500)
+      .json(resTemplate(error.rc || 500, false, error.message, null));
   }
 };
 
@@ -29,11 +29,9 @@ export const validateUser = (req, res, next) => {
     }
   } catch (error) {
     console.log(error.message);
-    return res.status(error.rc || 500).json({
-      success: false,
-      message: error.message,
-      result: null,
-    });
+    return res
+      .status(error.rc || 500)
+      .json(resTemplate(error.rc || 500, false, error.message, null));
   }
 };
 
@@ -46,11 +44,9 @@ export const validateAdmin = (req, res, next) => {
     }
   } catch (error) {
     console.log(error.message);
-    return res.status(error.rc || 500).json({
-      success: false,
-      message: error.message,
-      result: null,
-    });
+    return res
+      .status(error.rc || 500)
+      .json(resTemplate(error.rc || 500, false, error.message, null));
   }
 };
 
@@ -63,11 +59,9 @@ export const validateAdminOnly = (req, res, next) => {
     }
   } catch (error) {
     console.log(error.message);
-    return res.status(error.rc || 500).json({
-      success: false,
-      message: error.message,
-      result: null,
-    });
+    return res
+      .status(error.rc || 500)
+      .json(resTemplate(error.rc || 500, false, error.message, null));
   }
 };
 
@@ -80,10 +74,8 @@ export const validateSuper = (req, res, next) => {
     }
   } catch (error) {
     console.log(error.message);
-    return res.status(error.rc || 500).json({
-      success: false,
-      message: error.message,
-      result: null,
-    });
+    return res
+      .status(error.rc || 500)
+      .json(resTemplate(error.rc || 500, false, error.message, null));
   }
 };

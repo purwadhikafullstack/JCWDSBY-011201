@@ -8,6 +8,7 @@ import ButtonWithLoading from '../components/ButtonWithLoading';
 import { useDispatch } from 'react-redux';
 import { logout } from '../redux/slice/userSlice';
 import InputPassword from '../components/InputPassword';
+import Container from '../components/Container';
 
 const NewPassword = () => {
   const [searchParams] = useSearchParams();
@@ -70,7 +71,8 @@ const NewPassword = () => {
   });
 
   return (
-    <div className="container lg:w-[1024px] m-auto h-screen">
+    <Container>
+      {' '}
       <div className="flex w-full h-full">
         <div className="header flex flex-col w-full h-full">
           <div className="flex w-full h-full justify-center items-center">
@@ -142,7 +144,7 @@ const NewPassword = () => {
           </div>
         </div>
       </div>
-    </div>
+    </Container>
   );
 };
 

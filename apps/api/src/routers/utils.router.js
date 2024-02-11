@@ -1,18 +1,25 @@
 import { Router } from 'express';
-import nearestStore from './utils/nearestStore';
 import { validateToken, validateUser } from '../middleware/tokenValidation';
-import shippingAddress from './utils/shippingAddress';
-import courierRates from './utils/courierRates';
+import {
+  courierRatesController,
+  nearestStoreController,
+  shippingAddressController,
+} from '../controllers/utils.controller';
 
 const utilsRouter = Router();
 
-utilsRouter.get('/store/nearest', nearestStore);
+utilsRouter.get('/store/nearest', nearestStoreController);
 utilsRouter.get(
   '/shipping-address',
   validateToken,
   validateUser,
-  shippingAddress,
+  shippingAddressController,
 );
-utilsRouter.post('/courier-rates', validateToken, validateUser, courierRates);
+utilsRouter.post(
+  '/courier-rates',
+  validateToken,
+  validateUser,
+  courierRatesController,
+);
 
 export { utilsRouter };

@@ -1,18 +1,14 @@
 import { Router } from 'express';
-import registerAdmin from './admin/registerAdmin';
-import changePasswordAdmin from './admin/changePasswordAdmin';
-import updateUserAdmin from './admin/updateUserAdmin';
-import deleteAdmin from './admin/deleteAdmin';
-import getAllAdmin from './admin/getAllAdmin';
-import getAdminDetail from './admin/getAdminDetail';
+import { validateSuper, validateToken } from '../middleware/tokenValidation';
+import { getAdmin, getAdminDetail, registerAdmin, updateAdmin, changePasswordAdmin, deleteAdmin } from '../controllers/admin.controller';
 
 const adminRouter = Router();
 
-adminRouter.get('/', getAllAdmin);
-adminRouter.get('/:uuid', getAdminDetail);
-adminRouter.post('/', registerAdmin)
-adminRouter.patch('/profile/:uuid', updateUserAdmin)
-adminRouter.patch('/:uuid', changePasswordAdmin)
-adminRouter.delete('/:uuid', deleteAdmin)
+adminRouter.get('/', validateToken, validateSuper, getAdmin);
+adminRouter.get('/:uuid', validateToken, validateSuper, getAdminDetail);
+adminRouter.post('/', validateToken, validateSuper, registerAdmin)
+adminRouter.patch('/profile/:uuid', validateToken, validateSuper, updateAdmin)
+adminRouter.patch('/:uuid', validateToken, validateSuper, changePasswordAdmin)
+adminRouter.delete('/:uuid', validateToken, validateSuper, deleteAdmin)
 
 export { adminRouter };

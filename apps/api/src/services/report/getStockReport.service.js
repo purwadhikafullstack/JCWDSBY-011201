@@ -13,6 +13,7 @@ export default async function (params) {
                 {
                     model: inventory,
                     required: true,
+                    paranoid:false,
                     include: [
                         {
                             model: product,

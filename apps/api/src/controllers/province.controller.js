@@ -1,9 +1,16 @@
-import provinces from '../models/provinces.model';
+import resTemplate from '../helper/resTemplate';
+import { findAllProvinceService } from '../services/address/address.service';
 
-export const findAllProvince = async (pointer) => {
-  return await provinces.findAll({ where: pointer });
-};
-
-export const findOneProvince = async (pointer) => {
-  return await provinces.findOne({ where: pointer });
+export const getALlProvinceController = async (req, res, next) => {
+  try {
+    const result = await findAllProvinceService();
+    return res
+      .status(200)
+      .json(resTemplate(200, true, 'Success get province data', result));
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(error.rc || 500)
+      .json(resTemplate(error.rc || 500, false, error.message, null));
+  }
 };

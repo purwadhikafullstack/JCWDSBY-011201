@@ -1,4 +1,5 @@
 import { Label, Select,  Button } from "flowbite-react";
+import { customButton } from "../../../helpers/flowbiteCustomTheme";
 
 const FormDiscountTerm = ({
     onNext,
@@ -15,7 +16,7 @@ const FormDiscountTerm = ({
             </Select>
         </form>
         <div className="grid justify-end mt-6 mb-4">
-            <Button color="blue" onClick={onNext}>Next</Button>
+            <Button theme={customButton} color="primary" onClick={onNext}>Next</Button>
         </div>
     </div>
 };

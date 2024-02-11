@@ -22,7 +22,8 @@
         type: Sequelize.INTEGER
       },
       bookedStock: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        defaultValue: 0
       },
       deletedAt: {
         type: Sequelize.DATE
