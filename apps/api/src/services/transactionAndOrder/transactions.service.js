@@ -37,6 +37,8 @@ export const createTransaction = async (req, t, userAddressId, storeId) => {
       transactionDate: literal('CURRENT_TIMESTAMP'),
       shipmentTotal: req.body.shipmentTotal,
       paymentMethod: req.body.paymentMethod,
+      itemTotal: req.body.itemTotal,
+      shipmentName: req.body.shipmentName,
       userAddressId,
       storeId,
       paymentTotal: req.body.paymentTotal,
@@ -155,6 +157,11 @@ export const getTransactionDetails = async (req, transactionId) => {
             attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
           },
         ],
+      },
+      {
+        model: discount,
+        as: 'discount',
+        attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
       },
     ],
   });

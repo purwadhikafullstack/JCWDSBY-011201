@@ -71,6 +71,7 @@ export const fuseDiscountAndItems = (itemArray, discountsArray) => {
         return {
           ...item,
           discountExist: false,
+          discountId: null,
           finalPrice: item.totalPrice,
         };
       }
@@ -98,7 +99,7 @@ export const fuseDiscountAndItems = (itemArray, discountsArray) => {
         });
       }
     } else if (group.length == 1 && group[0].discountTerm === 'buy 1 get 1') {
-      group.push({ ...group[0], hasFreeItem: true,discountId:null });
+      group.push({ ...group[0], hasFreeItem: true, discountId: null });
       group[0].productPrice = 0;
       group[0].finalPrice = 0;
       group[0].totalPrice = 0;
