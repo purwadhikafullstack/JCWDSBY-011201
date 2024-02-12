@@ -10,34 +10,38 @@ export default class discount extends Model {
   static associate(models) {
     // define association here
     // Transaction Detail
-    discount.hasMany(models.transactionDetails)
-    discount.belongsTo(models.stores)
-    discount.belongsTo(models.inventory)
+    discount.hasMany(models.transactionDetails);
+    discount.hasMany(models.transactions, { foreignKey: 'discountVoucherId' });
+    discount.belongsTo(models.stores);
+    discount.belongsTo(models.inventory);
   }
-};
+}
 
 export const init = (sequelize) => {
-  discount.init({
-    UUID: {
-      type: DataTypes.STRING,
-      defaultValue: nanoid(),
+  discount.init(
+    {
+      UUID: {
+        type: DataTypes.STRING,
+        defaultValue: nanoid(),
+      },
+      storeId: DataTypes.INTEGER,
+      inventoryId: DataTypes.INTEGER,
+      name: DataTypes.STRING,
+      limit: DataTypes.INTEGER,
+      term: DataTypes.ENUM(['buy 1 get 1', 'product', 'min transaction']),
+      type: DataTypes.ENUM(['nominal', 'percentage']),
+      minTransaction: DataTypes.INTEGER,
+      nominal: DataTypes.INTEGER,
+      percentage: DataTypes.DECIMAL(4, 1),
+      voucherCode: DataTypes.STRING,
+      startTime: DataTypes.DATE,
+      endTime: DataTypes.DATE,
+      deletedAt: DataTypes.DATE,
     },
-    storeId: DataTypes.INTEGER,
-    inventoryId: DataTypes.INTEGER,
-    name: DataTypes.STRING,
-    limit: DataTypes.INTEGER,
-    term: DataTypes.ENUM(['buy 1 get 1', 'product', 'min transaction']),
-    type: DataTypes.ENUM(['nominal', 'percentage']),
-    minTransaction: DataTypes.INTEGER,
-    nominal: DataTypes.INTEGER,
-    percentage: DataTypes.DECIMAL(4,1),
-    voucherCode: DataTypes.STRING,
-    startTime: DataTypes.DATE,
-    endTime: DataTypes.DATE,
-    deletedAt: DataTypes.DATE
-  }, {
-    sequelize,
-    modelName: 'discount',
-    paranoid: true,
-  });
+    {
+      sequelize,
+      modelName: 'discount',
+      paranoid: true,
+    },
+  );
 };

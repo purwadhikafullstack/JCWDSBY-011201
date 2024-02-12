@@ -11,7 +11,7 @@ import LoginAdmin from './pages/LoginAdmin';
 import Landing from './pages/Landing';
 import { gapi } from 'gapi-script';
 import { useEffect, useState } from 'react';
-import AdminDashboard from './pages/AdminDashboard';
+import AdminDashboard from './pages/admin/AdminDashboard';
 import { useDispatch, useSelector } from 'react-redux';
 import NotFound from './pages/NotFound';
 import UserProfile from './pages/UserProfile';
@@ -53,6 +53,7 @@ import ManageDiscountAdd from './pages/admin/ManageDiscountAdd';
 import ManageDiscountEdit from './pages/admin/ManageDiscountEdit';
 import Cart from './pages/Cart';
 import SalesReport from './pages/admin/SalesReport';
+import CourierArrival from './pages/CourierArrival';
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 function App() {
@@ -210,7 +211,6 @@ function App() {
         />
         <Route path="/category" element={<UserFindCategory />} />
         <Route path="/product/:name" element={<UserProductDetail />} />
-
         {/* Afra */}
         <Route
           path="/cart"
@@ -260,6 +260,7 @@ function App() {
             </PrivateRoute>
           }
         />
+         <Route path="/courier/arriv" element={<CourierArrival />} />
         {/* Admin Side */}
         {/* Wahyu Widiantoro */}
         <Route path="/manage/login" element={<LoginAdmin />} />

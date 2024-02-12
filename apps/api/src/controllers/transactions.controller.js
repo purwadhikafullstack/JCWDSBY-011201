@@ -7,39 +7,41 @@ import {
   getOneTransaction,
   getTransactionDetails,
   handleMidtrans,
-  raiseBookedStock,
   transactionDetailsBulkCreate,
-  updateProofImg,
-  updateTransactionStatus,
 } from '../services/transactionAndOrder/transactions.service';
 import resTemplate from '../helper/resTemplate';
-import fs from 'fs';
+import { updateLimitVoucher } from '../services/transactionAndOrder/order.service';
+import { findVoucherById } from '../services/transactionAndOrder/transactions2.service';
 
 export const createTransactionController = async (req, res, next) => {
   await DB.initialize();
   try {
+    const userAddressData = await findUserAddressIdForTransaction(req);
+    const storeData = await findStoreByUUID(req);
+    const discountData = await findVoucherById(req.body.discountVoucherId);
+    if (discountData.limit < 1) {
+      throw { rc: 401, message: 'Voucher habis' };
+    }
     const result = await DB.db.sequelize.transaction(async (t) => {
-      const userAddressData = await findUserAddressIdForTransaction(req);
-      const storeData = await findStoreByUUID(req);
-      console.log('🚀 ~ result ~ storeData:', storeData);
       const createData = (
         await createTransaction(req, t, userAddressData.id, storeData.id)
       ).toJSON();
-      console.log('🚀 ~ result ~ createData:', createData);
       await transactionDetailsBulkCreate(req, t, createData.id);
+      await updateLimitVoucher('minus', req.body.discountVoucherId);
       req.transactionData = createData;
     });
     next();
   } catch (error) {
     console.log(error);
-    next(error);
+    return res
+      .status(error.rc || 500)
+      .json(resTemplate(error.rc || 500, false, 'error creating transaction'));
   }
 };
 
 export const midtransController = async (req, res, next) => {
   try {
     const userData = await findUserDataForTransaction(req);
-    console.log('🚀 ~ userData:', userData);
     if (userData) {
       const result = await handleMidtrans(req, userData);
       return res.status(200).json(
@@ -60,11 +62,18 @@ export const getTransactionDetailsController = async (req, res, next) => {
     const transData = await getOneTransaction(req);
     if (transData) {
       const detailsData = await getTransactionDetails(req, transData.id);
+      console.log(
+        '🚀 ~ getTransactionDetailsController ~ detailsData:',
+        detailsData,
+      );
       const processedRes = detailsData.map((val, idx) => {
         return {
           amount: val.amount,
           price: val.price,
-          name: val.price==0?('free'+val.inventory.product.name):val.inventory.product.name,
+          name:
+            val.price == 0
+              ? 'free' + val.inventory.product.name
+              : val.inventory.product.name,
         };
       });
       return res.status(200).json(
@@ -76,6 +85,7 @@ export const getTransactionDetailsController = async (req, res, next) => {
           shipmentName: transData.shipmentName,
           total: transData.paymentTotal,
           img: transData.paymentProofImg,
+          discountData: transData.discount,
           items: [
             ...processedRes,
             {
@@ -87,64 +97,6 @@ export const getTransactionDetailsController = async (req, res, next) => {
         }),
       );
     }
-  } catch (error) {
-    console.log(error);
-    next(error);
-  }
-};
-
-export const patchTransactionStatusController = async (req, res, next) => {
-  try {
-    await DB.initialize();
-    await DB.db.sequelize.transaction(async (t) => {
-      await updateTransactionStatus(req, t);
-    });
-    return res
-      .status(200)
-      .json(resTemplate(200, true, 'payment status updated successfully'));
-  } catch (error) {
-    console.log(error);
-    next(error);
-  }
-};
-
-export const patchPaymentProofController = async (req, res, next) => {
-  await DB.initialize();
-  try {
-    const dir = './src/assets/proof/';
-    if (req.file?.filename) {
-      const result = await DB.db.sequelize.transaction(async (t) => {
-        const transData = await getOneTransaction(req);
-        await updateProofImg(req, t, req.file?.filename, 'checking');
-        if (transData?.paymentProofImg) {
-          fs.unlinkSync(dir + transData?.paymentProofImg);
-        }
-      });
-      return res
-        .status(200)
-        .json(
-          resTemplate(200, true, 'payment proof has been uploaded', result),
-        );
-    }
-  } catch (error) {
-    console.log(error);
-    next(error);
-  }
-};
-
-export const patchTransactionSuccess = async (req, res, next) => {
-  await DB.initialize();
-  try {
-    const transaction = await getOneTransaction(req);
-    if (!transaction) {
-      throw resTemplate(404, false, 'order not found');
-    }
-    const details = await getTransactionDetails(req, transaction.id);
-    const result = await DB.db.sequelize.transaction(async (t) => {
-      await updateTransactionStatus(req, t);
-      await raiseBookedStock(req, t, details);
-    });
-    return res.status(200).json(resTemplate(200, true, 'Checkout Success'));
   } catch (error) {
     console.log(error);
     next(error);
