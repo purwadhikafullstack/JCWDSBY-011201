@@ -11,8 +11,6 @@ const ToolbarInventory = ({
   onAddInventory,
   searchParams,
   setSearchParams,
-  // filterStore,
-  // filterCategory,
   setIsLoading,
 }) => {
   const currentUser = useSelector(state => state.userReducer);

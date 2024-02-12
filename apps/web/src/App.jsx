@@ -11,7 +11,7 @@ import LoginAdmin from './pages/LoginAdmin';
 import Landing from './pages/Landing';
 import { gapi } from 'gapi-script';
 import { useEffect, useState } from 'react';
-import AdminDashboard from './pages/AdminDashboard';
+import AdminDashboard from './pages/admin/AdminDashboard';
 import { useDispatch, useSelector } from 'react-redux';
 import NotFound from './pages/NotFound';
 import UserProfile from './pages/UserProfile';
