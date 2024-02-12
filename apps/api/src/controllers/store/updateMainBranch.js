@@ -1,3 +1,4 @@
+import { validationResult } from 'express-validator';
 import { DB } from '../../db';
 import resTemplate from '../../helper/resTemplate';
 import {
@@ -9,7 +10,10 @@ const updateMainBranch = async (req, res, next) => {
   await DB.initialize();
   const t = await DB.db.sequelize.transaction();
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) throw { rc: 400, message: 'invalid request' };
     const currDefault = await findMainStoreService();
+    console.log('currDefault', currDefault);
     if (currDefault) {
       await updateStoreService(
         { isMain: false },
@@ -17,11 +21,8 @@ const updateMainBranch = async (req, res, next) => {
         t,
       );
     }
-    const result = await updateStoreService(
-      { isMain: false },
-      req.params.id,
-      t,
-    );
+    console.log('curr Id', req.params.id);
+    const result = await updateStoreService({ isMain: true }, req.params.id, t);
 
     if (!result[0]) {
       throw { rc: 404, message: 'Store not found' };

@@ -15,20 +15,23 @@ import {
   handleSuccessCheckout,
   updateTransactionStatus,
 } from '../helpers/checkout/updateTransaction';
-import { deleteCheckedItemInCloud } from '../redux/slice/cartSlice';
+import {
+  deleteCheckedItemInCloud,
+  setCheckoutItems,
+} from '../redux/slice/cartSlice';
+import { getCourierList } from '../helpers/checkout/checkoutFunctions';
 const Checkout = () => {
   const [address, setAddress] = useState(null);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [courier, setCourier] = useState(null);
   const [selectedCourier, setSelectedCourier] = useState(null);
-  console.log('🚀 ~ Checkout ~ selectedCourier:', selectedCourier);
+  console.log("🚀 ~ Checkout ~ selectedCourier:", selectedCourier)
   const [showAddresses, setShowAddresses] = useState(false);
   const [showCourier, setShowCourier] = useState(false);
-  const [showSendTime, setSendTime] = useState(false);
   const [showSnap, setShowSnap] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState('');
   const [showPayment, setShowPayment] = useState();
-  const cartItems = useSelector((state) => state.cartReducer.items);
+  const cartItems = useSelector((state) => state.cartReducer.checkoutItems);
   const currStore = useSelector((reducer) => reducer.storeReducer);
   console.log('🚀 ~ Checkout ~ currStore:', currStore.storeId);
   const { snapEmbed } = useSnap();
@@ -57,13 +60,22 @@ const Checkout = () => {
 
   const checkoutItems = cartItems
     .filter((item) => item.checked === 1)
-    .map(({ productName, productPrice, productWeight, amount, ...rest }) => ({
-      name: productName,
-      value: productPrice,
-      weight: productWeight,
-      quantity: amount,
-      ...rest,
-    }));
+    .map(
+      ({
+        productName,
+        productPrice,
+        productWeight,
+        discountedPrice,
+        amount,
+        ...rest
+      }) => ({
+        name: productName,
+        value: discountedPrice ?? productPrice,
+        weight: productWeight,
+        quantity: amount,
+        ...rest,
+      }),
+    );
   console.log('🚀 ~ Checkout ~ checkedItems:', checkoutItems);
   const itemsInvId = checkoutItems.reduce((accu, item) => {
     accu.push(item.inventoryId);
@@ -73,6 +85,11 @@ const Checkout = () => {
   const paymentTotal =
     checkoutItems.reduce((sum, item) => sum + item.value * item.quantity, 0) +
     selectedCourier?.price;
+
+  const itemTotal = checkoutItems.reduce(
+    (sum, item) => sum + item.value * item.quantity,
+    0,
+  );
 
   const handlePay = async () => {
     if (!address || !courier) {
@@ -84,8 +101,10 @@ const Checkout = () => {
       {
         addressUUID: selectedAddress.UUID,
         storeUUID: currStore.storeId,
-        shipmentTotal: selectedCourier.price,
+        shipmentTotal: selectedCourier?.price,
         paymentTotal,
+        itemTotal,
+        shipmentName:selectedCourier?.courier_name,
         checkoutItems,
         paymentMethod: selectedPayment.name,
       },
@@ -106,6 +125,7 @@ const Checkout = () => {
       snapEmbed(response.data.result.token, 'snap-container', {
         onSuccess: (result) => {
           handleSuccessCheckout(response.data.result.invoice, 'paid');
+          sessionStorage.removeItem('checkoutItems');
           setShowSnap(false);
         },
         onPending: (result) => {
@@ -120,31 +140,13 @@ const Checkout = () => {
     }
   };
 
-  const getCourierList = async (checkoutItems) => {
-    try {
-      const result = await API_CALL.post(
-        '/utils/courier-rates',
-        {
-          storePostal: currStore?.postalCode,
-          userPostal: selectedAddress?.postalCode,
-          items: checkoutItems,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('authToken')}`,
-          },
-        },
+  useEffect(() => {
+    if (cartItems.length < 1) {
+      dispatch(
+        setCheckoutItems(JSON.parse(sessionStorage.getItem('checkoutItems'))),
       );
-      console.log('🚀 ~ getCourierList ~ result:', result);
-      localStorage.setItem('tempCourier', JSON.stringify(result.data.result));
-      setCourier(result.data.result);
-      if (result.data.result.length > 0) {
-        setSelectedCourier(result.data.result[0]);
-      }
-    } catch (error) {
-      console.log(error.message);
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (currStore.postalCode !== '') {
@@ -154,7 +156,13 @@ const Checkout = () => {
 
   useEffect(() => {
     if (selectedAddress && checkoutItems) {
-      getCourierList(checkoutItems);
+      getCourierList(
+        checkoutItems,
+        currStore,
+        selectedAddress,
+        setCourier,
+        setSelectedCourier,
+      );
     }
   }, [selectedAddress]);
 

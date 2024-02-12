@@ -11,7 +11,12 @@ export default class transactionDetails extends Model {
     transactionDetails.belongsTo(models.transactions, {
       foreignKey: 'transactionId',
     });
-    transactionDetails.belongsTo(models.inventory);
+    transactionDetails.belongsTo(models.discount, {
+      foreignKey: 'discountId',
+    });
+    transactionDetails.belongsTo(models.inventory, {
+      foreignKey: 'inventoryId',
+    });
   }
 }
 

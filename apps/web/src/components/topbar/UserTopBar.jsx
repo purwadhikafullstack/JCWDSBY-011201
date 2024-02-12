@@ -37,7 +37,7 @@ const UserTopbar = () => {
           navigate('/');
         }}
       >
-        <img className="w-10 h-10" src={cosmoLogo} alt="" srcset="" />
+        <img className="w-10 h-10" src={cosmoLogo} alt="" srcSet="" />
       </div>
 
       <div

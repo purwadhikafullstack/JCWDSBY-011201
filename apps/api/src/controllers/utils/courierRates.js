@@ -1,10 +1,12 @@
 import axios from 'axios';
 import { BITESHIP_API_KEY, BITESHIP_API_URL } from '../../config';
 import resTemplate from '../../helper/resTemplate';
-
+import { validationResult } from 'express-validator';
 
 export default async function (req, res, next) {
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) throw { rc: 400, message: 'Invalid request' };
     const items = req.body.items;
     const storePostal = req.body.storePostal;
     const userPostal = req.body.userPostal;
@@ -22,7 +24,6 @@ export default async function (req, res, next) {
         },
       },
     );
-    console.log("🚀 ~ result:", result)
     const finalResult = result.data.pricing.map((value, idx) => {
       return {
         courier_id: value.courier_code + '_' + value.courier_service_code,
@@ -36,7 +37,6 @@ export default async function (req, res, next) {
       .status(201)
       .json(resTemplate(201, true, 'Success get couriers list', finalResult));
   } catch (error) {
-    console.log("error",error);
     next(error);
   }
 }

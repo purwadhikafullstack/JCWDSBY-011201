@@ -5,15 +5,18 @@ import {
   findOneUserByIdService,
   updateUserDataService,
 } from '../../services/user/user.service';
-import { SCRT_KEY } from '../../config';
 import { createTokenService } from '../../services/token/token.service';
 import { sendSignUpEmailVerification } from '../../helper/sendTemplateEmail';
 import resTemplate from '../../helper/resTemplate';
+import { validationResult } from 'express-validator';
+import { APP_URL, SCRT_KEY } from '../../config';
 
 const changeEmail = async (req, res, next) => {
   await DB.initialize();
   const t = await DB.sequelize.transaction();
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) throw { rc: 400, message: 'Invalid request' };
     const userData = await findOneUserByIdService(req.tokenData.id);
     const isExist = await findOneUserByEmailService(req.body.newEmail);
     if (isExist) throw { rc: 401, message: 'New email is already registered' };

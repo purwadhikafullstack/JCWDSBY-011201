@@ -5,6 +5,7 @@ import {
   HiMiniEllipsisHorizontal,
 } from 'react-icons/hi2';
 import { Badge, Button, Modal, Dropdown, Table } from 'flowbite-react';
+import { customTable } from '../../helpers/flowbiteCustomTheme';
 
 const ManageStoreTable = ({
   storeData,
@@ -20,7 +21,7 @@ const ManageStoreTable = ({
 }) => {
   return (
     <>
-      <Table striped>
+      <Table theme={customTable}>
         <Table.Head>
           <Table.HeadCell>Branch Name</Table.HeadCell>
           <Table.HeadCell>Branch Admin</Table.HeadCell>

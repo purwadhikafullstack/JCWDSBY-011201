@@ -1,3 +1,4 @@
+import { validationResult } from 'express-validator';
 import { SCRT_KEY } from '../../config';
 import { verifyPassword } from '../../helper/hash';
 import resTemplate from '../../helper/resTemplate';
@@ -6,6 +7,8 @@ import jwt from 'jsonwebtoken';
 
 const loginAdmin = async (req, res, next) => {
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) throw { rc: 400, message: 'Invalid request' };
     const isExist = await findOneAdminByUsernameService(req.body.username);
     if (!isExist) throw { rc: 404, message: 'User not found' };
     const { id, email, name, role, image, type, password } = isExist.dataValues;

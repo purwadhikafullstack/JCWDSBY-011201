@@ -1,3 +1,4 @@
+import { validationResult } from 'express-validator';
 import { SCRT_KEY } from '../../config';
 import { verifyPassword } from '../../helper/hash';
 import resTemplate from '../../helper/resTemplate';
@@ -6,6 +7,8 @@ import jwt from 'jsonwebtoken';
 
 const login = async (req, res, next) => {
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) throw { rc: 400, message: 'Invalid request' };
     const result = await findOneUserByEmailService(req.body.email);
     if (!result) throw { rc: 404, message: 'User not found' };
     if (result.dataValues.type === 'google')

@@ -3,10 +3,13 @@ import { findOneUserByEmailService } from '../../services/user/user.service';
 import { verifyPassword } from '../../helper/hash';
 import { SCRT_KEY } from '../../config';
 import resTemplate from '../../helper/resTemplate';
+import { validationResult } from 'express-validator';
 
 const googleLogin = async (req, res, next) => {
   try {
-    const isExist = await findOneUserByEmailService(req.body.email, 'google');
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) throw { rc: 400, message: 'Invalid request' };
+    const isExist = await findOneUserByEmailService(req.body.email);
     if (!isExist) {
       throw { rc: 404, message: 'User not found' };
     }

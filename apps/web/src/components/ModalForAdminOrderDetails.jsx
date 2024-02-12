@@ -5,6 +5,7 @@ import { IMG_URL_PROOF } from '../constants/imageURL';
 import API_CALL from '../helpers/API';
 import customToast from '../utils/toast';
 export function ModalForAdminOrderDetails({ openModal, setOpenModal, order }) {
+  console.log("🚀 ~ ModalForAdminOrderDetails ~ order:", order)
   const [resi, setResi] = useState('');
   console.log('🚀 ~ ModalForAdminOrderDetails ~ resi:', resi);
   const totalPrice = reduceTotalPrice(order);
@@ -41,6 +42,7 @@ export function ModalForAdminOrderDetails({ openModal, setOpenModal, order }) {
       setOpenModal(false);
     } catch (error) {
       console.log(error);
+      customToast('error', error.response.data.message);
     }
   };
   const cancelOrdersForAdmin = async (status, invoice) => {
@@ -74,6 +76,10 @@ export function ModalForAdminOrderDetails({ openModal, setOpenModal, order }) {
             <div className="flex justify-between">
               <p>Invoice</p>
               <p>{order?.invoice}</p>
+            </div>
+            <div className="flex justify-between">
+              <p>Resi</p>
+              <p>{order?.resi}</p>
             </div>
             <div className="flex justify-between">
               <p>Tipe Pembayaran</p>

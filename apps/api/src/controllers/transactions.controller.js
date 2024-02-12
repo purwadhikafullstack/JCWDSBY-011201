@@ -64,7 +64,7 @@ export const getTransactionDetailsController = async (req, res, next) => {
         return {
           amount: val.amount,
           price: val.price,
-          name: val.inventory.product.name,
+          name: val.price==0?('free'+val.inventory.product.name):val.inventory.product.name,
         };
       });
       return res.status(200).json(
@@ -72,6 +72,8 @@ export const getTransactionDetailsController = async (req, res, next) => {
           status: transData.paymentStatus,
           invoice: transData.invoice,
           paymentMethod: transData.paymentMethod,
+          resi: transData.resi,
+          shipmentName: transData.shipmentName,
           total: transData.paymentTotal,
           img: transData.paymentProofImg,
           items: [
