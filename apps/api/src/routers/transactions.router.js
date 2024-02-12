@@ -15,15 +15,17 @@ import {
 import {
   createTransactionController,
   getTransactionDetailsController,
-  handleVoucherCodeController,
   midtransController,
-  patchPaymentProofController,
-  patchTransactionStatusController,
-  patchTransactionSuccess,
 } from '../controllers/transactions.controller';
 import uploader from '../helper/uploader';
 import { getOneTransaction } from '../services/transactionAndOrder/transactions.service';
 import { getAllTransactions } from '../controllers/order.controller';
+import {
+  handleVoucherCodeController,
+  patchPaymentProofController,
+  patchTransactionStatusController,
+  patchTransactionSuccess,
+} from '../controllers/transactions2.controller';
 
 const transactionRouter = Router();
 //Post

@@ -12,7 +12,10 @@ import {
   reduceBookedStock,
   reduceStock,
 } from '../services/transactionAndOrder/transactions2.service';
-import { inputResi } from '../services/transactionAndOrder/order.service';
+import {
+  inputResi,
+  updateLimitVoucher,
+} from '../services/transactionAndOrder/order.service';
 import transactions from '../models/transactions.model';
 
 export const updateOrderStatusForAdminTransferController = async (
@@ -27,6 +30,7 @@ export const updateOrderStatusForAdminTransferController = async (
     if (req.body.status === 'rejected') {
       await DB.db.sequelize.transaction(async (t) => {
         await updateProofImgAdmin(req, t, null, 'rejected');
+        await updateLimitVoucher('plus', result.discountVoucherId);
       });
       if (result?.paymentProofImg) {
         if (fs.existsSync(dir + result?.paymentProofImg)) {
@@ -63,6 +67,7 @@ export const cancelOrdersForAdminController = async (req, res, next) => {
     await DB.db.sequelize.transaction(async (t) => {
       await updateProofImgAdmin(req, t, null, req.body.status);
       await reduceBookedStock(req, t, details);
+      await updateLimitVoucher('plus', result.discountVoucherId);
     });
     if (result?.paymentProofImg) {
       if (fs.existsSync(dir + result?.paymentProofImg)) {

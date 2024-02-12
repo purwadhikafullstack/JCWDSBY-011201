@@ -30,6 +30,7 @@ export const findStoreByUUID = async (req) => {
 
 //Post Create Transaction & TransactionDetails & Reduce Inventory
 export const createTransaction = async (req, t, userAddressId, storeId) => {
+  console.log(req.body);
   return await transactions.create(
     {
       userId: req.tokenData.id,
@@ -41,6 +42,7 @@ export const createTransaction = async (req, t, userAddressId, storeId) => {
       shipmentName: req.body.shipmentName,
       userAddressId,
       storeId,
+      discountVoucherId: req.body.discountVoucherId,
       paymentTotal: req.body.paymentTotal,
     },
     { transaction: t },
@@ -114,8 +116,6 @@ export const handleMidtrans = async (req, userData) => {
     enabled_payments: [req.body.paymentMethod],
     callbacks: {
       finish: MIDTRANS_FINISH_URL,
-      //   unfinish: `${APP_URL}`,
-      //   pending: `${APP_URL}`,
     },
   };
 
@@ -128,6 +128,14 @@ export const getOneTransaction = async (req) => {
   return await transactions.findOne({
     where: { invoice: req.params.order_id ?? req.body.invoice },
     raw: true,
+    nest:true,
+    include: [
+      {
+        model: discount,
+        as: 'discount',
+        attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
+      },
+    ],
   });
 };
 
@@ -138,11 +146,6 @@ export const getTransactionDetails = async (req, transactionId) => {
     nest: true,
     attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
     include: [
-      {
-        model: discount,
-        as: 'discount',
-        attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
-      },
       {
         model: inventory,
         as: 'inventory',

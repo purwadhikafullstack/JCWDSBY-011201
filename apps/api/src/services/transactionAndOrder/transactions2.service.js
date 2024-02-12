@@ -41,3 +41,11 @@ export const findVoucherCode = async (voucherCode) => {
     attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
   });
 };
+
+export const findVoucherById = async (id) => {
+  return await discount.findOne({
+    where: { id },
+    raw: true,
+    attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
+  });
+};

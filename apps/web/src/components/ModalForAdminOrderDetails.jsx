@@ -5,9 +5,8 @@ import { IMG_URL_PROOF } from '../constants/imageURL';
 import API_CALL from '../helpers/API';
 import customToast from '../utils/toast';
 export function ModalForAdminOrderDetails({ openModal, setOpenModal, order }) {
-  console.log("🚀 ~ ModalForAdminOrderDetails ~ order:", order)
+  console.log('🚀 ~ ModalForAdminOrderDetails ~ order:', order);
   const [resi, setResi] = useState('');
-  console.log('🚀 ~ ModalForAdminOrderDetails ~ resi:', resi);
   const totalPrice = reduceTotalPrice(order);
   const updateStatusForTransferAdmin = async (status, invoice) => {
     try {
@@ -77,10 +76,12 @@ export function ModalForAdminOrderDetails({ openModal, setOpenModal, order }) {
               <p>Invoice</p>
               <p>{order?.invoice}</p>
             </div>
-            <div className="flex justify-between">
-              <p>Resi</p>
-              <p>{order?.resi}</p>
-            </div>
+            {order?.resi && (
+              <div className="flex justify-between">
+                <p>Resi</p>
+                <p>{order?.resi}</p>
+              </div>
+            )}
             <div className="flex justify-between">
               <p>Tipe Pembayaran</p>
               <p className={`capitalize`}>
@@ -192,7 +193,8 @@ export function ModalForAdminOrderDetails({ openModal, setOpenModal, order }) {
         {order?.status !== 'sending' &&
           order?.status !== 'finished' &&
           order?.status !== 'refunded' &&
-          order?.status !== 'rejected' && (
+          order?.status !== 'rejected' &&
+          order?.status !== 'arrived' && (
             <Card className="flex flex-col justify-center w-full mt-5">
               <Button
                 color="failure"

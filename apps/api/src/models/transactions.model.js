@@ -11,6 +11,7 @@ export default class transactions extends Model {
       foreignKey: 'transactionId',
     });
     transactions.belongsTo(models.stores, { foreignKey: 'storeId' });
+    transactions.belongsTo(models.discount, { foreignKey: 'discountVoucherId' });
     // define association here
   }
 }
@@ -28,6 +29,7 @@ export const init = (sequelize) => {
       resi:DataTypes.STRING,
       userAddressId: DataTypes.INTEGER,
       storeId: DataTypes.INTEGER,
+      discountVoucherId: DataTypes.INTEGER,
       itemTotal: DataTypes.INTEGER,
       paymentTotal: DataTypes.INTEGER,
       paymentStatus: DataTypes.STRING,
