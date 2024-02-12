@@ -14,6 +14,7 @@ import {
 } from '../services/transactionAndOrder/transactions.service';
 import resTemplate from '../helper/resTemplate';
 import fs from 'fs';
+import { findVoucherCode } from '../services/transactionAndOrder/transactions2.service';
 
 export const createTransactionController = async (req, res, next) => {
   await DB.initialize();
@@ -64,7 +65,10 @@ export const getTransactionDetailsController = async (req, res, next) => {
         return {
           amount: val.amount,
           price: val.price,
-          name: val.price==0?('free'+val.inventory.product.name):val.inventory.product.name,
+          name:
+            val.price == 0
+              ? 'free' + val.inventory.product.name
+              : val.inventory.product.name,
         };
       });
       return res.status(200).json(
@@ -146,5 +150,36 @@ export const patchTransactionSuccess = async (req, res, next) => {
   } catch (error) {
     console.log(error);
     next(error);
+  }
+};
+
+export const handleVoucherCodeController = async (req, res, next) => {
+  try {
+    const result = await findVoucherCode(req.body.voucher);
+    if (!result) {
+      throw { rc: 404, message: 'Voucher not found' };
+    }
+    if (req.body.itemTotal < result.minTransaction) {
+      throw {
+        rc: 401,
+        message: 'Total belanja Anda tidak mencukupi batas minimal transaksi',
+      };
+    }
+    const { id, inventoryId, ...voucherData } = result;
+    return res
+      .status(200)
+      .json(
+        resTemplate(
+          200,
+          true,
+          'Voucher Applied to Current Transaction',
+          voucherData,
+        ),
+      );
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(error.rc || 500)
+      .json(resTemplate(error.rc, false, error.message));
   }
 };

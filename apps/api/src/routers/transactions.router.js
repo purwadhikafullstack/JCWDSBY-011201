@@ -15,6 +15,7 @@ import {
 import {
   createTransactionController,
   getTransactionDetailsController,
+  handleVoucherCodeController,
   midtransController,
   patchPaymentProofController,
   patchTransactionStatusController,
@@ -95,6 +96,12 @@ transactionRouter.patch(
   '/:order_id',
   validateToken,
   patchTransactionStatusController,
+);
+transactionRouter.post(
+  '/voucher',
+  validateToken,
+  validateUser,
+  handleVoucherCodeController,
 );
 
 export { transactionRouter };
