@@ -161,3 +161,17 @@ export const deleteProductService = async (id) => {
     throw error;
   }
 };
+
+export const getLatestProductService = async (queryParam) => {
+  try {
+    const limit = queryParam?.limit ?? 'none';
+
+    const result = await product.findAll({
+      limit: 5,
+      order: [['createdAt', 'DESC']]
+    });
+    return result
+  } catch (error) {
+    throw error;
+  }
+};

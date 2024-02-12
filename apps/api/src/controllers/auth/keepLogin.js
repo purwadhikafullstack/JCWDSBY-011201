@@ -13,7 +13,7 @@ const keepLogin = async (req, res, next) => {
     const signedData = {};
     if (req.tokenData.role === 'admin' || req.tokenData.role === 'super') {
       const result = await findOneAdminByUsernameService(req.tokenData.email);
-      if (!result.result) throw { rc: 401, message: 'Unauthorized user' };
+      if (!result) throw { rc: 401, message: 'Unauthorized user' };
       signedData.id = result.dataValues.id;
       signedData.role = result.dataValues.role;
       signedData.name = result.dataValues.name;

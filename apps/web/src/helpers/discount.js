@@ -1,5 +1,5 @@
 export const discountPrice = (data) => {
-  console.log(data);
+  // console.log(data);
   if (data?.discounts.length) {
     if (data.discounts.find((val) => val.term === 'product')) {
       if (data.discounts.find((val) => val.type === 'nominal')) return data.productPrice - data.discounts[0].nominal;

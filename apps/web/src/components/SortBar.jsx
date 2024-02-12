@@ -8,7 +8,7 @@ const SortBar = ({
     children,
 }) => {
     return <>
-        <div className={`flex justify-between items-center lg:gap-2 ${hidden && 'hidden'}`}>
+        <div className={`flex justify-between lg:justify-normal items-center lg:gap-2 ${hidden && 'hidden'}`}>
             <span className='font-bold'>{title}</span>
             <Select onChange={onChange} defaultValue={defaultValue}>
                 {children}

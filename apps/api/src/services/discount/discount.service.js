@@ -81,7 +81,6 @@ export const getDiscountService = async (params) => {
 
 export const deleteDiscountService = async (id) => {
   try {
-    // console.log('DIscountService delete >>> ', id);
     await discount.destroy({
       where: { id }
     });
@@ -92,8 +91,6 @@ export const deleteDiscountService = async (id) => {
 
 export const updateDiscountService = async (id, data) => {
   try {
-    // console.log('Discount ID:', id);
-    // console.log('Discount Data:', data);
     await discount.update(data, {
       where: { id }
     })
