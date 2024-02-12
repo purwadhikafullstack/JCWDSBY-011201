@@ -16,13 +16,16 @@ import {
   createTransactionController,
   getTransactionDetailsController,
   midtransController,
-  patchPaymentProofController,
-  patchTransactionStatusController,
-  patchTransactionSuccess,
 } from '../controllers/transactions.controller';
 import uploader from '../helper/uploader';
 import { getOneTransaction } from '../services/transactionAndOrder/transactions.service';
 import { getAllTransactions } from '../controllers/order.controller';
+import {
+  handleVoucherCodeController,
+  patchPaymentProofController,
+  patchTransactionStatusController,
+  patchTransactionSuccess,
+} from '../controllers/transactions2.controller';
 
 const transactionRouter = Router();
 //Post
@@ -95,6 +98,12 @@ transactionRouter.patch(
   '/:order_id',
   validateToken,
   patchTransactionStatusController,
+);
+transactionRouter.post(
+  '/voucher',
+  validateToken,
+  validateUser,
+  handleVoucherCodeController,
 );
 
 export { transactionRouter };

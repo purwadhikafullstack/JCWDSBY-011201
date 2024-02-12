@@ -31,3 +31,4 @@ export const MAX_DISTANCE = process.env.MAX_DISTANCE;
 //Afra Hanifi
 export const PRODUCT_URL = process.env.VITE_PRODUCT_URL;
 export const MIDTRANS_KEY = process.env.MIDTRANS_SERVER_KEY;
+export const MIDTRANS_FINISH_URL = process.env.MIDTRANS_FINISH_URL

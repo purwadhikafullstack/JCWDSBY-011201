@@ -1,6 +1,6 @@
 import React from 'react';
 import UserLayout from '../components/UserLayout';
-import { Button, Card } from 'flowbite-react';
+import { Button, Card, Label, TextInput } from 'flowbite-react';
 import CartContainer from '../components/cart/CartContainer';
 import { useEffect, useState } from 'react';
 import API_CALL from '../helpers/API';
@@ -25,12 +25,15 @@ const Checkout = () => {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [courier, setCourier] = useState(null);
   const [selectedCourier, setSelectedCourier] = useState(null);
-  console.log("🚀 ~ Checkout ~ selectedCourier:", selectedCourier)
+  console.log('🚀 ~ Checkout ~ selectedCourier:', selectedCourier);
   const [showAddresses, setShowAddresses] = useState(false);
   const [showCourier, setShowCourier] = useState(false);
   const [showSnap, setShowSnap] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState('');
   const [showPayment, setShowPayment] = useState();
+  const [voucher, setVoucher] = useState('');
+  const [voucherData, setVoucherData] = useState(null);
+  console.log('🚀 ~ Checkout ~ voucherData:', voucherData);
   const cartItems = useSelector((state) => state.cartReducer.checkoutItems);
   const currStore = useSelector((reducer) => reducer.storeReducer);
   console.log('🚀 ~ Checkout ~ currStore:', currStore.storeId);
@@ -92,51 +95,79 @@ const Checkout = () => {
   );
 
   const handlePay = async () => {
-    if (!address || !courier) {
-      customToast('error', 'harap lengkapi semua opsi');
-      return;
-    }
-    const response = await API_CALL.post(
-      '/transaction',
-      {
-        addressUUID: selectedAddress.UUID,
-        storeUUID: currStore.storeId,
-        shipmentTotal: selectedCourier?.price,
-        paymentTotal,
-        itemTotal,
-        shipmentName:selectedCourier?.courier_name,
-        checkoutItems,
-        paymentMethod: selectedPayment.name,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('authToken')}`,
-        },
-      },
-    );
-    if (response) {
-      console.log('🚀 ~ handlePay ~ response:', response.data.result.invoice);
-      setShowSnap(true);
-      dispatch(deleteCheckedItemInCloud(itemsInvId, currStore.storeId));
-      if (selectedPayment.name == 'transfer') {
-        navigate(`/order-details?order_id=${response.data.result.invoice}`);
+    try {
+      if (!selectedAddress || !selectedCourier || !selectedPayment) {
+        customToast('error', 'harap lengkapi semua opsi');
         return;
       }
-      snapEmbed(response.data.result.token, 'snap-container', {
-        onSuccess: (result) => {
-          handleSuccessCheckout(response.data.result.invoice, 'paid');
-          sessionStorage.removeItem('checkoutItems');
-          setShowSnap(false);
+      const response = await API_CALL.post(
+        '/transaction',
+        {
+          addressUUID: selectedAddress.UUID,
+          storeUUID: currStore.storeId,
+          shipmentTotal: selectedCourier?.price,
+          paymentTotal,
+          itemTotal,
+          shipmentName: selectedCourier?.courier_name,
+          checkoutItems,
+          paymentMethod: selectedPayment.name,
+          discountVoucherId: voucherData.id,
         },
-        onPending: (result) => {
-          console.log(result);
-          setShowSnap(false);
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+          },
         },
-        onClose: (result) => {
-          console.log(result);
-          setShowSnap(false);
+      );
+      if (response) {
+        console.log('🚀 ~ handlePay ~ response:', response.data.result.invoice);
+        setShowSnap(true);
+        dispatch(deleteCheckedItemInCloud(itemsInvId, currStore.storeId));
+        if (selectedPayment.name == 'transfer') {
+          navigate(`/order-details?order_id=${response.data.result.invoice}`);
+          return;
+        }
+        snapEmbed(response.data.result.token, 'snap-container', {
+          onSuccess: (result) => {
+            handleSuccessCheckout(response.data.result.invoice, 'paid');
+            sessionStorage.removeItem('checkoutItems');
+            setShowSnap(false);
+          },
+          onPending: (result) => {
+            console.log(result);
+            setShowSnap(false);
+          },
+          onClose: (result) => {
+            console.log(result);
+            setShowSnap(false);
+          },
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleVoucher = async (voucher, itemTotal, setVoucherData) => {
+    try {
+      const response = await API_CALL.post(
+        '/transaction/voucher',
+        {
+          voucher,
+          itemTotal,
         },
-      });
+        {
+          headers: {
+            Authorization: 'Bearer ' + localStorage.getItem('authToken'),
+          },
+        },
+      );
+      setVoucherData(response.data.result);
+      customToast('success', response.data.message);
+    } catch (error) {
+      console.log(error);
+      customToast('error', error.response.data.message);
+      setVoucherData(null);
     }
   };
 
@@ -197,9 +228,6 @@ const Checkout = () => {
                 }}
               />
               <Card className="flex flex-col rounded-none capitalize text-xs sm:text-sm mb-3">
-                <p className="font-semibold">pilih waktu pengiriman</p>
-              </Card>
-              <Card className="flex flex-col rounded-none capitalize text-xs sm:text-sm mb-3">
                 <p className="font-semibold">rincian pesanan</p>
                 <div className="bg-gradient-to-b from-blue-400 to-white border w-full h-32 rounded-md"></div>
               </Card>
@@ -214,6 +242,31 @@ const Checkout = () => {
                     setSelectedPayment(value);
                   }}
                 />
+              </Card>
+              <Card className="flex flex-col rounded-none capitalize text-xs sm:text-sm mb-3">
+                <div className="mb-2 block">
+                  <Label
+                    htmlFor="voucher"
+                    className="font-semibold"
+                    value="Kode Voucher"
+                  />
+                </div>
+                <TextInput
+                  id="voucher"
+                  type="text"
+                  placeholder="XXXXXX......"
+                  required
+                  onChange={(e) => setVoucher(e.target.value)}
+                />
+                <Button
+                  color="blue"
+                  className="mt-3"
+                  onClick={() =>
+                    handleVoucher(voucher, itemTotal, setVoucherData)
+                  }
+                >
+                  Apply
+                </Button>
               </Card>
               <Card className="flex flex-col rounded-none capitalize text-xs sm:text-sm mb-3">
                 <p className="font-semibold">ringkasan pembayaran</p>
@@ -236,8 +289,7 @@ const Checkout = () => {
           <p>
             Total:{' '}
             <span className="font-bold">
-              {/* Rp{totalPrice.toLocaleString('id-ID')} */}
-              Rp50000
+              Rp{paymentTotal.toLocaleString('id-ID')}
             </span>
           </p>
           <Button onClick={handlePay} color="blue">
