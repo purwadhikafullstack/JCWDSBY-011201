@@ -11,6 +11,7 @@ const Cart = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const cartItems = useSelector((state) => state.cartReducer.items);
+  console.log("🚀 ~ Cart ~ cartItems:", cartItems)
   const freeItems = useSelector(state=>state.cartReducer.freeItems)
   console.log("🚀 ~ Cart ~ freeItems:", freeItems)
   const storeUUID = useSelector((state) => state.storeReducer.storeId);

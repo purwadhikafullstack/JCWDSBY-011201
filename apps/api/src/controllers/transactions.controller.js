@@ -60,7 +60,6 @@ export const getTransactionDetailsController = async (req, res, next) => {
     const transData = await getOneTransaction(req);
     if (transData) {
       const detailsData = await getTransactionDetails(req, transData.id);
-      console.log("🚀 ~ getTransactionDetailsController ~ detailsData:", detailsData)
       const processedRes = detailsData.map((val, idx) => {
         return {
           amount: val.amount,
@@ -74,7 +73,7 @@ export const getTransactionDetailsController = async (req, res, next) => {
           invoice: transData.invoice,
           paymentMethod: transData.paymentMethod,
           resi: transData.resi,
-          shipmentname: transData.shipmentName,
+          shipmentName: transData.shipmentName,
           total: transData.paymentTotal,
           img: transData.paymentProofImg,
           items: [

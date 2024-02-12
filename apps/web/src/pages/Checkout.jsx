@@ -25,7 +25,7 @@ const Checkout = () => {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [courier, setCourier] = useState(null);
   const [selectedCourier, setSelectedCourier] = useState(null);
-  console.log('🚀 ~ Checkout ~ selectedCourier:', selectedCourier);
+  console.log("🚀 ~ Checkout ~ selectedCourier:", selectedCourier)
   const [showAddresses, setShowAddresses] = useState(false);
   const [showCourier, setShowCourier] = useState(false);
   const [showSnap, setShowSnap] = useState(false);
@@ -86,6 +86,11 @@ const Checkout = () => {
     checkoutItems.reduce((sum, item) => sum + item.value * item.quantity, 0) +
     selectedCourier?.price;
 
+  const itemTotal = checkoutItems.reduce(
+    (sum, item) => sum + item.value * item.quantity,
+    0,
+  );
+
   const handlePay = async () => {
     if (!address || !courier) {
       customToast('error', 'harap lengkapi semua opsi');
@@ -96,8 +101,10 @@ const Checkout = () => {
       {
         addressUUID: selectedAddress.UUID,
         storeUUID: currStore.storeId,
-        shipmentTotal: selectedCourier.price,
+        shipmentTotal: selectedCourier?.price,
         paymentTotal,
+        itemTotal,
+        shipmentName:selectedCourier?.courier_name,
         checkoutItems,
         paymentMethod: selectedPayment.name,
       },
