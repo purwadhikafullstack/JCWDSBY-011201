@@ -140,6 +140,11 @@ export const getTransactionDetails = async (req, transactionId) => {
     attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
     include: [
       {
+        model: discount,
+        as: 'discount',
+        attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
+      },
+      {
         model: inventory,
         as: 'inventory',
         required: true,
