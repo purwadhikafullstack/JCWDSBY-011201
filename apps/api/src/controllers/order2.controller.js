@@ -149,8 +149,8 @@ export const updateCourierOrderArrival = async (req, res, next) => {
     if (!result) {
       throw resTemplate(404, false, 'transaction not found');
     }
-    if (req.body.status !== 'arrived' && result.paymentStatus !== 'sending') {
-      throw resTemplate(401, false, 'data is incompatible');
+    if (req.body.status !== 'arrived' || result.paymentStatus !== 'sending') {
+      throw resTemplate(401, false, 'Task is not possible');
     }
     await DB.db.sequelize.transaction(async (t) => {
       await transactions.update(

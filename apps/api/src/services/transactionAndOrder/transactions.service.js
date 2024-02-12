@@ -5,7 +5,7 @@ import users from '../../models/users.model';
 import inventory from '../../models/inventory.model';
 import { literal } from 'sequelize';
 import midtransClient from 'midtrans-client';
-import { APP_URL, MIDTRANS_KEY } from '../../config';
+import { APP_URL, MIDTRANS_FINISH_URL, MIDTRANS_KEY } from '../../config';
 import product from '../../models/product.model';
 import stores from '../../models/stores.model';
 import { invoiceNamer } from '../../helper/invoiceNamer';
@@ -89,7 +89,6 @@ export const handleMidtrans = async (req, userData) => {
     console.log(total, val.value, val.quantity);
     return total + val.value * val.quantity;
   }, 0);
-  console.log('🚀 ~ handleMidtrans ~ totalNetPrice:', totalNetPrice);
   let parameter = {
     transaction_details: {
       order_id: req.transactionData.invoice,
@@ -112,7 +111,7 @@ export const handleMidtrans = async (req, userData) => {
     ],
     enabled_payments: [req.body.paymentMethod],
     callbacks: {
-      finish: `${APP_URL}order-details`,
+      finish: MIDTRANS_FINISH_URL,
       //   unfinish: `${APP_URL}`,
       //   pending: `${APP_URL}`,
     },
