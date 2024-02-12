@@ -48,7 +48,6 @@ export const getOrdersAdmin = async (
         },
         { paymentMethod: { [Op.substring]: payment } },
       ],
-      //   ...(req.tokenData.role === 'admin' ? { storeId } : {}),
     },
     raw: true,
     nest: true,
