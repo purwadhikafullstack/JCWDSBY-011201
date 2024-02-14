@@ -2,15 +2,14 @@ import React, { useEffect, useState } from 'react';
 import API_CALL from '../helpers/API';
 import UserLayout from '../components/UserLayout';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { HiOutlineArrowRight, HiOutlineMagnifyingGlass } from 'react-icons/hi2';
-import { Button, Datepicker, Pagination } from 'flowbite-react';
+import { HiOutlineMagnifyingGlass } from 'react-icons/hi2';
+import { Pagination } from 'flowbite-react';
 import { DatepickerForOrders } from '../components/DatepickerForOrders';
-import { caseStatus } from '../constants/ordersStatusCase';
 import { UserFinishOrderModal } from '../components/UserFinishOrderModal';
 import { getOrderDetails } from '../helpers/orders/getOrdersByInvoice';
+import { IndividualOrdersUser } from '../components/IndividualOrdersUser';
 const UserOrders = () => {
   const [order, setOrder] = useState([]);
-  console.log("🚀 ~ UserOrders ~ order:", order)
   const [totalPage, setTotalPage] = useState(1);
   const [searchParams, setSearchParams] = useSearchParams();
   const [openModalUser, setOpenModalUser] = useState(false);
@@ -47,8 +46,8 @@ const UserOrders = () => {
 
   return (
     <UserLayout>
-      <div className="w-full">
-        <div className="container mx-auto max-w-[640px] font-roboto  bg-gray-50 p-3 ">
+      <div className="w-full lg:px-32 ">
+        <div className="container mx-auto max-w-[1024px] h-screen md:h-full  font-roboto  bg-gray-50 p-4 overflow-auto ">
           <div className="search bg-white flex items-center border-2 py-2 px-4 rounded-full gap-2 mb-4">
             <input
               type="search"
@@ -100,82 +99,22 @@ const UserOrders = () => {
               <option value={'pending'}>pending</option>
               <option value={'paid'}>paid</option>
               <option value={'checking'}>checking</option>
+              <option value={'arrived'}>checking</option>
+              <option value={'finished'}>checking</option>
             </select>
           </label>
           <DatepickerForOrders setSearchParams={setSearchParams} />
           <div className="flex flex-col flex-grow gap-y-4 overflow-y-auto">
             {order?.map((val, idx) => {
               return (
-                <div
+                <IndividualOrdersUser
                   key={idx}
-                  className="block p-3 bg-white  rounded-lg shadow-lg w-full"
-                >
-                  <div className="flex mb-2  text-gray-900">
-                    <div className="flex flex-col bg-white border border-gray-200 shadow w-1/3 p-1">
-                      <div className="font-semibold text-blue-500 text-sm ">
-                        INVOICE NO:
-                      </div>
-                      <div className="font-semibold text-sm  sm:text-lg ">
-                        {val.invoice}
-                      </div>
-                      <div className="text-xs text-gray-400 ">
-                        {new Date(val.createdAt).toLocaleString('en-GB', {
-                          weekday: 'short',
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
-                      </div>
-                    </div>
-                    <div className="bg-white border border-gray-200 shadow w-1/3 p-1">
-                      <div className="font-semibold text-blue-500 text-sm">
-                        TOTAL:
-                      </div>
-                      <div className="font-semibold text-lg ">
-                        Rp {val.paymentTotal.toLocaleString('id-ID')}
-                      </div>
-                      <div className="font-semibold text-blue-500 text-sm">
-                        Via:
-                      </div>
-                      <div className="font-semibold text-lg capitalize ">
-                        {val.paymentMethod}
-                      </div>
-                    </div>
-                    <div className="bg-white border border-gray-200 shadow w-1/3 p-1">
-                      <div className="font-semibold text-blue-500 text-sm">
-                        PAYMENT STATUS:
-                      </div>
-                      {caseStatus(val.paymentStatus)}
-                    </div>
-                  </div>
-                  <div className="flex justify-end gap-x-3">
-                    {(val.paymentStatus === 'sending' ||
-                      val.paymentStatus === 'arrived') && (
-                      <Button
-                        color="success"
-                        className="hover:cursor-pointer"
-                        onClick={() => {
-                          getOrderDetails(val?.invoice, setOrderDetails);
-                          setOpenModalUser(!openModalUser);
-                        }}
-                      >
-                        Finish Order
-                      </Button>
-                    )}
-                    <Button
-                      color="blue"
-                      className="hover:cursor-pointer"
-                      onClick={() => {
-                        navigate(`/order-details?order_id=${val.invoice}`);
-                      }}
-                    >
-                      Details
-                      <HiOutlineArrowRight className="ml-2 h-5 w-5" />
-                    </Button>
-                  </div>
-                </div>
+                  getOrderDetails={getOrderDetails}
+                  val={val}
+                  setOrderDetails={setOrderDetails}
+                  setOpenModalUser={setOpenModalUser}
+                  openModalUser={openModalUser}
+                />
               );
             })}
           </div>
