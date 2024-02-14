@@ -1,5 +1,5 @@
 import UserLayout from '../components/UserLayout';
-import { HiChevronLeft, HiOutlineExclamationCircle } from 'react-icons/hi2';
+import { HiChevronLeft } from 'react-icons/hi2';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import API_CALL from '../helpers/API';

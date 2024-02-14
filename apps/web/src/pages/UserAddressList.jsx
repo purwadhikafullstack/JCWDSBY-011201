@@ -177,7 +177,7 @@ const UserAddressList = (props) => {
                   <Button
                     className="w-full"
                     isProcessing={isLoading}
-                    color="blue"
+                    color="failure"
                     onClick={() => {
                       handleDelete(deleteId);
                     }}
