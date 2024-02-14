@@ -19,7 +19,7 @@ export const createTransactionController = async (req, res, next) => {
     const userAddressData = await findUserAddressIdForTransaction(req);
     const storeData = await findStoreByUUID(req);
     const discountData = await findVoucherById(req.body.discountVoucherId);
-    if (discountData.limit < 1) {
+    if (discountData && discountData?.limit < 1) {
       throw { rc: 401, message: 'Voucher habis' };
     }
     const result = await DB.db.sequelize.transaction(async (t) => {

@@ -100,6 +100,7 @@ export const getOrdersUser = async (
     raw: true,
     nest: true,
     order: [sort],
+    attributes: { exclude: ['userId'] },
     include: [
       {
         model: stores,
@@ -123,8 +124,8 @@ export const inputResi = async (req, t) => {
 
 export const updateLimitVoucher = async (status, discountId) => {
   if (status === 'plus') {
-    return await discount.increment('limit', { where: { id:discountId } });
+    return await discount.increment('limit', { where: { id: discountId } });
   } else {
-    return await discount.decrement('limit', { where: { id:discountId } });
+    return await discount.decrement('limit', { where: { id: discountId } });
   }
 };
