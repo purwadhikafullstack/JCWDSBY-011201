@@ -4,15 +4,19 @@ import UserLayout from '../components/UserLayout';
 import CartContainer from '../components/cart/CartContainer';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from 'flowbite-react';
-import { fetchCartItems, setCarts, setCheckoutItems } from '../redux/slice/cartSlice';
+import {
+  fetchCartItems,
+  setCarts,
+  setCheckoutItems,
+} from '../redux/slice/cartSlice';
 import { useNavigate } from 'react-router-dom';
 
 const Cart = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const cartItems = useSelector((state) => state.cartReducer.items);
-  const freeItems = useSelector(state=>state.cartReducer.freeItems)
-  console.log("🚀 ~ Cart ~ freeItems:", freeItems)
+  const freeItems = useSelector((state) => state.cartReducer.freeItems);
+  console.log('🚀 ~ Cart ~ freeItems:', freeItems);
   const storeUUID = useSelector((state) => state.storeReducer.storeId);
   useEffect(() => {
     dispatch(fetchCartItems(storeUUID));
@@ -31,39 +35,46 @@ const Cart = () => {
     }
     return accu;
   }, []);
-  console.log("🚀 ~ checkedItemsInvId ~ checkedItemsInvId:", checkedItemsInvId)
+  console.log('🚀 ~ checkedItemsInvId ~ checkedItemsInvId:', checkedItemsInvId);
 
   return (
     <UserLayout>
-      <div className="container mx-auto max-w-sm sm:max-w-xl h-screen  font-roboto overflow-y-auto">
-        <div className="flex tracking-tight justify-center mb-3 ">
-          <h1 className="text-xl font-bold">Cart</h1>
+      <div className="flex flex-col lg:flex-row font-roboto h-full lg:px-32 lg:py-4 lg:gap-x-5 overflow-x-auto ">
+        <div className="w-full lg:w-8/12 overflow-y-auto ">
+          <div className="flex tracking-tight mb-3 ">
+            <h1 className="text-4xl font-bold">Cart</h1>
+          </div>
+          <div className="flex flex-col">
+            <CartProductLists arrays={cartItems} />
+          </div>
         </div>
-        <div className="flex flex-col">
-          <CartProductLists arrays={cartItems} />
+        <div className="flex relative lg:h-64 lg:w-4/12 lg:py-10">
+          <CartContainer className="mt-3 p-3 flex-col rounded-md lg:sticky w-full max-h-20 ">
+            <div className="flex flex-row justify-between">
+              <p>
+                Total:{' '}
+                <span className="font-bold">
+                  Rp{totalPrice.toLocaleString('id-ID')}
+                </span>
+              </p>
+              <Button
+                color="blue"
+                disabled={checkedItemsInvId?.length < 1 ? true : false}
+                onClick={() => {
+                  dispatch(setCheckoutItems([...cartItems, ...freeItems]));
+                  window.sessionStorage.setItem(
+                    'checkoutItems',
+                    JSON.stringify([...cartItems, ...freeItems]),
+                  );
+                  navigate('/checkout');
+                }}
+              >
+                Checkout
+              </Button>
+            </div>
+          </CartContainer>
         </div>
       </div>
-      <CartContainer className="mt-3 p-3 flex-col rounded-md sm:fixed w-full sm:w-64  sm:right-20 sm:top-36">
-        <div className="flex flex-row justify-between">
-          <p>
-            Total:{' '}
-            <span className="font-bold">
-              Rp{totalPrice.toLocaleString('id-ID')}
-            </span>
-          </p>
-          <Button
-            color="blue"
-            disabled={checkedItemsInvId?.length<1?true:false}
-            onClick={() => {
-              dispatch(setCheckoutItems([...cartItems,...freeItems]))
-              window.sessionStorage.setItem('checkoutItems',JSON.stringify([...cartItems,...freeItems]))
-              navigate('/checkout');
-            }}
-          >
-            Checkout
-          </Button>
-        </div>
-      </CartContainer>
     </UserLayout>
   );
 };

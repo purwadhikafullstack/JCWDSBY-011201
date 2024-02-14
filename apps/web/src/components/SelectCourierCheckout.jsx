@@ -13,7 +13,7 @@ const SelectCourierCheckout = ({
   if (courierData) {
     if (courierData.length > 0) {
       return (
-        <div className="flex flex-col w-full p-2 gap-1 bg-white">
+        <div className="flex flex-col w-full gap-1 bg-white">
           <div
             className="flex w-full rounded-lg justify-between border-2 p-3 gap-3 items-center cursor-pointer"
             onClick={onShowCouriers}
