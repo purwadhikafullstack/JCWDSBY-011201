@@ -1,4 +1,3 @@
-
 import resTemplate from '../helper/resTemplate';
 import {
   findStoreIdByAdminId,
@@ -8,6 +7,10 @@ import {
 } from '../services/transactionAndOrder/order.service';
 import { getStoreByUUIDService } from '../services/store/store.service';
 import { addDays, subHours } from 'date-fns';
+import transactionDetails from '../models/transactionDetails.model';
+import inventory from '../models/inventory.model';
+import product from '../models/product.model';
+import product_image from '../models/product-image.model';
 
 export const getAllTransactions = async (req, res, next) => {
   try {
@@ -64,7 +67,7 @@ export const getAllTransactions = async (req, res, next) => {
       const processedList = orderList.rows.map((val, idx) => {
         return { ...val, storeName: val.store.name, count: orderList.count };
       });
-      console.log("🚀 ~ processedList ~ processedList:", processedList)
+      console.log('🚀 ~ processedList ~ processedList:', processedList);
       return res.status(200).json({
         ...resTemplate(200, true, 'fetching orders success', processedList),
         count: orderList.count,
@@ -82,11 +85,36 @@ export const getAllTransactions = async (req, res, next) => {
         to,
         sort,
       );
+      const promise = userOrderList.rows.map(async (val, idx) => {
+        return await transactionDetails.findOne({
+          where: { transactionId: val.id },
+          raw: true,
+          nest: true,
+          include: [
+            {
+              model: inventory,
+              required: true,
+              include: [
+                { model: product, required: true, include: [product_image] },
+              ],
+            },
+          ],
+        });
+      });
+      const countPromise = await Promise.all(
+        userOrderList.rows.map(async (val, idx) => {
+          return await transactionDetails.count({
+            where: { transactionId: val.id },
+          });
+        }),
+      );
+      const promised = await Promise.all(promise);
       const processedList = userOrderList.rows.map((val, idx) => {
         return {
           ...val,
           storeName: val.store.name,
-          count: userOrderList.count,
+          firstItem: promised[idx],
+          itemCount: countPromise[idx],
         };
       });
       return res.status(200).json({
@@ -98,5 +126,3 @@ export const getAllTransactions = async (req, res, next) => {
     console.log(error);
   }
 };
-
-

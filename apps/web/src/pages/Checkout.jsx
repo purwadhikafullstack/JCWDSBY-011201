@@ -25,7 +25,6 @@ const Checkout = () => {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [courier, setCourier] = useState(null);
   const [selectedCourier, setSelectedCourier] = useState(null);
-  console.log('🚀 ~ Checkout ~ selectedCourier:', selectedCourier);
   const [showAddresses, setShowAddresses] = useState(false);
   const [showCourier, setShowCourier] = useState(false);
   const [showSnap, setShowSnap] = useState(false);
@@ -33,10 +32,8 @@ const Checkout = () => {
   const [showPayment, setShowPayment] = useState();
   const [voucher, setVoucher] = useState('');
   const [voucherData, setVoucherData] = useState(null);
-  console.log('🚀 ~ Checkout ~ voucherData:', voucherData);
   const cartItems = useSelector((state) => state.cartReducer.checkoutItems);
   const currStore = useSelector((reducer) => reducer.storeReducer);
-  console.log('🚀 ~ Checkout ~ currStore:', currStore.storeId);
   const { snapEmbed } = useSnap();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -61,8 +58,20 @@ const Checkout = () => {
     }
   };
 
+  useEffect(() => {
+    if (cartItems?.length < 1) {
+      if (sessionStorage.getItem('checkoutItems')) {
+        dispatch(
+          setCheckoutItems(JSON.parse(sessionStorage.getItem('checkoutItems'))),
+        );
+      } else {
+        navigate('/');
+      }
+    }
+  }, []);
+
   const checkoutItems = cartItems
-    .filter((item) => item.checked === 1)
+    ?.filter((item) => item.checked === 1)
     .map(
       ({
         productName,
@@ -79,17 +88,15 @@ const Checkout = () => {
         ...rest,
       }),
     );
-  console.log('🚀 ~ Checkout ~ checkedItems:', checkoutItems);
-  const itemsInvId = checkoutItems.reduce((accu, item) => {
+  const itemsInvId = checkoutItems?.reduce((accu, item) => {
     accu.push(item.inventoryId);
     return accu;
   }, []);
-  console.log('🚀 ~ itemsInvId ~ itemsInvId:', itemsInvId);
   const paymentTotal =
-    checkoutItems.reduce((sum, item) => sum + item.value * item.quantity, 0) +
+    checkoutItems?.reduce((sum, item) => sum + item.value * item.quantity, 0) +
     selectedCourier?.price;
 
-  const itemTotal = checkoutItems.reduce(
+  const itemTotal = checkoutItems?.reduce(
     (sum, item) => sum + item.value * item.quantity,
     0,
   );
@@ -111,7 +118,7 @@ const Checkout = () => {
           shipmentName: selectedCourier?.courier_name,
           checkoutItems,
           paymentMethod: selectedPayment.name,
-          discountVoucherId: voucherData.id,
+          discountVoucherId: voucherData?.id ?? null,
         },
         {
           headers: {
@@ -172,14 +179,6 @@ const Checkout = () => {
   };
 
   useEffect(() => {
-    if (cartItems.length < 1) {
-      dispatch(
-        setCheckoutItems(JSON.parse(sessionStorage.getItem('checkoutItems'))),
-      );
-    }
-  }, []);
-
-  useEffect(() => {
     if (currStore.postalCode !== '') {
       getAvailableAddress();
     }
@@ -198,106 +197,150 @@ const Checkout = () => {
   }, [selectedAddress]);
 
   return (
-    <UserLayout>
-      <div className="w-full overflow-y-auto">
-        <div className="container mx-auto max-w-[480px] h-[100vh] font-roboto  bg-gray-100 ">
-          {!showSnap && (
-            <div className="flex flex-col">
-              <SelectAddressCheckout
-                selectedAddress={selectedAddress}
-                addressData={address}
-                showAddresses={showAddresses}
-                onShowAddresses={() => setShowAddresses((prev) => !prev)}
-                onSelectAddress={(value) => {
-                  setShowCourier(false);
-                  setShowAddresses(false);
-                  if (selectedAddress.UUID !== value.UUID) {
-                    setCourier(null);
-                  }
-                  setSelectedAddress(value);
-                }}
-              />
-              <SelectCourierCheckout
-                selectedCourier={selectedCourier}
-                courierData={courier}
-                showCouriers={showCourier}
-                onShowCouriers={() => setShowCourier((prev) => !prev)}
-                onSelectCourier={(value) => {
-                  setShowCourier(false);
-                  setSelectedCourier(value);
-                }}
-              />
-              <Card className="flex flex-col rounded-none capitalize text-xs sm:text-sm mb-3">
-                <p className="font-semibold">rincian pesanan</p>
-                <div className="bg-gradient-to-b from-blue-400 to-white border w-full h-32 rounded-md"></div>
-              </Card>
-              <Card className="flex flex-col rounded-none capitalize text-xs sm:text-sm mb-3">
-                <p className="font-semibold">metode pembayaran</p>
-                <SelectPayment
-                  selectedPayment={selectedPayment}
-                  showPayment={showPayment}
-                  onShowPayment={() => setShowPayment((prev) => !prev)}
-                  onSelectPayment={(value) => {
-                    setShowPayment(false);
-                    setSelectedPayment(value);
-                  }}
-                />
-              </Card>
-              <Card className="flex flex-col rounded-none capitalize text-xs sm:text-sm mb-3">
-                <div className="mb-2 block">
-                  <Label
-                    htmlFor="voucher"
-                    className="font-semibold"
-                    value="Kode Voucher"
+    <>
+      <UserLayout>
+        <div
+          id="snap-container"
+          className="flex justify-center items-center sm:w-full"
+        ></div>
+        <div className="w-full h-full flex flex-col overflow-auto lg:flex-row lg:gap-x-4 lg:px-32 lg:py-4">
+          <div className="w-full lg:w-8/12 h-[100vh] overflow-y-auto lg:h-full font-roboto flex flex-col bg-gray-100 ">
+            {!showSnap && (
+              <div className="flex flex-col">
+                <Card className="flex flex-col rounded-none capitalize text-xs sm:text-sm mb-3">
+                  <SelectAddressCheckout
+                    selectedAddress={selectedAddress}
+                    addressData={address}
+                    showAddresses={showAddresses}
+                    onShowAddresses={() => setShowAddresses((prev) => !prev)}
+                    onSelectAddress={(value) => {
+                      setShowCourier(false);
+                      setShowAddresses(false);
+                      if (selectedAddress.UUID !== value.UUID) {
+                        setCourier(null);
+                      }
+                      setSelectedAddress(value);
+                    }}
                   />
+                </Card>
+                <Card className="flex flex-col rounded-none capitalize text-xs sm:text-sm mb-3">
+                  <SelectCourierCheckout
+                    selectedCourier={selectedCourier}
+                    courierData={courier}
+                    showCouriers={showCourier}
+                    onShowCouriers={() => setShowCourier((prev) => !prev)}
+                    onSelectCourier={(value) => {
+                      setShowCourier(false);
+                      setSelectedCourier(value);
+                    }}
+                  />
+                </Card>
+                <Card className="flex flex-col rounded-none capitalize text-xs sm:text-sm mb-3">
+                  <p className="font-semibold">rincian pesanan</p>
+                  <div className="bg-gradient-to-b from-blue-400 to-white border w-full h-32 rounded-md"></div>
+                </Card>
+                <Card className="flex flex-col rounded-none capitalize text-xs sm:text-sm mb-3">
+                  <p className="font-semibold">metode pembayaran</p>
+                  <SelectPayment
+                    selectedPayment={selectedPayment}
+                    showPayment={showPayment}
+                    onShowPayment={() => setShowPayment((prev) => !prev)}
+                    onSelectPayment={(value) => {
+                      setShowPayment(false);
+                      setSelectedPayment(value);
+                    }}
+                  />
+                </Card>
+                <Card className="flex flex-col rounded-none capitalize text-xs sm:text-sm mb-3">
+                  <div className="mb-2 block">
+                    <Label
+                      htmlFor="voucher"
+                      className="font-semibold"
+                      value="Kode Voucher"
+                    />
+                  </div>
+                  <TextInput
+                    id="voucher"
+                    type="text"
+                    placeholder="XXXXXX......"
+                    required
+                    onChange={(e) => setVoucher(e.target.value)}
+                  />
+                  <Button
+                    color="blue"
+                    className="mt-3"
+                    onClick={() =>
+                      handleVoucher(voucher, itemTotal, setVoucherData)
+                    }
+                  >
+                    Apply
+                  </Button>
+                </Card>
+                <Card className="flex lg:hidden flex-col rounded-none capitalize mb-3">
+                  <p className="font-bold text-base mb-2">ringkasan belanja</p>
+                  <div className="flex justify-between">
+                    <p className=" text-sm">
+                      Total Harga ({cartItems?.length} barang)
+                    </p>
+                    <p className=" text-sm">
+                      Rp {(itemTotal || 0).toLocaleString('id-ID')}
+                    </p>
+                  </div>
+                  {selectedCourier && (
+                    <div className="flex justify-between">
+                      <p className=" text-sm">Total Ongkos Kirim</p>
+                      <p className=" text-sm">
+                        Rp{' '}
+                        {(selectedCourier?.price || 0).toLocaleString('id-ID')}
+                      </p>
+                    </div>
+                  )}
+                </Card>
+              </div>
+            )}
+          </div>
+          <div className="flex relative lg:h-64 lg:w-4/12 ">
+            <CartContainer
+              className={` ${
+                showSnap ? `hidden` : 'flex'
+              } mt-3 p-3 flex-col rounded-md lg:sticky w-full lg:w-96 lg:top-0`}
+            >
+              <div className="flex flex-row sm:flex-col justify-between sm:gap-y-4">
+                <div className=" hidden lg:flex  flex-col rounded-none capitalize mb-3 gap-y-2">
+                  <p className="font-bold text-base mb-2">ringkasan belanja</p>
+                  <div className="flex justify-between">
+                    <p className=" text-sm">
+                      Total Harga ({cartItems?.length} barang)
+                    </p>
+                    <p className=" text-sm">
+                      Rp {(itemTotal || 0).toLocaleString('id-ID')}
+                    </p>
+                  </div>
+                  {selectedCourier && (
+                    <div className="flex justify-between">
+                      <p className=" text-sm">Total Ongkos Kirim</p>
+                      <p className=" text-sm">
+                        Rp{' '}
+                        {(selectedCourier?.price || 0).toLocaleString('id-ID')}
+                      </p>
+                    </div>
+                  )}
                 </div>
-                <TextInput
-                  id="voucher"
-                  type="text"
-                  placeholder="XXXXXX......"
-                  required
-                  onChange={(e) => setVoucher(e.target.value)}
-                />
-                <Button
-                  color="blue"
-                  className="mt-3"
-                  onClick={() =>
-                    handleVoucher(voucher, itemTotal, setVoucherData)
-                  }
-                >
-                  Apply
+                <div className="flex flex-col lg:flex-row justify-between font-bold">
+                  <p className="">Total Belanja</p>
+                  <p className="">
+                    Rp {(paymentTotal || 0).toLocaleString('id-ID')}
+                  </p>
+                </div>
+                <Button onClick={handlePay} color="blue">
+                  Checkout
                 </Button>
-              </Card>
-              <Card className="flex flex-col rounded-none capitalize text-xs sm:text-sm mb-3">
-                <p className="font-semibold">ringkasan pembayaran</p>
-                <p className="font-semibold">subtotal pembayaran</p>
-              </Card>
-            </div>
-          )}
-          <div
-            id="snap-container"
-            className="flex justify-center items-center sm:w-full"
-          ></div>
+              </div>
+            </CartContainer>
+          </div>
         </div>
-      </div>
-      <CartContainer
-        className={` ${
-          showSnap ? `hidden` : 'flex'
-        } mt-3 p-3 flex-col rounded-md sm:fixed w-full sm:w-64 sm:right-36 sm:top-36`}
-      >
-        <div className="flex flex-row sm:flex-col justify-between sm:gap-y-4">
-          <p>
-            Total:{' '}
-            <span className="font-bold">
-              Rp{paymentTotal.toLocaleString('id-ID')}
-            </span>
-          </p>
-          <Button onClick={handlePay} color="blue">
-            Checkout
-          </Button>
-        </div>
-      </CartContainer>
-    </UserLayout>
+      </UserLayout>
+    </>
   );
 };
 
