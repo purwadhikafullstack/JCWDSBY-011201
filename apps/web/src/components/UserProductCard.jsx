@@ -156,6 +156,7 @@ const UserProductCard = ({
         inventoryid={inventoryid}
         openDrawer={openDrawer}
         toggleDrawer={toggleDrawer}
+        discountPrice={discountPrice}
         price={price}
         image={image}
         productName={productName}

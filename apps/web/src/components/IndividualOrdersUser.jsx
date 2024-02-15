@@ -11,6 +11,7 @@ export function IndividualOrdersUser({
   setOrderDetails,
   setOpenModalUser,
   openModalUser,
+  setOpenModalDetail,
 }) {
   const navigate = useNavigate();
   return (
@@ -64,6 +65,18 @@ export function IndividualOrdersUser({
         </div>
       </div>
       <div className="flex justify-end gap-x-3">
+        {(val.paymentStatus === 'pending' &&
+          val.paymentMethod === 'transfer') && (
+          <Button
+            color="blue"
+            className="hover:cursor-pointer"
+            onClick={() => {
+              navigate(`/checkout-transfer?order_id=${val.invoice}`);
+            }}
+          >
+           Upload Bukti Transfer
+          </Button>
+        )}
         {(val.paymentStatus === 'sending' ||
           val.paymentStatus === 'arrived') && (
           <Button
@@ -81,7 +94,8 @@ export function IndividualOrdersUser({
           color="blue"
           className="hover:cursor-pointer"
           onClick={() => {
-            navigate(`/order-details?order_id=${val.invoice}`);
+            getOrderDetails(val?.invoice, setOrderDetails);
+            setOpenModalDetail(true);
           }}
         >
           Details
