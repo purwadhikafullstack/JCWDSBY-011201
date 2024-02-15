@@ -17,7 +17,9 @@ export function DrawerForUserProductCard({
   price,
   inventoryid,
   stock,
+  discountPrice,
 }) {
+  console.log('🚀 ~ inventoryid:', inventoryid);
   const [amount, setAmount] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
@@ -25,23 +27,28 @@ export function DrawerForUserProductCard({
   const onHandleSubmitAddToCart = async (inventoryid, amount, storeUUID) => {
     try {
       setIsLoading(true);
-      const response = await API_CALL.post(
-        '/cart',
-        {
-          inventoryId: inventoryid,
-          amount,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+      if (inventoryid) {
+        const response = await API_CALL.post(
+          '/cart',
+          {
+            inventoryId: inventoryid,
+            amount,
           },
-        },
-      );
-      console.log("🚀 ~ onHandleSubmitAddToCart ~ response:", response.data.success)
-      dispatch(fetchCartItems(storeUUID));
-      customToast(response.data.success,response.data.message)
-      setIsLoading(false);
-      toggleDrawer(false);
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+            },
+          },
+        );
+        console.log(
+          '🚀 ~ onHandleSubmitAddToCart ~ response:',
+          response.data.success,
+        );
+        dispatch(fetchCartItems(storeUUID));
+        customToast(response.data.success, response.data.message);
+        setIsLoading(false);
+        toggleDrawer(false);
+      }
     } catch (error) {
       console.log(error);
       setIsLoading(false);
@@ -52,7 +59,6 @@ export function DrawerForUserProductCard({
       open={openDrawer}
       onClose={toggleDrawer}
       direction="bottom"
-      
       className=" w-full sm:max-w-xl !min-h-[49vh] sm:h-72 mx-auto shadow-inner shadow-blue-500 rounded-t-lg p-5"
     >
       <div className="flex flex-col gap-y-3">
@@ -67,15 +73,17 @@ export function DrawerForUserProductCard({
         <p className="font-semibold w-36">Pilih Jumlah</p>
         <div className="flex w-72 sm:w-full justify-between items-center">
           <div className="flex flex-col">
-            <p className="line-through text-sm">
-              {(price * amount).toLocaleString('ID', {
-                style: 'currency',
-                currency: 'idr',
-              })}
-            </p>
+            {discountPrice && (
+              <p className="line-through text-sm text-red-500">
+                {(price * amount).toLocaleString('ID', {
+                  style: 'currency',
+                  currency: 'idr',
+                })}
+              </p>
+            )}
             <div>
               <p className="font-semibold text-xl">
-                {(price * amount).toLocaleString('ID', {
+                {(discountPrice || price * amount).toLocaleString('ID', {
                   style: 'currency',
                   currency: 'idr',
                 })}

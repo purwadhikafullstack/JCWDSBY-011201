@@ -8,11 +8,14 @@ import { DatepickerForOrders } from '../components/DatepickerForOrders';
 import { UserFinishOrderModal } from '../components/UserFinishOrderModal';
 import { getOrderDetails } from '../helpers/orders/getOrdersByInvoice';
 import { IndividualOrdersUser } from '../components/IndividualOrdersUser';
+import { ModalForUserOrderDetails } from '../components/ModalForUserOrderDetails';
 const UserOrders = () => {
   const [order, setOrder] = useState([]);
   const [totalPage, setTotalPage] = useState(1);
   const [searchParams, setSearchParams] = useSearchParams();
   const [openModalUser, setOpenModalUser] = useState(false);
+  const [openModalDetail, setOpenModalDetail] = useState(false);
+  console.log("🚀 ~ UserOrders ~ openModalDetail:", openModalDetail)
   const [orderDetails, setOrderDetails] = useState(null);
   const navigate = useNavigate();
   const fetchOrders = async () => {
@@ -35,7 +38,7 @@ const UserOrders = () => {
   };
   useEffect(() => {
     fetchOrders();
-  }, [searchParams]);
+  }, [searchParams,openModalDetail,openModalUser]);
 
   const onPageChange = (page) => {
     setSearchParams((prev) => {
@@ -96,11 +99,12 @@ const UserOrders = () => {
               </option>
               <option value={'reset'}>clear</option>
               <option value={'rejected'}>rejected</option>
+              <option value={'canceled'}>canceled</option>
               <option value={'pending'}>pending</option>
               <option value={'paid'}>paid</option>
               <option value={'checking'}>checking</option>
-              <option value={'arrived'}>checking</option>
-              <option value={'finished'}>checking</option>
+              <option value={'arrived'}>arrived</option>
+              <option value={'finished'}>finished</option>
             </select>
           </label>
           <DatepickerForOrders setSearchParams={setSearchParams} />
@@ -113,6 +117,7 @@ const UserOrders = () => {
                   val={val}
                   setOrderDetails={setOrderDetails}
                   setOpenModalUser={setOpenModalUser}
+                  setOpenModalDetail={setOpenModalDetail}
                   openModalUser={openModalUser}
                 />
               );
@@ -130,6 +135,11 @@ const UserOrders = () => {
       <UserFinishOrderModal
         openModalUser={openModalUser}
         setOpenModalUser={setOpenModalUser}
+        order={orderDetails}
+      />
+      <ModalForUserOrderDetails
+        openModalDetail={openModalDetail}
+        setOpenModalDetail={setOpenModalDetail}
         order={orderDetails}
       />
     </UserLayout>

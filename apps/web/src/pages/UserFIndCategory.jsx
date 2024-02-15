@@ -103,6 +103,7 @@ const UserFindCategory = () => {
                   productUnit={value.product.weight + value.product.unit}
                   price={value.product.price}
                   discountPrice={discountPrice(value)}
+                  inventoryid={value.id}
                   isPromo={promo(value)}
                   stock={value.stock}
                   onClickProduct={() =>
