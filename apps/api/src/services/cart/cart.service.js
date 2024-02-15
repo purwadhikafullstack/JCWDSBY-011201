@@ -48,7 +48,6 @@ export const updateChecks = async (req, t) => {
   }
 };
 export const updateChecksAll = async (req, t) => {
-  console.log(req.body);
   return await carts.update(
     { checked: req.body.checked },
     {

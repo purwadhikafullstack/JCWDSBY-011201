@@ -15,14 +15,13 @@ const UserOrders = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [openModalUser, setOpenModalUser] = useState(false);
   const [openModalDetail, setOpenModalDetail] = useState(false);
-  console.log("🚀 ~ UserOrders ~ openModalDetail:", openModalDetail)
   const [orderDetails, setOrderDetails] = useState(null);
   const navigate = useNavigate();
   const fetchOrders = async () => {
     const response = await API_CALL.get('/transaction/orders', {
       headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` },
       params: {
-        order_id: searchParams.get('order_id'),
+        order_id: searchParams.get('invoice'),
         status: searchParams.get('status'),
         sort: searchParams.get('sort'),
         payment: searchParams.get('payment'),
@@ -38,7 +37,17 @@ const UserOrders = () => {
   };
   useEffect(() => {
     fetchOrders();
-  }, [searchParams,openModalDetail,openModalUser]);
+  }, [searchParams, openModalDetail, openModalUser]);
+
+  useEffect(() => {
+    if (searchParams.get('order_id')) {
+      getOrderDetails(
+        searchParams.get('order_id'),
+        setOrderDetails,
+        setOpenModalDetail,
+      );
+    }
+  }, [searchParams]);
 
   const onPageChange = (page) => {
     setSearchParams((prev) => {
@@ -56,15 +65,15 @@ const UserOrders = () => {
               type="search"
               placeholder="invoice code or payment method"
               className=" flex-grow outline-none bg-transparent text-sm font-semibold"
-              defaultValue={searchParams.get('order_id')}
+              defaultValue={searchParams.get('invoice')}
               onChange={(e) => {
                 setTimeout(() => {
                   setSearchParams((value) => {
                     if (!e.target.value) {
-                      value.delete('order_id');
+                      value.delete('invoice');
                       value.delete('payment');
                     } else {
-                      value.set('order_id', e.target.value);
+                      value.set('invoice', e.target.value);
                       value.set('payment', e.target.value);
                     }
                     return value;

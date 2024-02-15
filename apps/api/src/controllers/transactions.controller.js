@@ -62,10 +62,6 @@ export const getTransactionDetailsController = async (req, res, next) => {
     const transData = await getOneTransaction(req);
     if (transData) {
       const detailsData = await getTransactionDetails(req, transData.id);
-      console.log(
-        '🚀 ~ getTransactionDetailsController ~ detailsData:',
-        detailsData,
-      );
       const processedRes = detailsData.map((val, idx) => {
         return {
           amount: val.amount,

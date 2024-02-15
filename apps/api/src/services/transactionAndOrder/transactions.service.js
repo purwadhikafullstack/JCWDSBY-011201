@@ -10,8 +10,6 @@ import product from '../../models/product.model';
 import stores from '../../models/stores.model';
 import { invoiceNamer } from '../../helper/invoiceNamer';
 import discount from '../../models/discount.model';
-
-//Get
 export const findUserAddressIdForTransaction = async (req) => {
   return await user_addresses.findOne({
     where: { UUID: req.body.addressUUID },
@@ -19,7 +17,6 @@ export const findUserAddressIdForTransaction = async (req) => {
     raw: true,
   });
 };
-
 export const findStoreByUUID = async (req) => {
   return await stores.findOne({
     where: { UUID: req.body.storeUUID },
@@ -28,9 +25,7 @@ export const findStoreByUUID = async (req) => {
   });
 };
 
-//Post Create Transaction & TransactionDetails & Reduce Inventory
 export const createTransaction = async (req, t, userAddressId, storeId) => {
-  console.log(req.body);
   return await transactions.create(
     {
       userId: req.tokenData.id,
@@ -48,7 +43,6 @@ export const createTransaction = async (req, t, userAddressId, storeId) => {
     { transaction: t },
   );
 };
-
 export const transactionDetailsBulkCreate = async (req, t, latestTransId) => {
   try {
     const bulkItems = req.body.checkoutItems.map((val, idx) => ({
@@ -63,7 +57,6 @@ export const transactionDetailsBulkCreate = async (req, t, latestTransId) => {
     console.log(error);
   }
 };
-
 export const raiseBookedStock = async (req, t, items) => {
   const promiseRaiseBookedStock = items.map(async (val, idx) => {
     return await inventory.increment(
@@ -90,7 +83,6 @@ export const handleMidtrans = async (req, userData) => {
     };
   });
   const totalNetPrice = req.body.checkoutItems.reduce((total, val) => {
-    console.log(total, val.value, val.quantity);
     return total + val.value * val.quantity;
   }, 0);
   let parameter = {
@@ -118,12 +110,9 @@ export const handleMidtrans = async (req, userData) => {
       finish: MIDTRANS_FINISH_URL,
     },
   };
-
   const snapTransaction = await snap.createTransaction(parameter);
-  console.log('🚀 ~ handleMidtrans ~ snapTransaction:', snapTransaction);
   return snapTransaction;
 };
-
 export const getOneTransaction = async (req) => {
   return await transactions.findOne({
     where: { invoice: req.params.order_id ?? req.body.invoice },
@@ -138,7 +127,6 @@ export const getOneTransaction = async (req) => {
     ],
   });
 };
-
 export const getTransactionDetails = async (req, transactionId) => {
   return await transactionDetails.findAll({
     where: { transactionId },
@@ -168,7 +156,6 @@ export const getTransactionDetails = async (req, transactionId) => {
     ],
   });
 };
-
 export const updateTransactionStatus = async (req, t) => {
   return await transactions.update(
     { paymentStatus: req.body.status },

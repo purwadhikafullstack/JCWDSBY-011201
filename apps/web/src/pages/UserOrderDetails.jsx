@@ -51,7 +51,6 @@ const UserOrderDetails = () => {
           Authorization: `Bearer ${localStorage.getItem('authToken')}`,
         },
       });
-      console.log('🚀 ~ handleUploadProof ~ response:', response);
       setUploaded(true);
       getOrderDetails(orderId);
     } catch (error) {

@@ -22,7 +22,6 @@ const UserProfileDetail = (props) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [avatarUpload, setAvatarUpload] = useState(null);
-  console.log('🚀 ~ UserProfileDetail ~ avatarUpload:', avatarUpload);
 
   const profileDetailSchema = Yup.object({
     name: Yup.string()

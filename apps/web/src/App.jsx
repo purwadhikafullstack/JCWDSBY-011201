@@ -65,7 +65,7 @@ function App() {
   const storeUUID = useSelector((state) => state.storeReducer.storeId);
 
   useEffect(() => {
-    if (globalUser) {
+    if (globalUser && globalUser?.role === 'user') {
       dispatch(fetchCartItems(storeUUID));
     }
   }, [storeUUID]);

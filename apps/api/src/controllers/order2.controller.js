@@ -89,7 +89,6 @@ export const userFinishOrders = async (req, res, next) => {
   await DB.initialize();
   try {
     const result = await getOneTransaction(req);
-    console.log('🚀 ~ userFinishOrders ~ result:', result);
     if (!result) {
       throw resTemplate(404, false, 'order not found');
     }

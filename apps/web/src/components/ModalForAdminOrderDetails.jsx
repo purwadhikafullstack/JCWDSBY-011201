@@ -1,66 +1,14 @@
 import React, { useState } from 'react';
-import { Button, Modal, Card, FloatingLabel } from 'flowbite-react';
+import { Button, Modal, Card } from 'flowbite-react';
 import { reduceTotalPrice } from '../helpers/orders/reduceTotalPrice';
 import { IMG_URL_PROOF } from '../constants/imageURL';
-import API_CALL from '../helpers/API';
-import customToast from '../utils/toast';
+import Zoom from 'react-medium-image-zoom';
+import 'react-medium-image-zoom/dist/styles.css';
+import { copyToClipboard } from '../helpers/orders/copyToClipboard';
+import { cancelOrdersForAdmin, sendingOrderForAdmin, updateStatusForTransferAdmin } from '../helpers/orders/adminFunction';
 export function ModalForAdminOrderDetails({ openModal, setOpenModal, order }) {
-  console.log('🚀 ~ ModalForAdminOrderDetails ~ order:', order);
   const [resi, setResi] = useState('');
   const totalPrice = reduceTotalPrice(order);
-  const updateStatusForTransferAdmin = async (status, invoice) => {
-    try {
-      const response = await API_CALL.patch(
-        '/transaction/proof/update',
-        { status, invoice },
-        {
-          headers: {
-            Authorization: 'Bearer ' + localStorage.getItem('authToken'),
-          },
-        },
-      );
-      customToast('success', response.data.message);
-      setOpenModal(false);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const sendingOrderForAdmin = async (status, invoice, resi) => {
-    try {
-      const response = await API_CALL.patch(
-        '/transaction/admin/sending',
-        { status, invoice, resi },
-        {
-          headers: {
-            Authorization: 'Bearer ' + localStorage.getItem('authToken'),
-          },
-        },
-      );
-      console.log('🚀 ~ sendingOrderForAdmin ~ response:', response);
-      customToast('success', response.data.message);
-      setOpenModal(false);
-    } catch (error) {
-      console.log(error);
-      customToast('error', error.response.data.message);
-    }
-  };
-  const cancelOrdersForAdmin = async (status, invoice) => {
-    try {
-      const response = await API_CALL.patch(
-        '/transaction/admin/cancel',
-        { status, invoice },
-        {
-          headers: {
-            Authorization: 'Bearer ' + localStorage.getItem('authToken'),
-          },
-        },
-      );
-      customToast('success', response.data.message);
-      setOpenModal(false);
-    } catch (error) {
-      console.log(error);
-    }
-  };
   return (
     <Modal
       show={openModal}
@@ -74,14 +22,26 @@ export function ModalForAdminOrderDetails({ openModal, setOpenModal, order }) {
             <p className="font-bold text-lg capitalize">Information</p>
             <div className="flex justify-between">
               <p>Invoice</p>
-              <p>{order?.invoice}</p>
+              <p
+                className="hover:cursor-pointer"
+                onClick={() => {
+                  copyToClipboard(order?.invoice ?? '');
+                }}
+              >
+                {order?.invoice}
+              </p>
             </div>
-            {order?.resi && (
-              <div className="flex justify-between">
-                <p>Resi</p>
-                <p>{order?.resi}</p>
-              </div>
-            )}
+            <div className="flex justify-between ">
+              <p>Resi</p>
+              <p
+                className="hover:cursor-pointer"
+                onClick={() => {
+                  copyToClipboard(order?.resi ?? '');
+                }}
+              >
+                {order?.resi || '-'}
+              </p>
+            </div>
             <div className="flex justify-between">
               <p>Tipe Pembayaran</p>
               <p className={`capitalize`}>
@@ -133,18 +93,22 @@ export function ModalForAdminOrderDetails({ openModal, setOpenModal, order }) {
                   REJECTED
                 </p>
               ) : (
-                <img
-                  className="w-80 h-80 self-center object-scale-down"
-                  alt={order?.img}
-                  src={`${IMG_URL_PROOF}${order?.img}`}
-                />
+                <div className="flex items-center justify-center">
+                  <Zoom>
+                    <img
+                      className="w-full h-full sm:w-80 sm:h-80 items-center object-contain"
+                      alt={order?.img}
+                      src={`${IMG_URL_PROOF}${order?.img}`}
+                    />
+                  </Zoom>
+                </div>
               )}
               {order?.status === 'checking' && (
                 <div className="flex flex-col justify-center w-full gap-y-4">
                   <Button
                     color="success"
                     onClick={() => {
-                      updateStatusForTransferAdmin('paid', order?.invoice);
+                      updateStatusForTransferAdmin('paid', order?.invoice,setOpenModal);
                     }}
                   >
                     ACCEPT Payment Proof
@@ -152,7 +116,7 @@ export function ModalForAdminOrderDetails({ openModal, setOpenModal, order }) {
                   <Button
                     color="failure"
                     onClick={() => {
-                      updateStatusForTransferAdmin('rejected', order?.invoice);
+                      updateStatusForTransferAdmin('rejected', order?.invoice,setOpenModal);
                     }}
                   >
                     REJECT Payment Proof
@@ -183,7 +147,12 @@ export function ModalForAdminOrderDetails({ openModal, setOpenModal, order }) {
             <Button
               color="blue"
               onClick={() => {
-                sendingOrderForAdmin('sending', order?.invoice, resi);
+                sendingOrderForAdmin(
+                  'sending',
+                  order?.invoice,
+                  resi,
+                  setOpenModal,
+                );
               }}
             >
               SEND ORDER
@@ -199,7 +168,7 @@ export function ModalForAdminOrderDetails({ openModal, setOpenModal, order }) {
               <Button
                 color="failure"
                 onClick={() => {
-                  cancelOrdersForAdmin('refunded', order?.invoice);
+                  cancelOrdersForAdmin('refunded', order?.invoice,setOpenModal);
                 }}
               >
                 CANCEL ORDER

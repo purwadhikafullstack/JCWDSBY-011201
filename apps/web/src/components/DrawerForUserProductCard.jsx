@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchCartItems } from '../redux/slice/cartSlice';
 import ButtonWithLoading from './ButtonWithLoading';
 import customToast from '../utils/toast';
+import { useLocation } from 'react-router-dom';
 
 export function DrawerForUserProductCard({
   openDrawer,
@@ -19,7 +20,6 @@ export function DrawerForUserProductCard({
   stock,
   discountPrice,
 }) {
-  console.log('🚀 ~ inventoryid:', inventoryid);
   const [amount, setAmount] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
@@ -40,10 +40,6 @@ export function DrawerForUserProductCard({
             },
           },
         );
-        console.log(
-          '🚀 ~ onHandleSubmitAddToCart ~ response:',
-          response.data.success,
-        );
         dispatch(fetchCartItems(storeUUID));
         customToast(response.data.success, response.data.message);
         setIsLoading(false);
@@ -59,7 +55,7 @@ export function DrawerForUserProductCard({
       open={openDrawer}
       onClose={toggleDrawer}
       direction="bottom"
-      className=" w-full sm:max-w-xl !min-h-[49vh] sm:h-72 mx-auto shadow-inner shadow-blue-500 rounded-t-lg p-5"
+      className={`w-full md:max-w-xl !min-h-[40vh] md:h-72 mx-auto shadow-inner shadow-blue-500 rounded-t-lg p-5`}
     >
       <div className="flex flex-col gap-y-3">
         <div className="w-full h-16 flex gap-x-6">
@@ -71,7 +67,7 @@ export function DrawerForUserProductCard({
           <div className="font-semibold">{productName}</div>
         </div>
         <p className="font-semibold w-36">Pilih Jumlah</p>
-        <div className="flex w-72 sm:w-full justify-between items-center">
+        <div className="flex w-72 md:w-full justify-between items-center">
           <div className="flex flex-col">
             {discountPrice && (
               <p className="line-through text-sm text-red-500">
