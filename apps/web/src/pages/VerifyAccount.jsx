@@ -1,7 +1,7 @@
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import cosmoLogo from '../assets/cosmo-logo.svg';
 import API_CALL from '../helpers/API';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import customToast from '../utils/toast';
@@ -51,7 +51,6 @@ const VerifyAccount = () => {
         }
       }
     } catch (error) {
-      console.log(error.message);
       customToast('error', error.response.data.message);
     }
     setIsLoading(false);

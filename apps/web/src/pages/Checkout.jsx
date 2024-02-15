@@ -1,25 +1,17 @@
 import React from 'react';
 import UserLayout from '../components/UserLayout';
-import { Button, Card, Label, TextInput } from 'flowbite-react';
+import { Button } from 'flowbite-react';
 import CartContainer from '../components/cart/CartContainer';
 import { useEffect, useState } from 'react';
 import API_CALL from '../helpers/API';
 import { useDispatch, useSelector } from 'react-redux';
 import customToast from '../utils/toast';
-import SelectAddressCheckout from '../components/SelectAddressCheckout';
-import SelectCourierCheckout from '../components/SelectCourierCheckout';
 import { useSnap } from '../hooks/useMidtrans';
-import SelectPayment from '../components/SelectPayment';
 import { useNavigate } from 'react-router-dom';
-import {
-  handleSuccessCheckout,
-  updateTransactionStatus,
-} from '../helpers/checkout/updateTransaction';
-import {
-  deleteCheckedItemInCloud,
-  setCheckoutItems,
-} from '../redux/slice/cartSlice';
+import { setCheckoutItems } from '../redux/slice/cartSlice';
 import { getCourierList } from '../helpers/checkout/checkoutFunctions';
+import { handlePay } from '../helpers/checkout/handlePay';
+import { CheckoutLeftSide } from '../components/CheckoutLeftSide';
 const Checkout = () => {
   const [address, setAddress] = useState(null);
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -101,83 +93,6 @@ const Checkout = () => {
     0,
   );
 
-  const handlePay = async () => {
-    try {
-      if (!selectedAddress || !selectedCourier || !selectedPayment) {
-        customToast('error', 'harap lengkapi semua opsi');
-        return;
-      }
-      const response = await API_CALL.post(
-        '/transaction',
-        {
-          addressUUID: selectedAddress.UUID,
-          storeUUID: currStore.storeId,
-          shipmentTotal: selectedCourier?.price,
-          paymentTotal,
-          itemTotal,
-          shipmentName: selectedCourier?.courier_name,
-          checkoutItems,
-          paymentMethod: selectedPayment.name,
-          discountVoucherId: voucherData?.id ?? null,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('authToken')}`,
-          },
-        },
-      );
-      if (response) {
-        console.log('🚀 ~ handlePay ~ response:', response.data.result.invoice);
-        setShowSnap(true);
-        dispatch(deleteCheckedItemInCloud(itemsInvId, currStore.storeId));
-        if (selectedPayment.name == 'transfer') {
-          navigate(`/order-details?order_id=${response.data.result.invoice}`);
-          return;
-        }
-        snapEmbed(response.data.result.token, 'snap-container', {
-          onSuccess: (result) => {
-            handleSuccessCheckout(response.data.result.invoice, 'paid');
-            sessionStorage.removeItem('checkoutItems');
-            setShowSnap(false);
-          },
-          onPending: (result) => {
-            console.log(result);
-            setShowSnap(false);
-          },
-          onClose: (result) => {
-            console.log(result);
-            setShowSnap(false);
-          },
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleVoucher = async (voucher, itemTotal, setVoucherData) => {
-    try {
-      const response = await API_CALL.post(
-        '/transaction/voucher',
-        {
-          voucher,
-          itemTotal,
-        },
-        {
-          headers: {
-            Authorization: 'Bearer ' + localStorage.getItem('authToken'),
-          },
-        },
-      );
-      setVoucherData(response.data.result);
-      customToast('success', response.data.message);
-    } catch (error) {
-      console.log(error);
-      customToast('error', error.response.data.message);
-      setVoucherData(null);
-    }
-  };
-
   useEffect(() => {
     if (currStore.postalCode !== '') {
       getAvailableAddress();
@@ -204,101 +119,29 @@ const Checkout = () => {
           className="flex justify-center items-center sm:w-full"
         ></div>
         <div className="w-full h-full flex flex-col overflow-auto lg:flex-row lg:gap-x-4 lg:px-32 lg:py-4">
-          <div className="w-full lg:w-8/12 h-[100vh] overflow-y-auto lg:h-full font-roboto flex flex-col bg-gray-100 ">
-            {!showSnap && (
-              <div className="flex flex-col">
-                <Card className="flex flex-col rounded-none capitalize text-xs sm:text-sm mb-3">
-                  <SelectAddressCheckout
-                    selectedAddress={selectedAddress}
-                    addressData={address}
-                    showAddresses={showAddresses}
-                    onShowAddresses={() => setShowAddresses((prev) => !prev)}
-                    onSelectAddress={(value) => {
-                      setShowCourier(false);
-                      setShowAddresses(false);
-                      if (selectedAddress.UUID !== value.UUID) {
-                        setCourier(null);
-                      }
-                      setSelectedAddress(value);
-                    }}
-                  />
-                </Card>
-                <Card className="flex flex-col rounded-none capitalize text-xs sm:text-sm mb-3">
-                  <SelectCourierCheckout
-                    selectedCourier={selectedCourier}
-                    courierData={courier}
-                    showCouriers={showCourier}
-                    onShowCouriers={() => setShowCourier((prev) => !prev)}
-                    onSelectCourier={(value) => {
-                      setShowCourier(false);
-                      setSelectedCourier(value);
-                    }}
-                  />
-                </Card>
-                <Card className="flex flex-col rounded-none capitalize text-xs sm:text-sm mb-3">
-                  <p className="font-semibold">rincian pesanan</p>
-                  <div className="bg-gradient-to-b from-blue-400 to-white border w-full h-32 rounded-md"></div>
-                </Card>
-                <Card className="flex flex-col rounded-none capitalize text-xs sm:text-sm mb-3">
-                  <p className="font-semibold">metode pembayaran</p>
-                  <SelectPayment
-                    selectedPayment={selectedPayment}
-                    showPayment={showPayment}
-                    onShowPayment={() => setShowPayment((prev) => !prev)}
-                    onSelectPayment={(value) => {
-                      setShowPayment(false);
-                      setSelectedPayment(value);
-                    }}
-                  />
-                </Card>
-                <Card className="flex flex-col rounded-none capitalize text-xs sm:text-sm mb-3">
-                  <div className="mb-2 block">
-                    <Label
-                      htmlFor="voucher"
-                      className="font-semibold"
-                      value="Kode Voucher"
-                    />
-                  </div>
-                  <TextInput
-                    id="voucher"
-                    type="text"
-                    placeholder="XXXXXX......"
-                    required
-                    onChange={(e) => setVoucher(e.target.value)}
-                  />
-                  <Button
-                    color="blue"
-                    className="mt-3"
-                    onClick={() =>
-                      handleVoucher(voucher, itemTotal, setVoucherData)
-                    }
-                  >
-                    Apply
-                  </Button>
-                </Card>
-                <Card className="flex lg:hidden flex-col rounded-none capitalize mb-3">
-                  <p className="font-bold text-base mb-2">ringkasan belanja</p>
-                  <div className="flex justify-between">
-                    <p className=" text-sm">
-                      Total Harga ({cartItems?.length} barang)
-                    </p>
-                    <p className=" text-sm">
-                      Rp {(itemTotal || 0).toLocaleString('id-ID')}
-                    </p>
-                  </div>
-                  {selectedCourier && (
-                    <div className="flex justify-between">
-                      <p className=" text-sm">Total Ongkos Kirim</p>
-                      <p className=" text-sm">
-                        Rp{' '}
-                        {(selectedCourier?.price || 0).toLocaleString('id-ID')}
-                      </p>
-                    </div>
-                  )}
-                </Card>
-              </div>
-            )}
-          </div>
+          <CheckoutLeftSide
+            showSnap={showSnap}
+            selectedAddress={selectedAddress}
+            address={address}
+            showAddresses={showAddresses}
+            setShowAddresses={setShowAddresses}
+            setShowCourier={setShowCourier}
+            setCourier={setCourier}
+            setSelectedAddress={setSelectedAddress}
+            selectedCourier={selectedCourier}
+            courier={courier}
+            showCourier={showCourier}
+            setSelectedCourier={setSelectedCourier}
+            selectedPayment={selectedPayment}
+            showPayment={showPayment}
+            setShowPayment={setShowPayment}
+            setSelectedPayment={setSelectedPayment}
+            setVoucher={setVoucher}
+            voucher={voucher}
+            itemTotal={itemTotal}
+            setVoucherData={setVoucherData}
+            cartItems={cartItems}
+          />
           <div className="flex relative lg:h-64 lg:w-4/12 ">
             <CartContainer
               className={` ${
@@ -332,7 +175,25 @@ const Checkout = () => {
                     Rp {(paymentTotal || 0).toLocaleString('id-ID')}
                   </p>
                 </div>
-                <Button onClick={handlePay} color="blue">
+                <Button
+                  onClick={() =>
+                    handlePay(
+                      selectedAddress,
+                      selectedCourier,
+                      selectedPayment,
+                      currStore,
+                      paymentTotal,
+                      itemTotal,
+                      checkoutItems,
+                      voucherData,
+                      itemsInvId,
+                      snapEmbed,
+                      setShowSnap,
+                      navigate,
+                    )
+                  }
+                  color="blue"
+                >
                   Checkout
                 </Button>
               </div>

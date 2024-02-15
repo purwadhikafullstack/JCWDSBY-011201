@@ -1,5 +1,5 @@
 import UserLayout from '../components/UserLayout';
-import { HiChevronLeft, HiOutlineExclamationCircle } from 'react-icons/hi2';
+import { HiChevronLeft } from 'react-icons/hi2';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import API_CALL from '../helpers/API';
@@ -29,7 +29,7 @@ const UserAddAddress = (props) => {
       });
       setProvince(result.data.result);
     } catch (error) {
-      console.log(error);
+      customToast('error', 'Failed to get province data');
     }
   };
 
@@ -45,7 +45,7 @@ const UserAddAddress = (props) => {
       });
       setCity(result.data.result);
     } catch (error) {
-      console.log(error);
+      customToast('error', 'Failed to get city data');
     }
   };
 
@@ -61,7 +61,7 @@ const UserAddAddress = (props) => {
       });
       setDistrict(result.data.result);
     } catch (error) {
-      console.log(error);
+      customToast('error', 'Failed to get district data');
     }
   };
 
@@ -93,7 +93,6 @@ const UserAddAddress = (props) => {
       customToast('success', 'Success add address');
       navigate('/profile/address', { replace: true });
     } catch (error) {
-      console.log(error);
       customToast('error', error?.message || 'Failed to add address');
     }
     setIsLoading(false);

@@ -36,9 +36,7 @@ const Landing = () => {
     try {
       const hero = await API_CALL.get('/event');
       setHeroData(hero.data.result);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   const getProductData = async () => {

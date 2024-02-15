@@ -17,13 +17,14 @@ import ButtonSeeAll from '../components/ButtonSeeAll';
 const UserProductDetail = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const currStore = useSelector(reducer => reducer.storeReducer);
+  const currStore = useSelector((reducer) => reducer.storeReducer);
   const params = useParams();
   const [isLoading, setIsLoading] = useState(false);
   const [productData, setProductData] = useState(null);
   const [relatedProductData, setRelatedProductData] = useState([]);
-  const [openDrawer, setOpenDrawer] = useState(false);
-  const toggleDrawer = () => setOpenDrawer((prevState) => !prevState);
+  console.log("🚀 ~ UserProductDetail ~ relatedProductData:", relatedProductData)
+  const [openDrawerDetails, setOpenDrawerDetails] = useState(false);
+  const toggleDrawer = () => setOpenDrawerDetails((prevState) => !prevState);
 
   useEffect(() => {
     setIsLoading(true);
@@ -35,8 +36,16 @@ const UserProductDetail = () => {
     const res = await API_CALL.get(`inventory/${location.pathname.split('/product/')[1]}`)
     if (res) {
       setProductData(res.data.result);
-      const relatedProduct = await API_CALL.get(`/inventory?store=${currStore.storeId}&category=${res.data.result.product.category.name}&limit=10`); //! need to change limit
-      setRelatedProductData(relatedProduct.data.result.rows.filter((item) => item.product.id !== res.data.result.product.id));
+      const relatedProduct = await API_CALL.get(`/inventory`, {
+        params: {
+          store: currStore.storeId, category: res.data.result.product.category.name, limit: 5
+        }
+      }); 
+      setRelatedProductData(
+        relatedProduct.data.result.rows.filter(
+          (item) => item.product.id !== res.data.result.product.id,
+        ),
+      );
     }
     setIsLoading(false);
   };
@@ -47,13 +56,14 @@ const UserProductDetail = () => {
       <div className="flex flex-col gap-2 lg:w-[1024px] m-auto relative">
         <div className="h-96 md:h-[28rem] bg-blue-50">
           <Carousel>
-            {productData && productData.product.product_images.map((value, index) => (
-              <img
-                key={index}
-                className="w-full h-full md:object-contain"
-                src={IMG_URL_PRODUCT + value.image}
-              />
-            ))}
+            {productData &&
+              productData.product.product_images.map((value, index) => (
+                <img
+                  key={index}
+                  className="w-full h-full md:object-contain"
+                  src={IMG_URL_PRODUCT + value.image}
+                />
+              ))}
           </Carousel>
         </div>
         <div className="flex p-2 flex-col gap-4">
@@ -79,8 +89,10 @@ const UserProductDetail = () => {
                         maximumFractionDigits: 0,
                       })}
                     </span>
-                    <div className='flex'>
-                      {promo(productData) && <Badge color={'success'}>Buy 1 Get 1</Badge>}
+                    <div className="flex">
+                      {promo(productData) && (
+                        <Badge color={'success'}>Buy 1 Get 1</Badge>
+                      )}
                     </div>
                   </div>
                 ) : (
@@ -92,8 +104,10 @@ const UserProductDetail = () => {
                         maximumFractionDigits: 0,
                       })}
                     </span>
-                    <div className='flex'>
-                      {promo(productData) && <Badge color={'success'}>Buy 1 Get 1</Badge>}
+                    <div className="flex">
+                      {promo(productData) && (
+                        <Badge color={'success'}>Buy 1 Get 1</Badge>
+                      )}
                     </div>
                   </div>
                 )}
@@ -111,19 +125,28 @@ const UserProductDetail = () => {
           </div>
           <div className="flex flex-col">
             <span className="text-base font-semibold">Product description</span>
-            <p className="text-base font-light">{productData && productData.product.description}</p>
+            <p className="text-base font-light">
+              {productData && productData.product.description}
+            </p>
           </div>
           <div className="flex flex-col">
             <span className="text-base font-semibold">Product units</span>
-            <p className="text-base font-light">{productData && `${productData.product.weight}${productData.product.unit}`}</p>
+            <p className="text-base font-light">
+              {productData &&
+                `${productData.product.weight}${productData.product.unit}`}
+            </p>
           </div>
           <div className="flex flex-col">
             <span className="text-base font-semibold">Product category</span>
-            <p className="text-base font-light">{productData && productData.product.category.name}</p>
+            <p className="text-base font-light">
+              {productData && productData.product.category.name}
+            </p>
           </div>
           <div className="flex flex-col">
             <span className="text-base font-semibold">Product stock</span>
-            <p className="text-base font-light">{productData && productData.stock}</p>
+            <p className="text-base font-light">
+              {productData && productData.stock}
+            </p>
           </div>
         </div>
         <div className="flex flex-col w-full p-2 gap-2">
@@ -152,10 +175,13 @@ const UserProductDetail = () => {
                 productName={value.product.name}
                 productUnit={value.product.weight + value.product.unit}
                 price={value.product.price}
+                inventoryid={value.id}
                 discountPrice={discountPrice(value)}
                 isPromo={promo(value)}
                 stock={value.stock}
-                onClickProduct={() => navigate(`/product/${value.product.name}`)}
+                onClickProduct={() =>
+                  navigate(`/product/${value.product.name}`)
+                }
               />
             ))}
           </div>
@@ -166,7 +192,16 @@ const UserProductDetail = () => {
               {productData && discountPrice(productData) ? (
                 <div className="flex gap-2 items-center">
                   <span className="text-white text-base font-semibold bg-blue-800 p-1 rounded-md">
-                    {`Save ${productData.discounts.type === 'percentage' ? productData.discounts.percentage * 100 : ((productData.productPrice - discountPrice(productData)) / productData.productPrice * 100).toFixed()} %`}
+                    {`Save ${
+                      productData.discounts.type === 'percentage'
+                        ? productData.discounts.percentage * 100
+                        : (
+                            ((productData.productPrice -
+                              discountPrice(productData)) /
+                              productData.productPrice) *
+                            100
+                          ).toFixed()
+                    } %`}
                   </span>
                   <span className="font-bold text-xl text-blue-800">
                     {discountPrice(productData).toLocaleString('ID', {
@@ -187,23 +222,28 @@ const UserProductDetail = () => {
               )}
             </div>
             <button
-              className={`${productData && productData.stock ? 'bg-blue-700' : 'bg-gray-200'} text-base font-semibold text-white rounded-md p-2 bg-blue-700`}
+              className={`${
+                productData && productData.stock ? 'bg-blue-700' : 'bg-gray-200'
+              } text-base font-semibold text-white rounded-md p-2 bg-blue-700`}
               disabled={productData && productData.stock ? false : true}
-              onClick={() => setOpenDrawer(true)}
+              onClick={() => setOpenDrawerDetails(true)}
             >
               Add to cart
             </button>
           </div>
-          <DrawerForUserProductCard
-            inventoryid={productData && productData.id}
-            openDrawer={openDrawer}
-            toggleDrawer={toggleDrawer}
-            price={productData && productData.product.price}
-            image={productData && IMG_URL_PRODUCT + productData.product.product_images[0].image}
-            productName={productData && productData.product.name}
-            stock={productData && productData.stock}
-          />
         </div>
+        <DrawerForUserProductCard
+          inventoryid={productData && productData.id}
+          openDrawer={openDrawerDetails}
+          toggleDrawer={toggleDrawer}
+          price={productData && productData.product.price}
+          image={
+            productData &&
+            IMG_URL_PRODUCT + productData.product.product_images[0].image
+          }
+          productName={productData && productData.product.name}
+          stock={productData && productData.stock}
+        />
       </div>
       <Footer />
     </UserLayout>
