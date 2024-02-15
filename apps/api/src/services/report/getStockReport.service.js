@@ -39,7 +39,7 @@ export const getStockReportService = async (params) => {
           attributes: [],
         },
       ],
-      attributes: [['createdAt', 'date'], [col('inventory.store.UUID'), 'store'], [col('user.email'), 'admin'], [col('inventory.product.name'), 'product'], [col('inventory.product.category.name'), 'category'], 'initialStock', 'stockChange', 'endStock', 'detail'],
+      attributes: [['createdAt', 'date'], [col('inventory.store.UUID'), 'store'], [col('inventory.store.name'), 'storeName'], [col('user.email'), 'admin'], [col('inventory.product.name'), 'product'], [col('inventory.product.category.name'), 'category'], 'initialStock', 'stockChange', 'endStock', 'detail'],
       limit: parseInt(params.limit),
       offset: params.page * parseInt(params.limit) - parseInt(params.limit),
       distinct: true,

@@ -12,7 +12,6 @@ export const validateToken = (req, res, next) => {
     req.tokenData = tokenData;
     return next();
   } catch (error) {
-    console.log(error.message);
     resTemplate(error.rc || 500, false, error.message, null);
     return res
       .status(error.rc || 500)
@@ -28,7 +27,6 @@ export const validateUser = (req, res, next) => {
       throw { rc: 403, message: 'Forbidden action' };
     }
   } catch (error) {
-    console.log(error.message);
     return res
       .status(error.rc || 500)
       .json(resTemplate(error.rc || 500, false, error.message, null));
@@ -43,7 +41,6 @@ export const validateAdmin = (req, res, next) => {
       throw { rc: 403, message: 'Forbidden action' };
     }
   } catch (error) {
-    console.log(error.message);
     return res
       .status(error.rc || 500)
       .json(resTemplate(error.rc || 500, false, error.message, null));
@@ -58,7 +55,6 @@ export const validateAdminOnly = (req, res, next) => {
       throw { rc: 403, message: 'Forbidden action' };
     }
   } catch (error) {
-    console.log(error.message);
     return res
       .status(error.rc || 500)
       .json(resTemplate(error.rc || 500, false, error.message, null));
@@ -73,7 +69,6 @@ export const validateSuper = (req, res, next) => {
       throw { rc: 403, message: 'Forbidden action' };
     }
   } catch (error) {
-    console.log(error.message);
     return res
       .status(error.rc || 500)
       .json(resTemplate(error.rc || 500, false, error.message, null));

@@ -44,7 +44,6 @@ const VerifyEmail = () => {
         customToast('error', 'Invalid verify token');
       }
     } catch (error) {
-      console.log(error.message);
       if (error.response.status !== 500) {
         customToast('error', error.response.data.message);
       } else {

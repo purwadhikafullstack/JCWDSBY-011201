@@ -1,10 +1,9 @@
-import { Op, col, fn, literal, where } from "sequelize";
+import { Op, col, fn, where } from "sequelize";
 import inventory from "../../models/inventory.model";
 import stores from "../../models/stores.model";
 import transactionDetails from "../../models/transactionDetails.model";
 import transactions from "../../models/transactions.model";
 import product from "../../models/product.model";
-import categories from "../../models/categories.model";
 
 export const getTopProductService = async (params, tokenData) => {
   try {
@@ -12,16 +11,17 @@ export const getTopProductService = async (params, tokenData) => {
     let store = params?.store ?? '';
     const limit = params?.limit ?? 'none';
     if (tokenData.role === 'admin') store = tokenData.storeUUID;
-    
     const query = {
       where: where(fn('month', col('transactionDetails.createdAt')), '=', date),
       include: [
         {
           model: transactions,
           required: true,
+          attributes: [],
           include: [
             {
               model: stores,
+              attributes: [],
               where: {
                 UUID: {
                   [Op.substring]: store
@@ -29,17 +29,32 @@ export const getTopProductService = async (params, tokenData) => {
               },
             }
           ]
+        },
+        {
+          model: inventory,
+          required:true,
+          attributes: [],
+          include: [
+            {
+              model: product,
+              distinct: true
+            }
+          ]
         }
       ],
       attributes: [
         'id',
+        [col('inventory.product.name'), 'productName'],
+        [col('transaction.store.name'), 'storeName'],
         'amount',
+        [fn('sum', col('amount')), 'totalAmount'],
         'price',
         [fn('month', col('transactionDetails.createdAt')), 'month'],
         'createdAt',
       ],
       limit: parseInt(limit),
-      order: [['amount', 'DESC']]
+      group: ['productName'],
+      order: [['totalAmount', 'DESC']]
     }
 
     if (limit === 'none') delete query.limit;
@@ -78,7 +93,7 @@ export const getSalesReportService = async (params, tokenData) => {
         }
       ],
       attributes: [
-        [fn('sum', col('paymentTotal')), 'salesTotal'],
+        [fn('sum', col('itemTotal')), 'salesTotal'],
         [fn('month', col('transactions.transactionDate')), 'month'],
         'transactionDate',
         [col('store.name'), 'storeName']
@@ -92,13 +107,12 @@ export const getSalesReportService = async (params, tokenData) => {
     delete queryCount.limit;
     delete queryCount.offset;
 
+    const count = await transactions.findAll(queryCount)
+
     if (limit === 'none') {
-      delete query.limit;
+      query.limit = count.length;
       delete query.offset;
     }
-
-
-    const count = await transactions.findAll(queryCount)
 
     const result = await transactions.findAll(query);
 

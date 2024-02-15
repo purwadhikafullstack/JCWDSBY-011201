@@ -54,7 +54,7 @@ const StepperDiscount = ({ onLoading, onSave, errorDuplicateVoucher }) => {
       return setStep(1);
     }
     setIsError({ name: false, amount: false, minTransaction: false, date: false, voucher: false, limit: false });
-    onSave
+    onSave()
   };
 
   return <div className="grid gap-4 lg:w-2/5 m-auto">

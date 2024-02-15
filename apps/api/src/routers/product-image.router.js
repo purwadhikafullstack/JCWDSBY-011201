@@ -4,7 +4,7 @@ import {
   createProductImage,
   deleteProductImage,
 } from "../controllers/product-image.controller";
-import { validateAdmin, validateSuper, validateToken } from "../middleware/tokenValidation";
+import { validateSuper, validateToken } from "../middleware/tokenValidation";
 
 const productImageRouter = Router();
 

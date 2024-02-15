@@ -28,7 +28,6 @@ export default async function (req, res, next) {
     }
     return res.status(200).json(resTemplate(...Object.values(response)));
   } catch (error) {
-    console.log(error);
     next(error);
   }
 }

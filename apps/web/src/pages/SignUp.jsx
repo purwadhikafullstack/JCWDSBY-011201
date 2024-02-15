@@ -33,7 +33,6 @@ const SignUp = () => {
         navigate('/login', { replace: true });
       }
     } catch (error) {
-      console.log(error);
       if (error.response.status !== 500) {
         customToast('error', error.response.data.message);
       } else {

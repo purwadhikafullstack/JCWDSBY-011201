@@ -1,6 +1,5 @@
-import { Avatar, Button, Label, Modal, TextInput } from 'flowbite-react';
 import UserLayout from '../components/UserLayout';
-import { HiChevronLeft, HiOutlineExclamationCircle } from 'react-icons/hi2';
+import { HiChevronLeft } from 'react-icons/hi2';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import API_CALL from '../helpers/API';
@@ -8,6 +7,7 @@ import UserAddressListCard from '../components/UserAddressListCard';
 import customToast from '../utils/toast';
 import ButtonWithLoading from '../components/ButtonWithLoading';
 import CosmoTextLogo from '../components/CosmoTextLogo';
+import ActionAlertModal from '../components/modal/ActionAlertModal';
 
 const UserAddressList = (props) => {
   const location = useLocation();
@@ -15,7 +15,9 @@ const UserAddressList = (props) => {
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+  const [openModalSetDefault, setOpenModalSetDefault] = useState(false);
   const [addressList, setAddressList] = useState(null);
+  const [updateDefaultId, setUpdateDefaultId] = useState(null);
   const [deleteId, setDeleteId] = useState(null);
   const token = localStorage.getItem('authToken');
 
@@ -30,7 +32,7 @@ const UserAddressList = (props) => {
         setAddressList(result.data.result);
       }
     } catch (error) {
-      console.log(error);
+      customToast('error', 'Failed to get address data');
     }
     setIsLoadingData(false);
   };
@@ -48,7 +50,6 @@ const UserAddressList = (props) => {
         getAddressList();
       }
     } catch (error) {
-      console.log(error);
       customToast('error', 'Failed to delete address');
     }
     setDeleteId(null);
@@ -58,6 +59,7 @@ const UserAddressList = (props) => {
 
   const handleDefault = async (id) => {
     try {
+      setIsLoading(true);
       const result = await API_CALL.patch(
         '/address/' + id + '/default',
         {
@@ -70,8 +72,11 @@ const UserAddressList = (props) => {
         getAddressList();
       }
     } catch (error) {
-      console.log(error);
+      customToast('error', 'Failed to change default address');
     }
+    setUpdateDefaultId(null);
+    setIsLoading(false);
+    setOpenModalSetDefault(false);
   };
 
   useEffect(() => {
@@ -124,7 +129,8 @@ const UserAddressList = (props) => {
                 postal={value.postalCode}
                 isDefault={value.isDefault}
                 onDefault={() => {
-                  handleDefault(value.UUID);
+                  setUpdateDefaultId(value.UUID);
+                  setOpenModalSetDefault(true);
                 }}
                 onEdit={() => {
                   navigate(`/profile/address/${value.UUID}`, {
@@ -146,48 +152,32 @@ const UserAddressList = (props) => {
           >
             Add new address
           </ButtonWithLoading>
-          {/* <Button
-            fullSized={true}
-            color="blue"
-            onClick={() => {
-              navigate('/profile/address/create', {
-                state: { previousPath: location.pathname },
-              });
-            }}
-          >
-            Add new address
-          </Button> */}
-          <Modal
-            show={openModal}
-            size="md"
+          <ActionAlertModal
+            openModal={openModal}
             onClose={() => {
               setOpenModal(false);
               setDeleteId(null);
             }}
-            popup
-          >
-            <Modal.Header />
-            <Modal.Body>
-              <div className="text-center">
-                <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
-                <h3 className="mb-5 text-sm font-normal text-gray-500 dark:text-gray-400">
-                  Are you sure you want to delete the address?
-                </h3>
-                <div className="flex justify-center gap-4">
-                  <Button
-                    className="w-full"
-                    isProcessing={isLoading}
-                    color="blue"
-                    onClick={() => {
-                      handleDelete(deleteId);
-                    }}
-                  >
-                    {"Yes, I'm sure"}
-                  </Button>
-                </div>
-              </div>
-            </Modal.Body>
-          </Modal>
+            message={'Are you sure you want to delete the address?'}
+            color={'failure'}
+            isLoading={isLoading}
+            onActionModal={() => {
+              handleDelete(deleteId);
+            }}
+          />
+          <ActionAlertModal
+            openModal={openModalSetDefault}
+            onClose={() => {
+              setOpenModalSetDefault(false);
+              setUpdateDefaultId(null);
+            }}
+            message={'Are you sure you want to change default address?'}
+            color={'blue'}
+            isLoading={isLoading}
+            onActionModal={() => {
+              handleDefault(updateDefaultId);
+            }}
+          />
         </div>
       </div>
     </UserLayout>

@@ -34,11 +34,10 @@ const LoginAdmin = () => {
       if (result.data.success) {
         dispatch(login(result.data.result));
         localStorage.setItem('authToken', result.data.result.token);
-        customToast('success', `Welcome admin ${result.data.result.name}`);
+        customToast('success', `Welcome ${result.data.result.name}`);
         navigate('/manage/dashboard', { replace: true });
       }
     } catch (error) {
-      console.log(error);
       if (error.response.status !== 500) {
         customToast('error', error.response.data.message);
       } else {

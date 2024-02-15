@@ -41,7 +41,6 @@ import EditAdmin from './pages/admin/EditAdmin';
 import getNearestStore from './helpers/getNearestStore';
 import UserChangeEmail from './pages/UserChangeEmail';
 import VerifyEmail from './pages/VerifyEmail';
-import TesCheckOut from './pages/TesCheckOut';
 import { fetchCartItems } from './redux/slice/cartSlice';
 import Checkout from './pages/Checkout';
 import UserOrders from './pages/UserOrders';
@@ -114,17 +113,13 @@ function App() {
               loc.coords.longitude,
             );
             dispatch(setStore(result.payload));
-          } catch (error) {
-            console.log(error);
-          }
+          } catch (error) {}
         },
         async (error) => {
           try {
             const result = await getNearestStore();
             dispatch(setStore(result.payload));
-          } catch (err) {
-            console.log(err);
-          }
+          } catch (err) {}
         },
       );
     }
@@ -202,14 +197,6 @@ function App() {
             </PrivateRoute>
           }
         />
-        <Route
-          path="/tes/checkout"
-          element={
-            <PrivateRoute role={'user'} navigate={'/login'}>
-              <TesCheckOut />
-            </PrivateRoute>
-          }
-        />
         <Route path="/category" element={<UserFindCategory />} />
         <Route path="/product/:name" element={<UserProductDetail />} />
         {/* Afra */}
@@ -269,7 +256,7 @@ function App() {
             </PrivateRoute>
           }
         />
-         <Route path="/courier/arriv" element={<CourierArrival />} />
+        <Route path="/courier/arriv" element={<CourierArrival />} />
         {/* Admin Side */}
         {/* Wahyu Widiantoro */}
         <Route path="/manage/login" element={<LoginAdmin />} />

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { validateToken, validateAdmin, validateSuper } from "../middleware/tokenValidation";
+import { validateToken, validateAdmin } from "../middleware/tokenValidation";
 import { getInventory, getInventoryDetail, createInventory, updateInventory, deleteInventory } from "../controllers/inventory.controller";
 
 const inventoryRouter = Router();
