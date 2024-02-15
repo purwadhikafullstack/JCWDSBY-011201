@@ -33,7 +33,6 @@ const Forgot = () => {
         navigate('/login');
       }
     } catch (error) {
-      console.log(error);
       customToast('error', error.response.data.message);
     }
     setIsloading(false);
@@ -55,7 +54,6 @@ const Forgot = () => {
 
   return (
     <Container>
-      {' '}
       <div className="flex w-full h-full">
         <div className="header flex flex-col w-full h-full">
           <div className="flex w-full h-full justify-center items-center py-6">

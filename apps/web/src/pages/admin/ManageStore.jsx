@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import AdminSidebar from '../../components/AdminSidebar';
 import LayoutPageAdmin from '../../components/LayoutPageAdmin';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { Button, Pagination } from 'flowbite-react';
@@ -8,7 +7,6 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { HiMagnifyingGlass } from 'react-icons/hi2';
 import customToast from '../../utils/toast';
 import ManageStoreTable from '../../components/table/ManageStoreTable';
-import ContainerAdmin from '../../components/ContainerAdmin';
 import LayoutDashboard from '../../components/LayoutDashboard';
 
 const ManageStore = () => {
@@ -38,10 +36,8 @@ const ManageStore = () => {
       });
       setStoreData(result.data.result.data);
       setTotalPage(Math.ceil(result.data.result.row / 8));
-      setIsLoading(false);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
+    setIsLoading(false);
   };
 
   const handleDelete = async () => {
@@ -57,7 +53,6 @@ const ManageStore = () => {
       getStoreData();
     } catch (error) {
       customToast('error', 'Failed to delete branch');
-      console.log(error);
     }
     setIsLoading(false);
   };
@@ -78,7 +73,6 @@ const ManageStore = () => {
       customToast('success', 'Main branch is changed');
       getStoreData();
     } catch (error) {
-      console.log(error);
       customToast('error', 'Failed to change main branch');
     }
     setIsLoading(false);

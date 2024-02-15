@@ -19,9 +19,7 @@ export const sendSignUpEmailVerification = async (to, link) => {
         verifyLink: link,
       }),
     });
-  } catch (error) {
-    console.log(error);
-  }
+  } catch (error) {}
 };
 
 export const sendSuccessResetPasswordEmail = async (to, link) => {
@@ -39,9 +37,7 @@ export const sendSuccessResetPasswordEmail = async (to, link) => {
         loginLink: link,
       }),
     });
-  } catch (error) {
-    console.log(error);
-  }
+  } catch (error) {}
 };
 
 export const sendResetPasswordEmail = async (to, link) => {
@@ -59,9 +55,7 @@ export const sendResetPasswordEmail = async (to, link) => {
         resetLink: link,
       }),
     });
-  } catch (error) {
-    console.log(error);
-  }
+  } catch (error) {}
 };
 
 export const sendWelcomeEmail = async (to, link, name) => {
@@ -80,7 +74,5 @@ export const sendWelcomeEmail = async (to, link, name) => {
         name: name,
       }),
     });
-  } catch (error) {
-    console.log(error);
-  }
+  } catch (error) {}
 };

@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { Avatar, Button, Label, Modal, TextInput } from 'flowbite-react';
+import { Button, Label, Modal, TextInput } from 'flowbite-react';
 import UserLayout from '../components/UserLayout';
 import { HiChevronLeft, HiOutlineExclamationCircle } from 'react-icons/hi2';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -10,7 +10,6 @@ import { useFormik } from 'formik';
 import API_CALL from '../helpers/API';
 import customToast from '../utils/toast';
 import { logout } from '../redux/slice/userSlice';
-import InputPassword from '../components/InputPassword';
 import CosmoTextLogo from '../components/CosmoTextLogo';
 
 const UserChangeEmail = (props) => {

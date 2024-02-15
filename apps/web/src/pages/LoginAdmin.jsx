@@ -38,7 +38,6 @@ const LoginAdmin = () => {
         navigate('/manage/dashboard', { replace: true });
       }
     } catch (error) {
-      console.log(error);
       if (error.response.status !== 500) {
         customToast('error', error.response.data.message);
       } else {

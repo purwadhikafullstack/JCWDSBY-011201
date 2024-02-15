@@ -1,5 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { Avatar, Button, Label, Modal, TextInput } from 'flowbite-react';
+import { Button, Label, Modal } from 'flowbite-react';
 import UserLayout from '../components/UserLayout';
 import { HiChevronLeft, HiOutlineExclamationCircle } from 'react-icons/hi2';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -13,7 +12,6 @@ import InputPassword from '../components/InputPassword';
 import CosmoTextLogo from '../components/CosmoTextLogo';
 
 const UserChangePassword = (props) => {
-  const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);

@@ -1,5 +1,4 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { Avatar } from 'flowbite-react';
 import Footer from '../components/Footer';
 import UserLayout from '../components/UserLayout';
 import { useLocation, useNavigate } from 'react-router-dom';
