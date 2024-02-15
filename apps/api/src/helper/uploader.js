@@ -12,7 +12,6 @@ const uploader = (dir, maxSize) => {
             } else {
                 fs.mkdirSync(path, (err) => {
                     if (err) {
-                        // console.log("error creating directory", err);
                         cb(err);
                     } else {
                         cb(null, path);

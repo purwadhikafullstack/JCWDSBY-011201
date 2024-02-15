@@ -11,6 +11,7 @@ import { useSearchParams } from "react-router-dom";
 import MonthlySalesReportTable from "../../components/table/MonthlySalesReportTable";
 import ResponsivePagination from "../../components/ResponsivePagination";
 import { onPageChange } from "../../helpers/pagination";
+import { monthString } from "../../constants/monthString";
 
 const SalesReport = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -70,7 +71,7 @@ const SalesReport = () => {
           <div className="flex flex-col mt-4">
             <div className="min-h-[24rem] border rounded-md">
               {monthlySalesData && <MonthlySalesReportChart
-                data={monthlySalesData.map((val) => { return { month: val.month, sales: val.salesTotal / 1000 } })}
+                data={monthlySalesData.map((val) => { return { month: monthString[val.month - 1], sales: val.salesTotal / 1000 } })}
                 keys={'sales'}
                 indexBy={'month'}
                 leftLegend={'Revenue(K)'}

@@ -10,6 +10,7 @@ import customToast from '../../utils/toast';
 import ManageStoreTable from '../../components/table/ManageStoreTable';
 import ContainerAdmin from '../../components/ContainerAdmin';
 import LayoutDashboard from '../../components/LayoutDashboard';
+import { customButton } from '../../helpers/flowbiteCustomTheme';
 
 const ManageStore = () => {
   const [openModalMain, setOpenModalMain] = useState(false);
@@ -94,15 +95,18 @@ const ManageStore = () => {
         <LoadingSpinner isLoading={isLoading} size={16} />
         <LayoutPageAdmin title="Manage Store">
           <div className="flex flex-col md:flex-row justify-between gap-2 mb-3">
-            <Button
-              color="blue"
-              size={'sm'}
+            <div>
+            <Button 
+              theme={customButton}
+              size={'responsive'}
+              color="secondary"
               onClick={() => {
                 navigate('/manage/store/create');
               }}
             >
-              Add Branch +
+              + Add Branch
             </Button>
+            </div>
             <div className="flex rounded-xl border-2 border-gray-500 focus-within:border-gray-700 p-1 overflow-hidden items-center gap-1">
               <span className="w-6 h-6">
                 <HiMagnifyingGlass size={'100%'} />

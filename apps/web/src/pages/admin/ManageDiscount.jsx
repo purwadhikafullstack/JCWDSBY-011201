@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import LayoutPageAdmin from "../../components/LayoutPageAdmin";
 import { Button, Pagination } from "flowbite-react";
-// import SearchBar from "../../components/SearchBar";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import CardManageDiscount from "../../components/CardManageDiscount";
 import ModalConfirm from "../../components/modal/ModalConfirm";
@@ -38,14 +37,14 @@ const ManageDiscount = () => {
         header={'Delete Discount'}
         message={'Are you sure you want to delete discount'}
         onClose={() => setOpenModal(false)}
-        onConfirm={() => { setOpenModal(false); deleteDiscount(discID, setIsLoading, getDiscount(setDiscountData, setIsLoading, setTotalPage)); setDiscID(null); }}
+        onConfirm={() => { setOpenModal(false); deleteDiscount(discID, setIsLoading, getDiscount, setDiscountData, setIsLoading, setTotalPage); setDiscID(null); }}
       />
       <LayoutPageAdmin title='Manage Discount'>
         <div className='grid grid-cols-1 max-w-full overflow-x-auto mb-5 pt-2'>
           <div className="flex justify-between">
-            <Button theme={customButton} color="secondary" onClick={() => navigate('/manage/discount/create')}>Create Discount</Button>
+            <Button theme={customButton} size={'responsive'} color="secondary" onClick={() => navigate('/manage/discount/create')}>Create Discount</Button>
           </div>
-          <div className="mt-5 grid gap-4 lg:grid-cols-4 lg:gap-y-10">
+          <div className="mt-5 grid gap-4 md:grid-cols-2 2xl:grid-cols-4 lg:gap-y-10 pb-5">
             {discountData && discountData.map((val, idx) => <CardManageDiscount key={idx} data={val} onDelete={() => { setOpenModal(true); setDiscID(val.id) }} onEdit={() => navigate(`/manage/discount/edit/${val.UUID}`)} />)}
           </div>
         </div>

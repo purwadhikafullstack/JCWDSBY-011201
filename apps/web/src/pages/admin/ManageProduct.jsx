@@ -11,7 +11,6 @@ import { customButton } from "../../helpers/flowbiteCustomTheme";
 import ManageProductTable from "../../components/table/ManageProductTable";
 import ResponsivePagination from "../../components/ResponsivePagination";
 import { onPageChange } from "../../helpers/pagination";
-import SearchBar from "../../components/SearchBar";
 import ModalConfirm from "../../components/modal/ModalConfirm";
 
 const ManageProduct = () => {
@@ -59,6 +58,7 @@ const ManageProduct = () => {
     setIsLoading(false);
     searchParams.set('page', 1);
     setSearchParams(searchParams);
+    getProduct();
   };
 
   return <>
@@ -66,8 +66,9 @@ const ManageProduct = () => {
       <LoadingSpinner isLoading={isLoading} size={16} />
       <LayoutPageAdmin title='Manage Product'>
         <div className='my-5 flex flex-col gap-3 justify-between lg:items-center lg:flex-row'>
-          {currentUserRole === 'super' && <Button theme={customButton} size={'responsive'} color='secondary' onClick={() => navigate('/manage/product/create')}> <IoMdAdd className='mr-1 w-4 h-4' /> Add Product</Button>}
-          <SearchBar placeholder={'Search product name'} />
+          <div>
+            {currentUserRole === 'super' && <Button theme={customButton} size={'responsive'} color='secondary' onClick={() => navigate('/manage/product/create')}> <IoMdAdd className='mr-1 w-4 h-4' /> Add Product</Button>}
+          </div>
         </div>
         <ManageProductTable
           data={data && data}

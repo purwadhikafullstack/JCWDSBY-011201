@@ -1,9 +1,15 @@
 import resTemplate from "../helper/resTemplate";
 import { getInventoryDetailService, getInventoryService } from "../services/inventory/getInventory.service";
 import { createInventoryService, deleteInventoryService, updateInventoryService } from "../services/inventory/inventory.service";
+import jwt from 'jsonwebtoken'
 
 export const getInventory = async (req, res, next) => {
   try {
+    const token = req.headers.authorization?.split(' ')[1];
+    if(token) {
+      const decodedToken = jwt.decode(token);
+      if(decodedToken?.storeUUID) req.query.store = decodedToken.storeUUID;
+    }
     const result = await getInventoryService(req.query);
     return res.status(200).json(resTemplate(200, true, 'Get Inventory Success', result));
   } catch (error) {

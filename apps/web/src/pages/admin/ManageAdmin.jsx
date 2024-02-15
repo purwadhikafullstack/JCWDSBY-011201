@@ -21,7 +21,6 @@ const ManageAdmin = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [userAdmin, setUserAdmin] = useState([]);
 	const [UUID, setUUID] = useState('');
-	const [editData, setEditData] = useState(null);
 	const [openModal, setOpenModal] = useState({ add: false, edit: false, delete: false });
 	const [searchParams, setSearchParams] = useSearchParams();
 	const [totalPage, setTotalPage] = useState(1);
@@ -100,18 +99,15 @@ const ManageAdmin = () => {
 						Add Admin
 					</Button>
 					<ModalAdminStore
-						show={openModal.add || openModal.edit}
+						show={openModal.add}
 						onSubmit={(val) => handleAddButton(val)}
-						onClose={() => setOpenModal({ ...openModal, add: false, edit: false })}
-						onEdit={openModal.edit}
-						initialValue={{ name: editData?.name, email: editData?.email }}
+						onClose={() => setOpenModal({ ...openModal, add: false})}
 					/>
 				</div>
 				<div className='mb-5'>
 					<ManageAdminTable
 						data={userAdmin}
 						page={(searchParams.get('page') || 1)}
-						// onEdit={(val) => { setEditData(val); setOpenModal({ ...openModal, edit: true }) }}
 						onEdit={(val) => navigate(`/manage/admin/profile?key=${val.uuid}`)}
 						onChangePassword={(uuid) => navigate(`/manage/admin/password?key=${uuid}`)}
 						onDelete={(uuid) => { setOpenModal({ ...openModal, delete: true }); setUUID(uuid) }}

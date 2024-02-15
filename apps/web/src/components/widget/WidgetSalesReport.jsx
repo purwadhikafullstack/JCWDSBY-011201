@@ -4,6 +4,7 @@ import { getMonthlySales } from "../../helpers/queryData";
 import MonthlySalesReportChart from "../report/MonthlySalesReportChart";
 import SortBar from "../SortBar";
 import { useSelector } from "react-redux";
+import { monthString } from "../../constants/monthString";
 
 const WidgetSalesReport = () => {
   const [monthlySalesData, setMonthlySalesData] = useState([]);
@@ -41,7 +42,7 @@ const WidgetSalesReport = () => {
         </SortBar>
       </div>
       {monthlySalesData.length ? <MonthlySalesReportChart
-        data={monthlySalesData.map((val) => { return { month: val.month, sales: val.salesTotal / 1000 } })}
+        data={monthlySalesData.map((val) => { return { month: monthString[val.month - 1], sales: val.salesTotal / 1000 } })}
         keys={'sales'}
         indexBy={'month'}
         leftLegend={'Revenue(K)'}

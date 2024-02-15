@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import LayoutDashboard from '../../components/LayoutDashboard';
 import LayoutPageAdmin from '../../components/LayoutPageAdmin';
 import WidgetCategory from '../../components/widget/WidgetCategory';

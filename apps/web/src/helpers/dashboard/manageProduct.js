@@ -6,7 +6,6 @@ export const handleRequiredField = (requiredPrice) => {
 };
 
 export const validationFormProduct = (file, data, setError, error, setRequiredField, requiredField, setIsOpen) => {
-  console.log('Data Edit Product :', file);
   if (file.length === 0) return setError({ ...error, requiredFieldFile: true });
   if (!data.name) return setRequiredField({ ...requiredField, name: true });
   if (!data.weight) return setRequiredField({ ...requiredField, weight: true });

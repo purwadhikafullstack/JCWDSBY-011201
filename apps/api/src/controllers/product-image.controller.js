@@ -1,6 +1,3 @@
-import { assetsDir } from "../constants/assets";
-import productImage from "../models/product-image.model";
-import { unlink, existsSync } from "fs";
 import { createProductImageService, deleteProductImageService } from "../services/product/product-image.service";
 import resTemplate from "../helper/resTemplate";
 

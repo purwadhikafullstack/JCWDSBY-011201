@@ -24,6 +24,8 @@ const Inventory = () => {
   const [required, setRequired] = useState({ addStock: false, editStock: false });
   const [data, setData] = useState({ productId: null, storeId: null, stock: null });
   const [editData, setEditData] = useState({ invId: null, product: null, store: null, stock: null });
+  const [isOpen, setIsOpen] = useState(false);
+  const [deleteInventoryId, setDeleteInventoryId] = useState(null);
 
   useEffect(() => {
     getData();
@@ -42,9 +44,15 @@ const Inventory = () => {
       }
     }
     if (currentUser.role === 'admin') {
-      const res = await API_CALL.get(`inventory?admin=${currentUser.email}`);
+      const res = await API_CALL.get('inventory', {
+        params: { limit: 10, page: searchParams.get('page'), sort: searchParams.get('sort'), category: searchParams.get('category'), q: searchParams.get('q') },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
       if (res) {
         setItems(res.data.result.rows);
+        setTotalPage(Math.ceil(res.data.result.count / 10));
         setIsLoading(false);
       }
     }
@@ -142,7 +150,7 @@ const Inventory = () => {
           <ManageInventoryTable
             data={items}
             page={(searchParams.get('page') || 1)}
-            onDelete={(id) => handleDelete(id)}
+            onDelete={(id) => { setDeleteInventoryId(id); setIsOpen(true); }}
             onEdit={(id) => handleEdit(id)}
           />
           <ModalAddInventory
@@ -166,6 +174,13 @@ const Inventory = () => {
               onPageChange={(page) => onPageChange(page, setSearchParams)}
             />
           </div>
+          <ModalConfirm
+          show={isOpen}
+          header={'Delete Inventory'}
+          message={'Are you sure want to delete inventory?'}
+          onClose={() => setIsOpen(false)}
+          onConfirm={() => { setIsOpen(false); deleteInventoryId && handleDelete(deleteInventoryId);}}
+          />
         </div>
       </LayoutPageAdmin>
     </LayoutDashboard>

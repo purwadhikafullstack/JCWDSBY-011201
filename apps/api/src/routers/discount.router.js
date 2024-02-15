@@ -2,7 +2,6 @@ import { Router } from "express";
 import { validateToken, validateAdmin} from "../middleware/tokenValidation";
 import { createDiscount, deleteDiscount, getDiscount, updateDiscount } from "../controllers/discount.controller";
 
-
 const discountRouter = Router();
 
 discountRouter.get('/', validateToken, validateAdmin, getDiscount);

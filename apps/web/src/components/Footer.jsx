@@ -20,9 +20,6 @@ const Footer = (props) => {
             <img className="w-10 h-10" src={cosmoLogo} alt="Cosmo Logo" />
             <CosmoTextLogo size={'text-4xl'} />
           </div>
-          {/* <span className="text-blue-800 font-extrabold text-4xl drop-shadow-md">
-            Cosmo
-          </span> */}
           <span className="text-gray-600">
             Jl. Gubeng Kertajaya XI-A No-7, Gubeng, Surabaya
           </span>
