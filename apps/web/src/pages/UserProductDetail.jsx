@@ -21,7 +21,6 @@ const UserProductDetail = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [productData, setProductData] = useState(null);
   const [relatedProductData, setRelatedProductData] = useState([]);
-  console.log("🚀 ~ UserProductDetail ~ relatedProductData:", relatedProductData)
   const [openDrawerDetails, setOpenDrawerDetails] = useState(false);
   const toggleDrawer = () => setOpenDrawerDetails((prevState) => !prevState);
 
@@ -35,7 +34,6 @@ const UserProductDetail = () => {
     const res = await API_CALL.get(
       `inventory/${location.pathname.split('/product/')[1]}`,
     );
-    console.log('RES >>>', res.data.result);
     if (res) {
       setProductData(res.data.result);
       const relatedProduct = await API_CALL.get(

@@ -67,7 +67,6 @@ export const getAllTransactions = async (req, res, next) => {
       const processedList = orderList.rows.map((val, idx) => {
         return { ...val, storeName: val.store.name, count: orderList.count };
       });
-      console.log('🚀 ~ processedList ~ processedList:', processedList);
       return res.status(200).json({
         ...resTemplate(200, true, 'fetching orders success', processedList),
         count: orderList.count,

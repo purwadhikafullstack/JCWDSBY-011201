@@ -66,7 +66,7 @@ function App() {
   const storeUUID = useSelector((state) => state.storeReducer.storeId);
 
   useEffect(() => {
-    if (globalUser) {
+    if (globalUser && globalUser?.role === 'user') {
       dispatch(fetchCartItems(storeUUID));
     }
   }, [storeUUID]);
@@ -269,7 +269,7 @@ function App() {
             </PrivateRoute>
           }
         />
-         <Route path="/courier/arriv" element={<CourierArrival />} />
+        <Route path="/courier/arriv" element={<CourierArrival />} />
         {/* Admin Side */}
         {/* Wahyu Widiantoro */}
         <Route path="/manage/login" element={<LoginAdmin />} />

@@ -1,22 +1,33 @@
 import { DB } from '../db';
 import {
-    getOneTransaction,
-    getTransactionDetails, raiseBookedStock, updateProofImg,
-    updateTransactionStatus
+  getOneTransaction,
+  getTransactionDetails,
+  raiseBookedStock,
+  updateProofImg,
+  updateTransactionStatus,
 } from '../services/transactionAndOrder/transactions.service';
 import resTemplate from '../helper/resTemplate';
 import fs from 'fs';
-import { findVoucherCode } from '../services/transactionAndOrder/transactions2.service';
+import {
+  blankProofImg,
+  findVoucherCode,
+} from '../services/transactionAndOrder/transactions2.service';
 import { updateLimitVoucher } from '../services/transactionAndOrder/order.service';
+import transactions from '../models/transactions.model';
 
 export const patchTransactionStatusController = async (req, res, next) => {
   try {
+    const dir = './src/assets/proof/';
     await DB.initialize();
     const result = await getOneTransaction(req);
     await DB.db.sequelize.transaction(async (t) => {
       await updateTransactionStatus(req, t);
       if (req.body.status === 'canceled') {
         await updateLimitVoucher('minus', result.discountVoucherId);
+        await blankProofImg(req, t);
+        if (result?.paymentProofImg) {
+          fs.unlinkSync(dir + result?.paymentProofImg);
+        }
       }
     });
     return res

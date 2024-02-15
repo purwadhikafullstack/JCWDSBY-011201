@@ -1,42 +1,31 @@
 import React, { useState } from 'react';
-import { Button, Modal, Card, FloatingLabel } from 'flowbite-react';
+import { Button, Modal, Card } from 'flowbite-react';
 import { reduceTotalPrice } from '../helpers/orders/reduceTotalPrice';
 import { IMG_URL_PROOF } from '../constants/imageURL';
-import API_CALL from '../helpers/API';
-import customToast from '../utils/toast';
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
+import { useSearchParams } from 'react-router-dom';
+import { UserCancelOrderModal } from './UserCancelOrderModal';
 export function ModalForUserOrderDetails({
   openModalDetail,
   setOpenModalDetail,
   order,
 }) {
-  console.log('🚀 ~ ModalForAdminOrderDetails ~ order:', order);
-  const [resi, setResi] = useState('');
   const totalPrice = reduceTotalPrice(order);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [openModal, setOpenModal] = useState(false);
 
-  const cancelOrdersForAdmin = async (status, invoice) => {
-    try {
-      const response = await API_CALL.patch(
-        '/transaction/admin/cancel',
-        { status, invoice },
-        {
-          headers: {
-            Authorization: 'Bearer ' + localStorage.getItem('authToken'),
-          },
-        },
-      );
-      customToast('success', response.data.message);
-      setOpenModalDetail(false);
-    } catch (error) {
-      console.log(error);
-    }
-  };
   return (
     <Modal
       show={openModalDetail}
       position="center"
-      onClose={() => setOpenModalDetail(false)}
+      onClose={() => {
+        setSearchParams((value) => {
+          value.delete('order_id');
+        });
+        setOpenModalDetail(false);
+        return;
+      }}
     >
       <Modal.Header className="capitalize">Detail Transaksi</Modal.Header>
       <Modal.Body>
@@ -47,12 +36,10 @@ export function ModalForUserOrderDetails({
               <p>Invoice</p>
               <p>{order?.invoice}</p>
             </div>
-            {order?.resi && (
-              <div className="flex justify-between">
-                <p>Resi</p>
-                <p>{order?.resi}</p>
-              </div>
-            )}
+            <div className="flex justify-between">
+              <p>Resi</p>
+              <p>{order?.resi ?? '-'}</p>
+            </div>
             <div className="flex justify-between">
               <p>Tipe Pembayaran</p>
               <p className={`capitalize`}>
@@ -104,7 +91,7 @@ export function ModalForUserOrderDetails({
                   REJECTED
                 </p>
               ) : (
-                <div className='flex items-center justify-center'>
+                <div className="flex items-center justify-center">
                   <Zoom>
                     <img
                       className="w-80 h-80 object-scale-down"
@@ -117,13 +104,20 @@ export function ModalForUserOrderDetails({
             </Card>
           )}
         </div>
-        {order?.paymentMethod === 'transfer' && order?.status === 'pending' && (
-          <Card className="shadow-none border-none">
-            <Button color="failure" onClick={() => setOpenModal(!openModal)}>
-              <p className="capitalize text-base">cancel order</p>
-            </Button>
-          </Card>
-        )}
+        {order?.paymentMethod === 'transfer' &&
+          order?.status === 'pending' && (
+            <Card className="shadow-none border-none">
+              <Button color="failure" onClick={() => setOpenModal(!openModal)}>
+                <p className="capitalize text-base">cancel order</p>
+              </Button>
+            </Card>
+          )}
+        <UserCancelOrderModal
+          openModal={openModal}
+          setOpenModal={setOpenModal}
+          order={order}
+          setOpenModalDetail={setOpenModalDetail}
+        />
       </Modal.Body>
     </Modal>
   );

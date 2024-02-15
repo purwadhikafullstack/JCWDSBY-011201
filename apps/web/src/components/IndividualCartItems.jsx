@@ -11,7 +11,6 @@ export function IndividualCartItems({ val, idx, checkall, setCheckallFalse }) {
   const prevCheckedRef = useRef(val.checked);
   const [clicked, setClicked] = useState(false);
   const dispatch = useDispatch();
-  console.log(val);
   useEffect(() => {
     if (val.checked !== prevCheckedRef.current && clicked) {
       prevCheckedRef.current = val.checked;
