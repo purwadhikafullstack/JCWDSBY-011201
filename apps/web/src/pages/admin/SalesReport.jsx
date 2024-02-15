@@ -26,7 +26,7 @@ const SalesReport = () => {
     getMonthlySales(setMonthlySalesData, setIsLoading, {store: searchParams.get('store')});
     getMonthlySales(setMonthlySalesDataTable, setIsLoading, {store: searchParams.get('store'), limit: 5, page: searchParams.get('page')}, setTotalPage);
   }, [searchParams.get('store'), searchParams.get('page')])
-console.log('monthlySalesData >>>', monthlySalesDataTable);
+
   const getStore = async () => {
     try {
       setIsLoading(true);
@@ -36,8 +36,6 @@ console.log('monthlySalesData >>>', monthlySalesDataTable);
         },
       });
       setStore(resStore.data.result.raw);
-      // searchParams.set('store', resStore.data.result.raw[0].UUID);
-      // setSearchParams(searchParams)
       setIsLoading(false);
     } catch (error) {
       console.error(error);
@@ -58,8 +56,6 @@ console.log('monthlySalesData >>>', monthlySalesDataTable);
     })
   };
 
-  // console.log('dummyData :', monthlySalesData && chartLineData(monthlySalesData));
-  // console.log('dummyData :', monthlySalesData);
   return <LayoutDashboard>
     <LoadingSpinner isLoading={isLoading} size={16} />
     <LayoutPageAdmin title='Sales Report'>
@@ -86,7 +82,6 @@ console.log('monthlySalesData >>>', monthlySalesDataTable);
                 data={monthlySalesDataTable}
                 page={Number(searchParams.get('page')) || 1}
                 />
-                {/* <ResponsivePagination/> */}
             </div>
             <div className="mt-5">
             <ResponsivePagination

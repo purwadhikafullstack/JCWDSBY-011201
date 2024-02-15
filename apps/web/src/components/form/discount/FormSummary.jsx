@@ -1,5 +1,6 @@
 import { Label, Button } from "flowbite-react";
 import capitalize from "../../../helpers/capitalize"
+import { useSelector } from "react-redux";
 
 const FormSummary = ({
     onBack,
@@ -11,6 +12,8 @@ const FormSummary = ({
     discAmount,
     minTransactionAmount,
 }) => {
+    const currentUserRole = useSelector((state => state.userReducer.role))
+
     const discTerm = (term) =>{
         if(term === 'buy 1 get 1') return 'Buy 1 Get 1';
         if(term === 'product') return 'Product Discount';
@@ -30,13 +33,13 @@ const FormSummary = ({
         <div className="grid gap-4">
             <div className="grid gap-1">
                 <Label className="font-bold">Name</Label>
-                <p>{summaryData && summaryData.name}</p>
+                <p>{summaryData && summaryData.name || '-'}</p>
             </div>
             <div className="grid gap-1">
                 <Label className="font-bold">Discount Term</Label>
                 <p>{summaryData && discTerm(summaryData.term)}</p>
             </div>
-            <div className="grid gap-1">
+            <div className={`grid gap-1 ${currentUserRole === 'admin' && 'hidden'}`}>
                 <Label className="font-bold">Store</Label>
                 <p>{summaryData && storeData && storeData.find((val) => summaryData.storeId === val.UUID).name }</p>
             </div>

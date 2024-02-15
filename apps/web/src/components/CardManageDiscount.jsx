@@ -5,12 +5,14 @@ import { Dropdown } from "flowbite-react";
 import { HiOutlineTrash } from "react-icons/hi";
 import { CiDiscount1 } from "react-icons/ci";
 import capitalize from "../helpers/capitalize";
+import { useSelector } from "react-redux";
 
 const CardManageDiscount = ({
     data,
     onDelete,
     onEdit,
 }) => {
+    const currentUserRole = useSelector(state => state.userReducer.role);
 
     const showCard = () => {
         const date = new Date(data.startTime).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) + ' - ' + new Date(data.endTime).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -29,7 +31,7 @@ const CardManageDiscount = ({
                     <GoChecklist className="self-center lg:text-md" />
                     <div className="text-sm lg:text-md">{term}</div>
                 </div>
-                <div className="flex gap-1">
+                <div className={`flex gap-1 ${currentUserRole === 'admin' && 'hidden'}`}>
                     <HiOutlineBuildingStorefront className="self-center lg:text-md" />
                     <div className="text-sm lg:text-md">{data.storeName}</div>
                 </div>

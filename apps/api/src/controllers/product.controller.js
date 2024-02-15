@@ -46,7 +46,7 @@ export const deleteProduct = async (req, res, next) => {
   }
 };
 
-export const getLatestroduct = async (req, res, next) => {
+export const getLatestProduct = async (req, res, next) => {
   try {
     const result = await getLatestProductService(req.query);
     res.status(200).json(resTemplate(200, true, 'Get Latest Product Success', result));

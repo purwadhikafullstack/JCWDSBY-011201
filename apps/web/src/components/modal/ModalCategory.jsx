@@ -48,7 +48,7 @@ const ModalCategory = ({
                     onChange={onChangeFile}
                 />
                 <div className='absolute right-0 bottom-0 p-2 text-xl'>
-                    <MdModeEditOutline color='orange' className='cursor-pointer' onClick={onEditImage} />
+                    <MdModeEditOutline className='cursor-pointer text-slate-400' onClick={onEditImage} />
                 </div>
                 {error.size || error.ext ? <p className='text-red-500 text-xs'>{handleErrorFile()}</p> : <p className='text-xs'>{handleErrorFile()}</p>}
             </div>

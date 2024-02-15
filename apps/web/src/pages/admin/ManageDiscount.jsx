@@ -20,8 +20,8 @@ const ManageDiscount = () => {
   const [totalPage, setTotalPage] = useState(1);
 
   useEffect(() => {
-    getDiscount(setDiscountData, setIsLoading, setTotalPage);
-  }, [setDiscountData]);
+    getDiscount(setDiscountData, setIsLoading, setTotalPage, {limit: 12, page: searchParams.get('page')});
+  }, [setDiscountData, searchParams.get('page')]);
 
   const onPageChange = (page) => {
     setSearchParams((prev) => {

@@ -12,6 +12,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import { useSelector } from 'react-redux';
 import { DrawerForUserProductCard } from '../components/DrawerForUserProductCard';
 import { discountPrice, promo } from '../helpers/discount';
+import ButtonSeeAll from '../components/ButtonSeeAll';
 
 const UserProductDetail = () => {
   const location = useLocation();
@@ -32,7 +33,6 @@ const UserProductDetail = () => {
   }, [params.name]);
   const getProductData = async () => {
     const res = await API_CALL.get(`inventory/${location.pathname.split('/product/')[1]}`)
-    console.log('RES >>>', res.data.result);
     if (res) {
       setProductData(res.data.result);
       const relatedProduct = await API_CALL.get(`/inventory?store=${currStore.storeId}&category=${res.data.result.product.category.name}&limit=10`); //! need to change limit
@@ -40,7 +40,7 @@ const UserProductDetail = () => {
     }
     setIsLoading(false);
   };
-  // console.log('productData', productData.product.price);
+
   return (
     <UserLayout>
       <LoadingSpinner isLoading={isLoading} size={16} />
@@ -109,7 +109,6 @@ const UserProductDetail = () => {
               <HiOutlineShare size={'100'} />
             </div>
           </div>
-
           <div className="flex flex-col">
             <span className="text-base font-semibold">Product description</span>
             <p className="text-base font-light">{productData && productData.product.description}</p>
@@ -128,7 +127,23 @@ const UserProductDetail = () => {
           </div>
         </div>
         <div className="flex flex-col w-full p-2 gap-2">
-          <span className="text-lg font-bold">Related products</span>
+          <div className="flex justify-between">
+            <div className=" flex flex-col lg:flex-row gap-1 lg:gap-3">
+              <span className="font-bold text-2xl lg:text-4xl text-gray-700">
+                Related
+              </span>
+              <span className="font-bold text-2xl lg:text-4xl text-blue-700">
+                Product
+              </span>
+            </div>
+            <ButtonSeeAll
+              onClick={() =>
+                navigate(`/category?category=${productData.product.category.name}`, {
+                  state: { previousPath: location.pathname },
+                })
+              }
+            />
+          </div>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 grid-flow-row w-full place-items-center gap-4">
             {relatedProductData.map((value, index) => (
               <UserProductCard
@@ -179,15 +194,15 @@ const UserProductDetail = () => {
               Add to cart
             </button>
           </div>
-            <DrawerForUserProductCard
-              inventoryid={productData && productData.id}
-              openDrawer={openDrawer}
-              toggleDrawer={toggleDrawer}
-              price={productData && productData.product.price}
-              image={productData && IMG_URL_PRODUCT + productData.product.product_images[0].image}
-              productName={productData && productData.product.name}
-              stock={productData && productData.stock}
-            />
+          <DrawerForUserProductCard
+            inventoryid={productData && productData.id}
+            openDrawer={openDrawer}
+            toggleDrawer={toggleDrawer}
+            price={productData && productData.product.price}
+            image={productData && IMG_URL_PRODUCT + productData.product.product_images[0].image}
+            productName={productData && productData.product.name}
+            stock={productData && productData.stock}
+          />
         </div>
       </div>
       <Footer />

@@ -4,15 +4,22 @@ import productImage from "../../models/product-image.model";
 import { DB } from '../../db';
 import resTemplate from "../../helper/resTemplate";
 import inventory from "../../models/inventory.model";
-import { unlink, existsSync } from "fs"; 
+import { unlink, existsSync } from "fs";
 import { assetsDir } from "../../constants/assets";
+import { Op } from "sequelize";
 
 export const getProductService = async (queryParam) => {
   try {
     const limit = queryParam.limit ?? 'none';
     const page = queryParam.page ?? 1;
+    const name = queryParam.q ?? '';
 
     const params = {
+      where: {
+        name: {
+          [Op.substring]: name,
+        }
+      },
       include: [
         {
           model: categories,
@@ -164,12 +171,17 @@ export const deleteProductService = async (id) => {
 
 export const getLatestProductService = async (queryParam) => {
   try {
-    const limit = queryParam?.limit ?? 'none';
+    let limit = queryParam?.limit ?? 'none';
 
-    const result = await product.findAll({
-      limit: 5,
+    let query = {
+      attributes: ['name'],
+      limit: parseInt(limit),
       order: [['createdAt', 'DESC']]
-    });
+    }
+
+    if(limit === 'none') delete query.limit;
+
+    const result = await product.findAll(query);
     return result
   } catch (error) {
     throw error;

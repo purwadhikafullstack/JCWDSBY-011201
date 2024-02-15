@@ -12,16 +12,18 @@ export const getTopProductService = async (params, tokenData) => {
     let store = params?.store ?? '';
     const limit = params?.limit ?? 'none';
     if (tokenData.role === 'admin') store = tokenData.storeUUID;
-    
+    console.log('Store UUID>>>>>>>>>>', store);
     const query = {
       where: where(fn('month', col('transactionDetails.createdAt')), '=', date),
       include: [
         {
           model: transactions,
           required: true,
+          attributes: [],
           include: [
             {
               model: stores,
+              attributes: [],
               where: {
                 UUID: {
                   [Op.substring]: store
@@ -29,17 +31,32 @@ export const getTopProductService = async (params, tokenData) => {
               },
             }
           ]
+        },
+        {
+          model: inventory,
+          required:true,
+          attributes: [],
+          include: [
+            {
+              model: product,
+              distinct: true
+            }
+          ]
         }
       ],
       attributes: [
         'id',
+        [col('inventory.product.name'), 'productName'],
+        [col('transaction.store.name'), 'storeName'],
         'amount',
+        [fn('sum', col('amount')), 'totalAmount'],
         'price',
         [fn('month', col('transactionDetails.createdAt')), 'month'],
         'createdAt',
       ],
       limit: parseInt(limit),
-      order: [['amount', 'DESC']]
+      group: ['productName'],
+      order: [['totalAmount', 'DESC']]
     }
 
     if (limit === 'none') delete query.limit;

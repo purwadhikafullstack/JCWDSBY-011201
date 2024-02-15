@@ -5,7 +5,7 @@ import { createDiscount, deleteDiscount, getDiscount, updateDiscount } from "../
 
 const discountRouter = Router();
 
-discountRouter.get('/', getDiscount);
+discountRouter.get('/', validateToken, validateAdmin, getDiscount);
 discountRouter.post('/', validateToken, validateAdmin, createDiscount);
 discountRouter.patch('/:id', validateToken, validateAdmin, updateDiscount)
 discountRouter.delete('/:id', validateToken, validateAdmin, deleteDiscount);
