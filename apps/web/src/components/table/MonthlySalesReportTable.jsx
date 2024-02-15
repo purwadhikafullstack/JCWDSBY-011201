@@ -1,5 +1,6 @@
 import { Table, TableHead,TableHeadCell, TableBody, TableRow, TableCell } from "flowbite-react";
 import { customTable } from "../../helpers/flowbiteCustomTheme";
+import { monthString } from "../../constants/monthString";
 
 const MonthlySalesReportTable = ({ data, page }) => {
   return <>
@@ -14,8 +15,8 @@ const MonthlySalesReportTable = ({ data, page }) => {
           {data.map((val, index) => {
             return <TableRow key={index}>
               <TableCell className="text-center">{`${(page - 1) * 5 + index + 1}`}</TableCell>
-              <TableCell className="text-center">{val.month}</TableCell>
-              <TableCell className="text-center">{val.salesTotal}</TableCell>
+              <TableCell className="text-center">{monthString[val.month - 1]}</TableCell>
+              <TableCell className="text-center">{val.salesTotal.toLocaleString('id-ID', { style: "currency", currency: "IDR", maximumFractionDigits: 0 })}</TableCell>
             </TableRow>
           })}
         </TableBody>

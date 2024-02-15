@@ -108,6 +108,8 @@ export const deleteInventoryService = async (id, tokenData) => {
       detail: 'Delete inventory'
     }, { transaction: t });
 
+    
+
     t.commit();
     return resTemplate(204, true, 'Delete Inventory Success');
   } catch (error) {

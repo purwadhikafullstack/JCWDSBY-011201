@@ -21,7 +21,7 @@ const storesRouter = Router();
 storesRouter.get(
   '/',
   validateToken,
-  validateSuper,
+  validateAdmin,
   query('q').optional().escape(),
   query('page').optional().escape(),
   getStoresController,
@@ -30,7 +30,7 @@ storesRouter.get('/main', validateToken, validateSuper, getMainStoreController);
 storesRouter.get(
   '/UUID/:UUID',
   validateToken,
-  validateSuper,
+  validateAdmin,
   param('UUID').notEmpty().escape(),
   getStoreByUUID,
 );

@@ -6,6 +6,7 @@ import FormSummary from "./form/discount/FormSummary";
 import FormDiscountProduct from "./form/discount/FormDiscountProduct";
 import FormDiscountMinTransaction from "./form/discount/FormDiscountMinTransaction";
 import StepBar from "./StepBar";
+import { useSelector } from "react-redux";
 
 const Stepper = ({ onLoading, onCreate, errorDuplicateVoucher }) => {
     const [formValue, setFormValue] = useState({ name: null, limit: null, term: 'buy 1 get 1', storeId: null, inventoryId: null, minTransaction: null, type: 'percentage', nominal: null, percentage: null, voucherCode: null, startTime: new Date(new Date().toDateString()), endTime: new Date(new Date().toDateString()) });
@@ -15,13 +16,14 @@ const Stepper = ({ onLoading, onCreate, errorDuplicateVoucher }) => {
     const [minTransactionAmount, setMinTransactionAmount] = useState(null)
     const [isError, setIsError] = useState({ name: false, amount: false, minTransaction: false, date: false, voucher: false, limit: false });
     const [step, setStep] = useState(1);
+    const currentUser = useSelector(state => state.userReducer)
 
     useEffect(() => {
         getStore(setStoreData, onLoading, (e) => setFormValue({ ...formValue, storeId: e }));
     }, [])
 
     useEffect(() => {
-        formValue.storeId && getInventory(setInventoryData, null, { store: formValue.storeId, limit: 'none' }, (e) => setFormValue({ ...formValue, inventoryId: e }));
+        formValue.storeId && getInventory(setInventoryData, null, currentUser.role === 'admin' ? {limit: 'none', admin: currentUser.email} : { store: formValue.storeId, limit: 'none' }, (e) => setFormValue({ ...formValue, inventoryId: e }));
     }, [formValue.storeId])
 
     useEffect(() => {
@@ -97,7 +99,6 @@ const Stepper = ({ onLoading, onCreate, errorDuplicateVoucher }) => {
                     onChange={(e) => { setFormValue({ ...formValue, term: e.target.value, minTransaction: null, percentage: null, nominal: null, startTime: new Date(new Date().toDateString()), endTime: new Date(new Date().toDateString()) }); setDiscAmount({ nominal: null, percentage: null }) }}
                     hidden={step !== 1}
                 />
-                {/* FORM Buy 1 Get 1 */}
                 <FormBOGO
                     hidden={formValue.term === 'buy 1 get 1' ? step !== 2 : true}
                     onNext={() => setStep(3)}
@@ -113,7 +114,6 @@ const Stepper = ({ onLoading, onCreate, errorDuplicateVoucher }) => {
                     errorDate={isError.date}
                     errorName={isError.name}
                 />
-                {/* FORM Discount Product */}
                 <FormDiscountProduct
                     hidden={formValue.term === 'product' ? step !== 2 : true}
                     isError={isError.amount}
@@ -135,7 +135,6 @@ const Stepper = ({ onLoading, onCreate, errorDuplicateVoucher }) => {
                     errorDate={isError.date}
                     errorName={isError.name}
                 />
-                {/* FORM Discount with Minimum Transaction */}
                 <FormDiscountMinTransaction
                     hidden={formValue.term === 'min transaction' ? step !== 2 : true}
                     errorAmount={isError.amount}
@@ -163,7 +162,6 @@ const Stepper = ({ onLoading, onCreate, errorDuplicateVoucher }) => {
                     errorName={isError.name}
                     errorLimit={isError.limit}
                 />
-                {/* Summary */}
                 <FormSummary
                     hidden={step !== 3}
                     summaryData={formValue}

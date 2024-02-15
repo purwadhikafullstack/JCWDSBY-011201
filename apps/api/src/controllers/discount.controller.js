@@ -16,7 +16,7 @@ export const createDiscount = async (req, res, next) => {
 
 export const getDiscount = async (req, res, next) => {
     try {
-        const result = await getDiscountService(req.query);
+        const result = await getDiscountService(req.query, req.tokenData);
 
         return res.status(200).json(resTemplate(201, true, 'Get discount success!', result));
     } catch (error) {

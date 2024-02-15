@@ -1,5 +1,6 @@
 import { Button, Label, Modal, TextInput, ModalBody, ModalFooter, ModalHeader, FileInput } from 'flowbite-react'
 import { MdModeEditOutline } from "react-icons/md";
+import { customButton } from '../../helpers/flowbiteCustomTheme';
 
 const ModalCategory = ({
     error,
@@ -48,7 +49,7 @@ const ModalCategory = ({
                     onChange={onChangeFile}
                 />
                 <div className='absolute right-0 bottom-0 p-2 text-xl'>
-                    <MdModeEditOutline color='orange' className='cursor-pointer' onClick={onEditImage} />
+                    <MdModeEditOutline className='cursor-pointer text-slate-400' onClick={onEditImage} />
                 </div>
                 {error.size || error.ext ? <p className='text-red-500 text-xs'>{handleErrorFile()}</p> : <p className='text-xs'>{handleErrorFile()}</p>}
             </div>
@@ -89,8 +90,8 @@ const ModalCategory = ({
                 </div>
             </ModalBody>
             <ModalFooter className='justify-end'>
-                <Button onClick={onEdit ? onSave : onAdd} color='blue'>{onEdit ? 'Save' : 'Add'}</Button>
-                <Button onClick={onClose} color='blue'>{onEdit ? 'Cancel' : 'Close'}</Button>
+                <Button theme={customButton} onClick={onEdit ? onSave : onAdd} color='primary'>{onEdit ? 'Save' : 'Add'}</Button>
+                <Button theme={customButton} onClick={onClose} color='secondary'>{onEdit ? 'Cancel' : 'Close'}</Button>
             </ModalFooter>
         </Modal>
     </>

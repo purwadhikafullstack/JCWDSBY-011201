@@ -19,7 +19,7 @@ export const getInventoryService = async (queryParams) => {
     const page = queryParams.page ?? 1;
     const limit = queryParams.limit ?? 5;
     let order = [];
-
+    
     if (sort === 'lowest') order.push(col('productPrice'), 'ASC');
     if (sort === 'highest') order.push(col('productPrice'), 'DESC');
     if (sort === 'lowestStock') order.push('stock', 'ASC');

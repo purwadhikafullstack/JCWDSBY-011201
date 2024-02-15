@@ -32,12 +32,13 @@ export const createDiscountService = async (data) => {
   }
 };
 
-export const getDiscountService = async (params) => {
+export const getDiscountService = async (params, tokenData) => {
   try {
     const limit = params?.limit ?? 'none';
     const page = params?.page ?? 1;
     const UUID = params?.UUID ?? '';
-
+    let store = params?.store ?? '';
+    if(tokenData.role === 'admin') store = tokenData.storeUUID
     const query = {
       where: {
         UUID: { [Op.substring]: UUID }
@@ -46,6 +47,11 @@ export const getDiscountService = async (params) => {
         {
           model: stores,
           required: true,
+          where: {
+            UUID: {
+              [Op.substring]: store
+            },
+          },
           attributes: [],
         },
         {
