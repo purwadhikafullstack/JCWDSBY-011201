@@ -43,9 +43,6 @@ export function CartProductLists(props) {
       dispatch(updateChecksAllInCloud(Number(checkall), itemsInvId, storeUUID));
       setClick(false);
     }
-    // const timer = setTimeout(() => {
-    // }, 300);
-    // return () => clearTimeout(timer);
   }, [checkall, storeUUID]);
 
   const checkAllHandler = () => {
