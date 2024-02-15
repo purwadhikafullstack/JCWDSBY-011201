@@ -11,6 +11,7 @@ import { customButton } from "../../helpers/flowbiteCustomTheme";
 import ManageProductTable from "../../components/table/ManageProductTable";
 import ResponsivePagination from "../../components/ResponsivePagination";
 import { onPageChange } from "../../helpers/pagination";
+import ModalConfirm from "../../components/modal/ModalConfirm";
 
 const ManageProduct = () => {
   const navigate = useNavigate();
@@ -19,10 +20,16 @@ const ManageProduct = () => {
   const currentUserRole = useSelector((reducer) => reducer.userReducer.role);
   const [searchParams, setSearchParams] = useSearchParams();
   const [totalPage, setTotalPage] = useState(1);
+  const [productId, setProductId] = useState(null);
+  const [isOpen, setIsOpen] = useState();
   const queryParam = {
     limit: 5,
     page: searchParams.get('page')
   }
+
+  useEffect(() => {
+    getProduct();
+  }, [totalPage]);
 
   useEffect(() => {
     getProduct();
@@ -41,11 +48,16 @@ const ManageProduct = () => {
   };
 
   const handleDeleteButton = async (id) => {
+    setIsLoading(true);
+    setIsOpen(false);
     await API_CALL.delete(`product/${id}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('authToken')}`
       }
     });
+    setIsLoading(false);
+    searchParams.set('page', 1);
+    setSearchParams(searchParams);
     getProduct();
   };
 
@@ -53,13 +65,15 @@ const ManageProduct = () => {
     <LayoutDashboard>
       <LoadingSpinner isLoading={isLoading} size={16} />
       <LayoutPageAdmin title='Manage Product'>
-        <div className='my-5'>
-          {currentUserRole === 'super' && <Button theme={customButton} size={'responsive'} color='secondary' onClick={() => navigate('/manage/product/create')}> <IoMdAdd className='mr-1 w-4 h-4' /> Add Product</Button>}
+        <div className='my-5 flex flex-col gap-3 justify-between lg:items-center lg:flex-row'>
+          <div>
+            {currentUserRole === 'super' && <Button theme={customButton} size={'responsive'} color='secondary' onClick={() => navigate('/manage/product/create')}> <IoMdAdd className='mr-1 w-4 h-4' /> Add Product</Button>}
+          </div>
         </div>
         <ManageProductTable
           data={data && data}
           onEdit={(item) => navigate(`/manage/product/edit/${item}`)}
-          onDelete={(item) => handleDeleteButton(item)}
+          onDelete={(item) => { setProductId(item); setIsOpen(true); }}
           page={(searchParams.get('page') || 1)}
         />
         <div className="mt-3 mb-10">
@@ -69,6 +83,13 @@ const ManageProduct = () => {
             onPageChange={(page) => onPageChange(page, setSearchParams)}
           />
         </div>
+        <ModalConfirm
+          show={isOpen}
+          header={'Delete Product'}
+          message={'Are you sure you want to delete a product?'}
+          onClose={() => setIsOpen(false)}
+          onConfirm={() => productId && handleDeleteButton(productId)}
+        />
       </LayoutPageAdmin>
     </LayoutDashboard>
   </>

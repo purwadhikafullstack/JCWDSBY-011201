@@ -1,5 +1,4 @@
 import { Avatar, Dropdown, Sidebar } from 'flowbite-react';
-// import { GiHamburgerMenu } from 'react-icons/gi';
 import { FaUserCheck, FaUserCog } from 'react-icons/fa';
 import { TbReportMoney, TbReportAnalytics } from "react-icons/tb";
 import { useLocation, useNavigate } from 'react-router-dom';

@@ -54,7 +54,6 @@ const ManageStoreUpdate = () => {
     } catch (error) {
       navigate(-1);
       customToast('error', 'Store is not valid');
-      console.log(error);
     }
     setIsLoading(false);
   };
@@ -98,9 +97,7 @@ const ManageStoreUpdate = () => {
         params: { cityId: city },
       });
       setDistrictList(result.data.result);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   const onSubmitData = async () => {
@@ -140,7 +137,6 @@ const ManageStoreUpdate = () => {
       customToast('success', 'Success update branch');
       navigate('/manage/store', { replace: true });
     } catch (error) {
-      console.log(error);
       customToast('error', error.message || 'Failed to update branch');
     }
     setIsLoading(false);
@@ -160,7 +156,6 @@ const ManageStoreUpdate = () => {
   return (
     <>
       <LayoutDashboard>
-        {' '}
         <div className="flex flex-row container min-w-[360px] h-max min-h-screen">
           <LoadingSpinner isLoading={isLoading} size={16} />
           <div className="flex flex-col w-full h-full gap-2">

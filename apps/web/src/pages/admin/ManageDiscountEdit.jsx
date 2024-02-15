@@ -13,7 +13,7 @@ const ManageDiscountEdit = () => {
     const params = useParams();
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState();
-    const [isOpen, setIsOpen] = useState();
+    const [isOpen, setIsOpen] = useState(false);
     const discData = useSelector((state) => state.discountReducer);
 
     useEffect(() => {

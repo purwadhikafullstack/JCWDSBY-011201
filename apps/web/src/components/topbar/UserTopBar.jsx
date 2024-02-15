@@ -1,4 +1,3 @@
-import { Avatar } from 'flowbite-react';
 import { HiChevronLeft } from 'react-icons/hi2';
 import { HiOutlineMagnifyingGlass } from 'react-icons/hi2';
 import { useSelector } from 'react-redux';
@@ -37,7 +36,7 @@ const UserTopbar = () => {
           navigate('/');
         }}
       >
-        <img className="w-10 h-10" src={cosmoLogo} alt="" srcSet="" />
+        <img className="w-8 h-8" src={cosmoLogo} alt="" srcSet="" />
       </div>
 
       <div

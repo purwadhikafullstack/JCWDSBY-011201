@@ -5,12 +5,16 @@ export const handleRequiredField = (requiredPrice) => {
   return "p-2.5 text-sm bg-gray-50 rounded-lg border disabled:cursor-not-allowed disabled:opacity-50 border-gray-300 text-gray-900 focus:border-cyan-500 focus:ring-cyan-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-cyan-500 dark:focus:ring-cyan-500"
 };
 
-export const handleSaveButton = async (file, data, error, requiredField, setError, setRequiredField, setIsLoading, prevName, customToast, deletedImage, uploadImage) => {
+export const validationFormProduct = (file, data, setError, error, setRequiredField, requiredField, setIsOpen) => {
   if (file.length === 0) return setError({ ...error, requiredFieldFile: true });
   if (!data.name) return setRequiredField({ ...requiredField, name: true });
   if (!data.weight) return setRequiredField({ ...requiredField, weight: true });
   if (!data.price) return setRequiredField({ ...requiredField, price: true });
   if (!data.description) return setRequiredField({ ...requiredField, description: true });
+  setIsOpen(true);
+};
+
+export const handleEditProduct = async (setIsLoading, data, prevName, customToast, deletedImage, uploadImage, navigate) => {
   setIsLoading(true);
   const product = {
     name: data.name,
@@ -33,7 +37,6 @@ export const handleSaveButton = async (file, data, error, requiredField, setErro
     })
   } catch (error) {
     setIsLoading(false);
-    // console.log('HELPER ERROR', error);
     if (error.response.status === 304) return customToast('error', 'Product already exists');
   }
   if (deletedImage) {
@@ -53,6 +56,6 @@ export const handleSaveButton = async (file, data, error, requiredField, setErro
       }
     });
   }
-
+  navigate('/manage/product');
   setIsLoading(false);
 }

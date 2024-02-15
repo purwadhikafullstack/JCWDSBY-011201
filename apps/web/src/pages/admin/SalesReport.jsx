@@ -11,6 +11,7 @@ import { useSearchParams } from "react-router-dom";
 import MonthlySalesReportTable from "../../components/table/MonthlySalesReportTable";
 import ResponsivePagination from "../../components/ResponsivePagination";
 import { onPageChange } from "../../helpers/pagination";
+import { monthString } from "../../constants/monthString";
 
 const SalesReport = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -26,7 +27,7 @@ const SalesReport = () => {
     getMonthlySales(setMonthlySalesData, setIsLoading, {store: searchParams.get('store')});
     getMonthlySales(setMonthlySalesDataTable, setIsLoading, {store: searchParams.get('store'), limit: 5, page: searchParams.get('page')}, setTotalPage);
   }, [searchParams.get('store'), searchParams.get('page')])
-console.log('monthlySalesData >>>', monthlySalesDataTable);
+
   const getStore = async () => {
     try {
       setIsLoading(true);
@@ -36,8 +37,6 @@ console.log('monthlySalesData >>>', monthlySalesDataTable);
         },
       });
       setStore(resStore.data.result.raw);
-      // searchParams.set('store', resStore.data.result.raw[0].UUID);
-      // setSearchParams(searchParams)
       setIsLoading(false);
     } catch (error) {
       console.error(error);
@@ -58,8 +57,6 @@ console.log('monthlySalesData >>>', monthlySalesDataTable);
     })
   };
 
-  // console.log('dummyData :', monthlySalesData && chartLineData(monthlySalesData));
-  // console.log('dummyData :', monthlySalesData);
   return <LayoutDashboard>
     <LoadingSpinner isLoading={isLoading} size={16} />
     <LayoutPageAdmin title='Sales Report'>
@@ -74,7 +71,7 @@ console.log('monthlySalesData >>>', monthlySalesDataTable);
           <div className="flex flex-col mt-4">
             <div className="min-h-[24rem] border rounded-md">
               {monthlySalesData && <MonthlySalesReportChart
-                data={monthlySalesData.map((val) => { return { month: val.month, sales: val.salesTotal / 1000 } })}
+                data={monthlySalesData.map((val) => { return { month: monthString[val.month - 1], sales: val.salesTotal / 1000 } })}
                 keys={'sales'}
                 indexBy={'month'}
                 leftLegend={'Revenue(K)'}
@@ -86,7 +83,6 @@ console.log('monthlySalesData >>>', monthlySalesDataTable);
                 data={monthlySalesDataTable}
                 page={Number(searchParams.get('page')) || 1}
                 />
-                {/* <ResponsivePagination/> */}
             </div>
             <div className="mt-5">
             <ResponsivePagination

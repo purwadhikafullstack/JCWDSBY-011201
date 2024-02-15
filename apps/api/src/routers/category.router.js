@@ -1,8 +1,6 @@
 import { Router } from 'express';
 import uploader from '../helper/uploader';
 import {
-  getCategoryData,
-  getCategoryDataById,
   createCategory,
   updateCategory,
   deleteCategory,

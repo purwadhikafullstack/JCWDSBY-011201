@@ -87,7 +87,7 @@ const ChangePassword = () => {
       <div className='w-full'>
         <TopBar title='Change Password' prevPage={onCancel} />
         <LoadingSpinner size={16} isLoading={isLoading} />
-        <div className="lg:w-[35%] mx-2 lg:m-auto border shadow-md pb-7 mt-5">
+        <div className="lg:w-[35%] mx-2 lg:mx-auto border shadow-md pb-7 mt-5">
           <form onSubmit={formik.handleSubmit} id='formChangePassword'>
             <ModalConfirm
               show={onOpen}

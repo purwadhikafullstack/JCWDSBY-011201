@@ -32,18 +32,14 @@ const ManageStoreAdd = () => {
         },
       });
       setAdminList(result.data.result.rows);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   const getProvinceList = async () => {
     try {
       const result = await API_CALL.get('/province');
       setProvinceList(result.data.result);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
   const getCityList = async () => {
     try {
@@ -53,9 +49,7 @@ const ManageStoreAdd = () => {
         },
       });
       setCityList(result.data.result);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
   const getDistrictList = async () => {
     try {
@@ -63,9 +57,7 @@ const ManageStoreAdd = () => {
         params: { cityId: city },
       });
       setDistrictList(result.data.result);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
   console.log(admin);
   const onSubmitData = async () => {
@@ -105,7 +97,6 @@ const ManageStoreAdd = () => {
       customToast('success', 'Success create new branch');
       navigate('/manage/store', { replace: true });
     } catch (error) {
-      console.log(error);
       customToast('error', error.message || 'Failed to create new branch');
     }
     setIsLoading(false);

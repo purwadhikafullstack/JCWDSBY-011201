@@ -17,7 +17,7 @@ const FormDiscBogo = ({
     const discData = useSelector((state) => state.discountReducer);
     const discountTerm = useSelector((state) => state.discountReducer.term);
     const currentUser = useSelector((state) => state.userReducer);
-// console.log('FormDiscBogo.jsx >>> ', discData);
+
     return <div hidden={discountTerm === 'buy 1 get 1' ? hidden : true}>
         <h1 className="text-2xl font-extrabold text-center mb-5">Buy 1 Get 1</h1>
         <form className="grid gap-4">

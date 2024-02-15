@@ -36,9 +36,7 @@ const Landing = () => {
     try {
       const hero = await API_CALL.get('/event');
       setHeroData(hero.data.result);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   const getProductData = async () => {
@@ -82,28 +80,6 @@ const Landing = () => {
           <LandingCategoryViews categoryData={categoryData} />
         </div>
         <MiniHeroViews />
-        <div className="flex flex-col gap-2 lg:gap-8 lg:py-8">
-          <div className="flex items-center justify-between">
-            <div className=" flex flex-col lg:flex-row gap-1 lg:gap-3">
-              <span className="font-bold text-2xl lg:text-4xl text-gray-700">
-                Special
-              </span>
-              <span className="font-bold text-2xl lg:text-4xl text-blue-700">
-                Promos
-              </span>
-            </div>
-            <ButtonSeeAll
-              onClick={() =>
-                navigate('/category', {
-                  state: { previousPath: location.pathname },
-                })
-              }
-            />
-          </div>
-          <div className="flex w-full">
-            <LandingProductViews productData={productData} />
-          </div>
-        </div>
         <div className="flex flex-col gap-2 lg:gap-8 lg:py-8">
           <div className="flex items-center justify-between">
             <div className="flex flex-col lg:flex-row gap-1 lg:gap-3">

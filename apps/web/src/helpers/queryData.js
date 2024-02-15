@@ -70,7 +70,7 @@ export const getDiscount = async (setValue, setLoading, setTotalPage, queryParam
   }
 };
 
-export const deleteDiscount = async (ID, setLoading, getUpdatedData) => {
+export const deleteDiscount = async (ID, setLoading, getUpdatedData, setDiscountData, setIsLoading, setTotalPage) => {
   try {
     setLoading && setLoading(true);
 
@@ -79,7 +79,7 @@ export const deleteDiscount = async (ID, setLoading, getUpdatedData) => {
         Authorization: `Bearer ${localStorage.getItem('authToken')}`,
       },
     })
-    getUpdatedData;
+    getUpdatedData(setDiscountData, setIsLoading, setTotalPage);
     setLoading && setLoading(false);
   } catch (error) {
     console.error(error);
@@ -111,7 +111,7 @@ export const getMonthlySales = async (setValue, setLoading, queryParams, setTota
       }
     })
     setValue(res.data.result.rows);
-    setTotalPage(Math.ceil(res.data.result.totalPage))
+    setTotalPage && setTotalPage(Math.ceil(res.data.result.totalPage))
 
     setLoading && setLoading(false);
   } catch (error) {
