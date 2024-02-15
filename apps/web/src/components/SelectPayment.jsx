@@ -1,7 +1,8 @@
 import React from 'react';
 import gopay from '../assets/logoEcom/gopay.png';
 import shopeepay from '../assets/logoEcom/shopee.png';
-import manualTransfer from '../assets/logoEcom/money.jpg'
+import { MdOutlineLocalAtm } from 'react-icons/md';
+import manualTransfer from '../assets/logoEcom/money.jpg';
 import { HiCheck, HiChevronDown } from 'react-icons/hi2';
 const SelectPayment = ({
   selectedPayment,
@@ -24,7 +25,11 @@ const SelectPayment = ({
         {selectedPayment ? (
           <div className="flex gap-3 md:gap-4 items-center">
             <img
-              className="h-6 w-16 object-cover "
+              className={`h-6 w-full ${
+                selectedPayment.name === 'transfer'
+                  ? 'object-cover'
+                  : 'object-contain'
+              }`}
               alt={selectedPayment.name}
               src={selectedPayment.image}
             />
@@ -65,7 +70,11 @@ const SelectPayment = ({
             >
               <div className="flex gap-3 md:gap-4 items-center">
                 <img
-                  className="h-6 w-full object-cover "
+                  className={`h-6 w-full ${
+                    value.name === 'transfer'
+                      ? 'object-cover'
+                      : 'object-contain'
+                  }`}
                   alt={value.name}
                   src={value.image}
                 />
