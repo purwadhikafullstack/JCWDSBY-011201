@@ -42,7 +42,6 @@ const NewPassword = () => {
         customToast('error', 'Invalid reset token');
       }
     } catch (error) {
-      console.log(error.message);
       customToast('error', error.response.data.message);
     }
     setIsLoading(false);
@@ -74,7 +73,6 @@ const NewPassword = () => {
 
   return (
     <Container>
-      {' '}
       <div className="flex w-full h-full">
         <div className="header flex flex-col w-full h-full">
           <div className="flex w-full h-full justify-center items-center py-6">

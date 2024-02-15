@@ -32,7 +32,7 @@ const UserAddressList = (props) => {
         setAddressList(result.data.result);
       }
     } catch (error) {
-      console.log(error);
+      customToast('error', 'Failed to get address data');
     }
     setIsLoadingData(false);
   };
@@ -50,7 +50,6 @@ const UserAddressList = (props) => {
         getAddressList();
       }
     } catch (error) {
-      console.log(error);
       customToast('error', 'Failed to delete address');
     }
     setDeleteId(null);
@@ -73,7 +72,7 @@ const UserAddressList = (props) => {
         getAddressList();
       }
     } catch (error) {
-      console.log(error);
+      customToast('error', 'Failed to change default address');
     }
     setUpdateDefaultId(null);
     setIsLoading(false);

@@ -34,7 +34,6 @@ const UserEditAddress = (props) => {
       setAddress(result.data.result.address);
       setPostal(result.data.result.postalCode);
     } catch (error) {
-      console.log(error);
       navigate('/profile/address', { replace: true });
       customToast('error', 'Invalid Address');
     }
@@ -49,7 +48,7 @@ const UserEditAddress = (props) => {
       });
       setProvince(result.data.result);
     } catch (error) {
-      console.log(error);
+      customToast('error', 'Failed to get province data');
     }
   };
 
@@ -65,7 +64,7 @@ const UserEditAddress = (props) => {
       });
       setCity(result.data.result);
     } catch (error) {
-      console.log(error);
+      customToast('error', 'Failed to get city data');
     }
   };
 
@@ -81,7 +80,7 @@ const UserEditAddress = (props) => {
       });
       setDistrict(result.data.result);
     } catch (error) {
-      console.log(error);
+      customToast('error', 'Failed to get district data');
     }
   };
 
@@ -113,7 +112,6 @@ const UserEditAddress = (props) => {
       customToast('success', 'Success edit address');
       navigate('/profile/address', { replace: true });
     } catch (error) {
-      console.log(error);
       customToast('error', error?.message || 'Failed to edit address');
     }
     setIsLoading(false);
