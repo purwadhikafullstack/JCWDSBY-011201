@@ -54,6 +54,7 @@ import ManageDiscountEdit from './pages/admin/ManageDiscountEdit';
 import Cart from './pages/Cart';
 import SalesReport from './pages/admin/SalesReport';
 import CourierArrival from './pages/CourierArrival';
+import CheckoutTransfer from './pages/CheckoutTransfer';
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 function App() {
@@ -241,6 +242,14 @@ function App() {
           element={
             <PrivateRoute role={'user'} navigate={'/login'}>
               <UserOrderDetails />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/checkout-transfer"
+          element={
+            <PrivateRoute role={'user'} navigate={'/login'}>
+              <CheckoutTransfer />
             </PrivateRoute>
           }
         />
