@@ -22,7 +22,6 @@ const UserProductDetail = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [productData, setProductData] = useState(null);
   const [relatedProductData, setRelatedProductData] = useState([]);
-  console.log("🚀 ~ UserProductDetail ~ relatedProductData:", relatedProductData)
   const [openDrawerDetails, setOpenDrawerDetails] = useState(false);
   const toggleDrawer = () => setOpenDrawerDetails((prevState) => !prevState);
 

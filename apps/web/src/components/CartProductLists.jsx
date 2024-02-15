@@ -50,7 +50,7 @@ export function CartProductLists(props) {
     dispatch(checkUncheckAll(Number(!checkall)));
   };
   return (
-    <Card className="w-full lg:max-w-full max-h-96 sm:max-h-[800px] ">
+    <Card className="w-full lg:max-w-full max-h-96 md:max-h-[800px] ">
       <div className=" flex items-center justify-between">
         <div className="flex gap-x-3">
           <Checkbox

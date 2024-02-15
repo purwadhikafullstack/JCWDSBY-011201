@@ -36,7 +36,7 @@ export function CartPlusMinus(props) {
     }
   };
   return (
-    <div className="my-1 w-20 h-7 flex border border-gray-300 rounded-lg items-center justify-around gap-x-1 relative left-8 sm:left-0 ">
+    <div className="my-1 w-20 h-7 flex border border-gray-300 rounded-lg items-center justify-around gap-x-1 relative left-8 md:left-0 ">
       {props.amount < 2 ? (
         <FaMinus
           size={'16px'}

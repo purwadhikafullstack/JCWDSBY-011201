@@ -4,6 +4,7 @@ import SelectAddressCheckout from './SelectAddressCheckout';
 import SelectCourierCheckout from './SelectCourierCheckout';
 import SelectPayment from './SelectPayment';
 import { handleVoucher } from '../helpers/checkout/handlePay';
+import { FaRegCircleCheck } from 'react-icons/fa6';
 export function CheckoutLeftSide({
   showSnap,
   selectedAddress,
@@ -26,13 +27,13 @@ export function CheckoutLeftSide({
   itemTotal,
   setVoucherData,
   cartItems,
+  voucherData,
 }) {
-  console.log('🚀 ~ cartItems:', cartItems);
   return (
     <div className="w-full lg:w-8/12 h-[100vh] overflow-y-auto lg:h-full font-roboto flex flex-col bg-gray-100 ">
       {!showSnap && (
         <div className="flex flex-col">
-          <Card className="flex flex-col rounded-none capitalize text-xs sm:text-sm mb-3">
+          <Card className="flex flex-col rounded-none capitalize text-xs md:text-sm mb-3">
             <SelectAddressCheckout
               selectedAddress={selectedAddress}
               addressData={address}
@@ -41,7 +42,6 @@ export function CheckoutLeftSide({
               onSelectAddress={(value) => {
                 setShowCourier(false);
                 setShowAddresses(false);
-
                 if (selectedAddress.UUID !== value.UUID) {
                   setCourier(null);
                 }
@@ -50,7 +50,7 @@ export function CheckoutLeftSide({
               }}
             />
           </Card>
-          <Card className="flex flex-col rounded-none capitalize text-xs sm:text-sm mb-3">
+          <Card className="flex flex-col rounded-none capitalize text-xs md:text-sm mb-3">
             <SelectCourierCheckout
               selectedCourier={selectedCourier}
               courierData={courier}
@@ -71,7 +71,7 @@ export function CheckoutLeftSide({
                     <div className="flex justify-start gap-x-2 ">
                       <div className=" rounded justify-center items-center flex">
                         <img
-                          className="w-12 lg:w-16 h-12 lg:h-16 object-contain"
+                          className="w-12 h-10 lg:h-12 object-fill"
                           src={val.imageLink}
                         />
                       </div>
@@ -99,7 +99,7 @@ export function CheckoutLeftSide({
               })}
             </div>
           </Card>
-          <Card className="flex flex-col rounded-none capitalize text-xs sm:text-sm mb-3">
+          <Card className="flex flex-col rounded-none capitalize text-xs md:text-sm mb-3">
             <p className="font-semibold">metode pembayaran</p>
             <SelectPayment
               selectedPayment={selectedPayment}
@@ -112,27 +112,64 @@ export function CheckoutLeftSide({
             />
           </Card>
           <Card className="flex flex-col rounded-none capitalize text-xs sm:text-sm mb-3">
-            <div className="mb-2 block">
-              <Label
-                htmlFor="voucher"
-                className="font-semibold"
-                value="Kode Voucher"
-              />
-            </div>
-            <TextInput
-              id="voucher"
-              type="text"
-              placeholder="XXXXXX......"
-              required
-              onChange={(e) => setVoucher(e.target.value)}
-            />
-            <Button
-              color="blue"
-              className="mt-3"
-              onClick={() => handleVoucher(voucher, itemTotal, setVoucherData)}
-            >
-              Apply
-            </Button>
+            {voucherData && (
+              <>
+                <Label
+                  htmlFor="voucherlist"
+                  className="font-semibold"
+                  value="Voucher"
+                />
+                <Card>
+                  <div className="flex gap-5">
+                    <FaRegCircleCheck size={40} color="blue" />
+                    <div>
+                      <p className="font-semibold capitalize">
+                        {voucherData?.name}
+                      </p>
+                      <p className="">
+                        minimal transaksi Rp{' '}
+                        {voucherData?.minTransaction.toLocaleString('id-ID')}
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+              </>
+            )}
+            {!voucherData ? (
+              <>
+                <div className="mb-2 block">
+                  <Label
+                    htmlFor="voucher"
+                    className="font-semibold"
+                    value="Kode Voucher"
+                  />
+                </div>
+                <TextInput
+                  id="voucher"
+                  type="text"
+                  placeholder="XXXXXX......"
+                  required
+                  onChange={(e) => setVoucher(e.target.value)}
+                />
+                <Button
+                  color="blue"
+                  className="mt-3"
+                  onClick={() =>
+                    handleVoucher(voucher, itemTotal, setVoucherData)
+                  }
+                >
+                  Apply
+                </Button>
+              </>
+            ) : (
+              <Button
+                color="blue"
+                className="mt-3"
+                onClick={() => setVoucherData(null)}
+              >
+                Remove
+              </Button>
+            )}
           </Card>
           <Card className="flex lg:hidden flex-col rounded-none capitalize mb-3">
             <p className="font-bold text-base mb-2">ringkasan belanja</p>

@@ -11,7 +11,6 @@ export function FreeCartItems({ val, idx, checkall, setCheckallFalse }) {
   const prevCheckedRef = useRef(val.checked);
   const [clicked, setClicked] = useState(false);
   const dispatch = useDispatch();
-  console.log(val);
   return (
     <div
       className={`w-full h-15 ${

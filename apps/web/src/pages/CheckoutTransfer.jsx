@@ -9,7 +9,6 @@ import cosmoLogo from '../assets/cosmo-logo.svg';
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
 import { IMG_URL_PROOF } from '../constants/imageURL';
-
 const CheckoutTransfer = () => {
   const [order, setOrder] = useState(null);
   const [proofUpload, setProofUpload] = useState(null);
@@ -27,7 +26,6 @@ const CheckoutTransfer = () => {
       setOrder(response.data.result);
     }
   };
-
   useEffect(() => {
     if (orderId && !openModal) {
       getOrderDetails(orderId);
@@ -40,12 +38,10 @@ const CheckoutTransfer = () => {
   const handleClick = () => {
     inputRef.current.click();
   };
-
   const totalPrice = order?.items.reduce(
     (total, items) => total + items.price * items.amount,
     0,
   );
-
   const handleUploadProof = async () => {
     try {
       const formData = new FormData();
@@ -62,7 +58,6 @@ const CheckoutTransfer = () => {
       console.log(error);
     }
   };
-
   return (
     <div className="pb-4">
       <div className="sticky top-0 w-full h-16 bg-white flex items-center p-5 shadow-md">
@@ -129,7 +124,7 @@ const CheckoutTransfer = () => {
                   <div key={idx} className="flex justify-between mb-2 ">
                     <div className="flex gap-x-3">
                       <div>{val.amount ?? 1}x</div>
-                      <div className="capitalize break-words w-40 sm:w-full">
+                      <div className="capitalize break-words w-40 md:w-full">
                         {val.name}
                       </div>
                     </div>
