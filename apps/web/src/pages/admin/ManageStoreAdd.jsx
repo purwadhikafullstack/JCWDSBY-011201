@@ -1,6 +1,4 @@
 import { useEffect, useState } from 'react';
-import AdminSidebar from '../../components/AdminSidebar';
-import LayoutPageAdmin from '../../components/LayoutPageAdmin';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import API_CALL from '../../helpers/API';
 import customToast from '../../utils/toast';
