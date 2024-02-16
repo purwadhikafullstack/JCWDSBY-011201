@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useRef } from 'react';
 import UserLayout from '../components/UserLayout';
 import { useEffect, useState } from 'react';
 import API_CALL from '../helpers/API';
@@ -33,6 +32,7 @@ const Checkout = () => {
   const [voucherData, setVoucherData] = useState(null);
   const cartItems = useSelector((state) => state.cartReducer.checkoutItems);
   const currStore = useSelector((reducer) => reducer.storeReducer);
+  const storeRef = useRef();
   const { snapEmbed } = useSnap();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -62,10 +62,14 @@ const Checkout = () => {
     0,
   );
   useEffect(() => {
-    if (currStore.postalCode !== '') {
+    if (
+      currStore?.postalCode !== '' &&
+      storeRef.current !== currStore?.storeId
+    ) {
       getAvailableAddress(currStore, setAddress, setSelectedAddress);
+      storeRef.current = currStore?.storeId;
     }
-  }, [currStore.storeId]);
+  }, [currStore?.storeId, storeRef.current]);
   useEffect(() => {
     if (selectedAddress && checkoutItems) {
       getCourierList(
@@ -76,7 +80,7 @@ const Checkout = () => {
         setSelectedCourier,
       );
     }
-  }, [selectedAddress]);
+  }, [selectedAddress?.UUID]);
 
   const handlePay = async () => {
     try {
