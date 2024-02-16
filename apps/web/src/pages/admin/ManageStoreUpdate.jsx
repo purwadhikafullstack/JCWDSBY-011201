@@ -1,17 +1,6 @@
 import { useEffect, useState } from 'react';
-import AdminSidebar from '../../components/AdminSidebar';
-import LayoutPageAdmin from '../../components/LayoutPageAdmin';
 import LoadingSpinner from '../../components/LoadingSpinner';
-import {
-  Button,
-  Label,
-  Pagination,
-  Select,
-  Table,
-  TextInput,
-} from 'flowbite-react';
 import API_CALL from '../../helpers/API';
-import { HiChevronLeft } from 'react-icons/hi2';
 import customToast from '../../utils/toast';
 import { useNavigate, useParams } from 'react-router-dom';
 import FormStore from '../../components/form/formStore';
@@ -34,8 +23,6 @@ const ManageStoreUpdate = () => {
   const navigate = useNavigate();
   const params = useParams();
 
-  console.log(admin);
-
   const getStoreDetail = async () => {
     try {
       setIsLoading(true);
@@ -48,7 +35,7 @@ const ManageStoreUpdate = () => {
       setProvince(result.data.result.provinceId);
       setCity(result.data.result.cityId);
       setDistrict(result.data.result.districtId);
-      setAdmin(result.data.result.user.UUID);
+      setAdmin(result.data.result?.user?.UUID);
       setAddress(result.data.result.address);
       setPostal(result.data.result.postalCode);
     } catch (error) {
