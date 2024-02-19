@@ -50,8 +50,10 @@ export const createCategoryService = async (data, image) => {
     if (checkCategory) throw resTemplate(409, false, 'Category already exists');
 
     const value = image ? { name: data.name, image: image.filename } : { name: data.name };
+    console.log('Category Image >>>', image);
     return await categories.create(value);
   } catch (error) {
+    console.log('Catch Error Create Category', error);
     throw error;
   }
 };
