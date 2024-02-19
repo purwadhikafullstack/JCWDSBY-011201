@@ -1,10 +1,11 @@
 import UserLayout from '../components/UserLayout';
-import { HiChevronLeft, HiOutlineExclamationCircle } from 'react-icons/hi2';
+import { HiChevronLeft } from 'react-icons/hi2';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import API_CALL from '../helpers/API';
 import customToast from '../utils/toast';
 import FormAddress from '../components/form/formAddress';
+import CosmoTextLogo from '../components/CosmoTextLogo';
 
 const UserAddAddress = (props) => {
   const location = useLocation();
@@ -28,7 +29,7 @@ const UserAddAddress = (props) => {
       });
       setProvince(result.data.result);
     } catch (error) {
-      console.log(error);
+      customToast('error', 'Failed to get province data');
     }
   };
 
@@ -44,7 +45,7 @@ const UserAddAddress = (props) => {
       });
       setCity(result.data.result);
     } catch (error) {
-      console.log(error);
+      customToast('error', 'Failed to get city data');
     }
   };
 
@@ -60,7 +61,7 @@ const UserAddAddress = (props) => {
       });
       setDistrict(result.data.result);
     } catch (error) {
-      console.log(error);
+      customToast('error', 'Failed to get district data');
     }
   };
 
@@ -92,7 +93,6 @@ const UserAddAddress = (props) => {
       customToast('success', 'Success add address');
       navigate('/profile/address', { replace: true });
     } catch (error) {
-      console.log(error);
       customToast('error', error?.message || 'Failed to add address');
     }
     setIsLoading(false);
@@ -113,9 +113,9 @@ const UserAddAddress = (props) => {
   return (
     <UserLayout>
       <div className="flex flex-col h-full w-full">
-        <div className="header flex flex-col pt-8 px-4 pb-4 bg-blue-50 gap-2">
+        <div className="header flex flex-col pt-8 px-4 lg:px-32 pb-4 bg-blue-50 gap-2">
           <div className="flex">
-            <span className="text-blue-800 font-extrabold text-3xl">Cosmo</span>
+            <CosmoTextLogo size={'text-4xl'} />
           </div>
           <div
             className="flex items-center gap-2"
@@ -131,35 +131,37 @@ const UserAddAddress = (props) => {
             </span>
           </div>
         </div>
-        <FormAddress
-          province={provinceId}
-          provinceData={province}
-          city={cityId}
-          cityData={city}
-          district={districtId}
-          districtData={district}
-          address={address}
-          postal={postal}
-          onProvince={(e) => {
-            setProvinceId(e.target.value);
-            setCityId(null);
-            setCity(null);
-            setDistrictId(null);
-            setDistrict(null);
-          }}
-          onCity={(e) => {
-            setCityId(e.target.value);
-            setDistrictId(null);
-            setDistrict(null);
-          }}
-          onDistrict={(e) => {
-            setDistrictId(e.target.value);
-          }}
-          onAddress={(e) => setAddress(e.target.value)}
-          onPostal={(e) => setPostal(e.target.value)}
-          onSubmit={handleAddAddress}
-          isLoading={isLoading}
-        />
+        <div className="flex w-full px-4 lg:px-32">
+          <FormAddress
+            province={provinceId}
+            provinceData={province}
+            city={cityId}
+            cityData={city}
+            district={districtId}
+            districtData={district}
+            address={address}
+            postal={postal}
+            onProvince={(e) => {
+              setProvinceId(e.target.value);
+              setCityId(null);
+              setCity(null);
+              setDistrictId(null);
+              setDistrict(null);
+            }}
+            onCity={(e) => {
+              setCityId(e.target.value);
+              setDistrictId(null);
+              setDistrict(null);
+            }}
+            onDistrict={(e) => {
+              setDistrictId(e.target.value);
+            }}
+            onAddress={(e) => setAddress(e.target.value)}
+            onPostal={(e) => setPostal(e.target.value)}
+            onSubmit={handleAddAddress}
+            isLoading={isLoading}
+          />
+        </div>
       </div>
     </UserLayout>
   );

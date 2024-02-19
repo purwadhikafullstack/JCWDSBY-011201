@@ -1,35 +1,77 @@
 import { Router } from 'express';
 import { validateToken } from '../middleware/tokenValidation';
-import login from './auth/login';
-import verifyAccount from './auth/verifyAccount';
-import googleSignUp from './auth/socialSignUp';
-import googleLogin from './auth/socialLogin';
-import loginAdmin from './auth/loginAdmin';
-import keepLogin from './auth/keepLogin';
-import signUp from './auth/signUp';
-import forgotPassword from './auth/forgotPassword';
-import resetPassword from './auth/resetPassword';
 import { body } from 'express-validator';
 import { specialTokenValidation } from '../middleware/specialTokenValidation';
+import {
+  forgotPasswordController,
+  googleLoginController,
+  googleSignUpController,
+  keepLoginController,
+  loginAdminController,
+  loginController,
+  resetPasswordController,
+  signUpController,
+  verifyAccountController,
+} from '../controllers/auth.controller';
 
 const authRouter = Router();
 
-authRouter.post('/login', login);
-authRouter.get('/login/keep-login', validateToken, keepLogin);
-authRouter.post('/login/google', googleLogin);
-authRouter.post('/login/admin', loginAdmin);
-authRouter.post('/signup', signUp);
-authRouter.post('/signup/google', googleSignUp);
+authRouter.post(
+  '/login',
+  body('email').notEmpty().isEmail(),
+  body('password').notEmpty(),
+  loginController,
+);
+authRouter.get('/login/keep-login', validateToken, keepLoginController);
+authRouter.post(
+  '/login/google',
+  body('email').notEmpty().isEmail(),
+  body('password').notEmpty(),
+  googleLoginController,
+);
+authRouter.post(
+  '/login/admin',
+  body('username').notEmpty(),
+  body('password').notEmpty(),
+  loginAdminController,
+);
+authRouter.post(
+  '/signup',
+  body('email').notEmpty().isEmail(),
+  signUpController,
+);
+authRouter.post(
+  '/signup/google',
+  body('email').notEmpty().isEmail(),
+  body('password').notEmpty(),
+  googleSignUpController,
+);
 authRouter.patch(
   '/signup/verify-account',
   specialTokenValidation,
-  verifyAccount,
+  body('password')
+    .notEmpty()
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/),
+  body('confPass')
+    .notEmpty()
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/),
+  verifyAccountController,
 );
-authRouter.post('/forgot', forgotPassword);
+authRouter.post(
+  '/forgot',
+  body('email').notEmpty().isEmail(),
+  forgotPasswordController,
+);
 authRouter.patch(
   '/forgot/reset-password',
   specialTokenValidation,
-  resetPassword,
+  body('password')
+    .notEmpty()
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]+$/),
+  body('confPass')
+    .notEmpty()
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]+$/),
+  resetPasswordController,
 );
 
 export { authRouter };

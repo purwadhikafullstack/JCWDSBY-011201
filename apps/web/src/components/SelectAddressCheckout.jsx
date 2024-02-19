@@ -13,7 +13,7 @@ const SelectAddressCheckout = ({
   if (addressData) {
     if (addressData.length > 0) {
       return (
-        <div className="flex flex-col w-full p-2 gap-1">
+        <div className="flex flex-col w-full gap-1 bg-white">
           <div
             className="flex w-full rounded-lg justify-between border-2 p-3 gap-3 items-center cursor-pointer"
             onClick={onShowAddresses}
@@ -84,7 +84,7 @@ const SelectAddressCheckout = ({
       );
     } else {
       return (
-        <div className="flex flex-col w-full p-2 gap-1">
+        <div className="flex flex-col w-full p-2 gap-1 bg-white">
           <div className="flex w-full rounded-lg justify-between border-2 p-3 gap-3 items-center">
             <div className="flex gap-3 md:gap-4 items-center">
               <HiMapPin className="w-8 h-8 text-blue-800" />
@@ -95,7 +95,7 @@ const SelectAddressCheckout = ({
                 </span>
               </div>
               <span
-                className="text-xs font-bold text-blue-800"
+                className="text-xs font-bold text-blue-800 cursor-pointer"
                 onClick={() =>
                   navigate('/profile/address', {
                     state: { previousPath: location.pathname },

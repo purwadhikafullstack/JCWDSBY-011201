@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import AdminSidebar from '../../components/AdminSidebar';
 import LayoutPageAdmin from '../../components/LayoutPageAdmin';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { Button, Pagination } from 'flowbite-react';
@@ -8,6 +7,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { HiMagnifyingGlass } from 'react-icons/hi2';
 import customToast from '../../utils/toast';
 import ManageStoreTable from '../../components/table/ManageStoreTable';
+import LayoutDashboard from '../../components/LayoutDashboard';
+import { customButton } from '../../helpers/flowbiteCustomTheme';
 
 const ManageStore = () => {
   const [openModalMain, setOpenModalMain] = useState(false);
@@ -36,10 +37,8 @@ const ManageStore = () => {
       });
       setStoreData(result.data.result.data);
       setTotalPage(Math.ceil(result.data.result.row / 8));
-      setIsLoading(false);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
+    setIsLoading(false);
   };
 
   const handleDelete = async () => {
@@ -55,7 +54,6 @@ const ManageStore = () => {
       getStoreData();
     } catch (error) {
       customToast('error', 'Failed to delete branch');
-      console.log(error);
     }
     setIsLoading(false);
   };
@@ -76,7 +74,6 @@ const ManageStore = () => {
       customToast('success', 'Main branch is changed');
       getStoreData();
     } catch (error) {
-      console.log(error);
       customToast('error', 'Failed to change main branch');
     }
     setIsLoading(false);
@@ -88,20 +85,22 @@ const ManageStore = () => {
 
   return (
     <>
-      <div className="flex flex-row container bg-blue-100 min-w-[360px] h-max min-h-screen">
-        <AdminSidebar />
+      <LayoutDashboard>
         <LoadingSpinner isLoading={isLoading} size={16} />
         <LayoutPageAdmin title="Manage Store">
           <div className="flex flex-col md:flex-row justify-between gap-2 mb-3">
-            <Button
-              color="blue"
-              size={'sm'}
+            <div>
+            <Button 
+              theme={customButton}
+              size={'responsive'}
+              color="secondary"
               onClick={() => {
                 navigate('/manage/store/create');
               }}
             >
-              Add Branch
+              + Add Branch
             </Button>
+            </div>
             <div className="flex rounded-xl border-2 border-gray-500 focus-within:border-gray-700 p-1 overflow-hidden items-center gap-1">
               <span className="w-6 h-6">
                 <HiMagnifyingGlass size={'100%'} />
@@ -154,7 +153,7 @@ const ManageStore = () => {
             </div>
           </div>
         </LayoutPageAdmin>
-      </div>
+      </LayoutDashboard>
     </>
   );
 };

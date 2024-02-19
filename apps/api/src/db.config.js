@@ -15,6 +15,10 @@ const config = {
     host: DB_HOST,
     port: DB_PORT,
     dialect: 'mysql',
+    dialectOptions: {
+      decimalNumbers: true
+    },
+    timezone: "+07:00",
   },
   test: {
     username: DB_USER,
@@ -23,6 +27,10 @@ const config = {
     host: DB_HOST,
     port: DB_PORT,
     dialect: 'mysql',
+    dialectOptions: {
+      decimalNumbers: true
+    },
+    timezone: "+07:00",
   },
   production: {
     username: DB_USER,
@@ -31,6 +39,10 @@ const config = {
     host: DB_HOST,
     port: DB_PORT,
     dialect: 'mysql',
+    dialectOptions: {
+      decimalNumbers: true
+    },
+    timezone: "+07:00",
   },
 };
 

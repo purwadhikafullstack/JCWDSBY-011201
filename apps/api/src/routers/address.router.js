@@ -1,24 +1,57 @@
 import { Router } from 'express';
 import { validateToken, validateUser } from '../middleware/tokenValidation';
-import createAddress from './address/createUserAddress';
-import deleteAddress from './address/deleteUserAddress';
-import getAddres from './address/getUserAddres';
-import updateAddress from './address/updateUserAddress';
-import updateDefaultAddress from './address/updateDefaultAddress';
-import getAddressDetail from './address/getUserAddressDetail';
+import {
+  createAddressController,
+  deleteAddressController,
+  getAddressDetailController,
+  getAddressesController,
+  updateAddressController,
+  updateDefaultAddressController,
+} from '../controllers/address.controller';
+import { body, param } from 'express-validator';
 
 const addressRouter = Router();
 
-addressRouter.get('/', validateToken, validateUser, getAddres);
-addressRouter.get('/:id', validateToken, validateUser, getAddressDetail);
-addressRouter.post('/', validateToken, validateUser, createAddress);
-addressRouter.patch('/:id', validateToken, validateUser, updateAddress);
+addressRouter.get('/', validateToken, validateUser, getAddressesController);
+addressRouter.get(
+  '/:id',
+  validateToken,
+  validateUser,
+  param('id').notEmpty().escape(),
+  getAddressDetailController,
+);
+addressRouter.post(
+  '/',
+  validateToken,
+  validateUser,
+  body(['district', 'city', 'province', 'address', 'postalCode'])
+    .notEmpty()
+    .escape(),
+  createAddressController,
+);
+addressRouter.patch(
+  '/:id',
+  validateToken,
+  validateUser,
+  param('id').notEmpty().escape(),
+  body(['district', 'city', 'province', 'address', 'postalCode'])
+    .notEmpty()
+    .escape(),
+  updateAddressController,
+);
 addressRouter.patch(
   '/:id/default',
   validateToken,
   validateUser,
-  updateDefaultAddress,
+  param('id').notEmpty().escape(),
+  updateDefaultAddressController,
 );
-addressRouter.delete('/:id', validateToken, validateUser, deleteAddress);
+addressRouter.delete(
+  '/:id',
+  validateToken,
+  validateUser,
+  param('id').notEmpty().escape(),
+  deleteAddressController,
+);
 
 export { addressRouter };

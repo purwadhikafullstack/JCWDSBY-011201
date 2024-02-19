@@ -1,6 +1,15 @@
 import { Button, Modal, Flowbite } from 'flowbite-react';
+import { customButton } from '../../helpers/flowbiteCustomTheme';
 
-const ModalConfirm = (props) => {
+const ModalConfirm = ({
+    show,
+    onClose,
+    header,
+    message,
+    onConfirm,
+    type,
+    formRef
+}) => {
     const customHeader = {
         modal: {
             header: {
@@ -11,13 +20,13 @@ const ModalConfirm = (props) => {
 
     return <>
         <Flowbite theme={{theme: customHeader}}>
-            <Modal show={props.show} onClose={props.onClose} position={'center'} size={'md'} dismissible popup>
-                <Modal.Header>{props.header}</Modal.Header>
+            <Modal show={show} onClose={onClose} position={'center'} size={'md'} dismissible popup>
+                <Modal.Header>{header}</Modal.Header>
                 <Modal.Body>
-                    <h3>{props.message}</h3>
+                    <h3>{message}</h3>
                     <div className="flex justify-end mt-2 gap-4">
-                        <Button onClick={props.onClose} color='failure'>Cancel</Button>
-                        <Button onClick={props.onConfirm} type={props.type || 'button'} form={props.formRef} color='blue' >Ok</Button>
+                        <Button theme={customButton} onClick={onClose} color='secondary'>Cancel</Button>
+                        <Button theme={customButton} onClick={onConfirm} type={type || 'button'} form={formRef} color='primary' >Ok</Button>
                     </div>
                 </Modal.Body>
             </Modal>

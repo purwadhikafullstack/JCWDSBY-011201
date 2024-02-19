@@ -1,63 +1,98 @@
-import AdminSidebar from "../../components/AdminSidebar";
 import LayoutPageAdmin from "../../components/LayoutPageAdmin";
-import BoxAddItem from "../../components/BoxAddItem";
-import { useNavigate } from "react-router-dom";
+import { IoMdAdd } from "react-icons/io";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import API_CALL from "../../helpers/API";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import { useSelector } from "react-redux";
-import { IMG_URL_PRODUCT } from "../../constants/imageURL";
-import CardManageProduct from "../../components/CardManageProduct";
-import capitalize from "../../helpers/capitalize";
+import LayoutDashboard from "../../components/LayoutDashboard";
+import { Button } from "flowbite-react";
+import { customButton } from "../../helpers/flowbiteCustomTheme";
+import ManageProductTable from "../../components/table/ManageProductTable";
+import ResponsivePagination from "../../components/ResponsivePagination";
+import { onPageChange } from "../../helpers/pagination";
+import ModalConfirm from "../../components/modal/ModalConfirm";
 
 const ManageProduct = () => {
-    const navigate = useNavigate();
-    const [data, setData] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
-    const currentUserRole = useSelector((reducer) => reducer.userReducer.role);
+  const navigate = useNavigate();
+  const [data, setData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const currentUserRole = useSelector((reducer) => reducer.userReducer.role);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [totalPage, setTotalPage] = useState(1);
+  const [productId, setProductId] = useState(null);
+  const [isOpen, setIsOpen] = useState();
+  const queryParam = {
+    limit: 5,
+    page: searchParams.get('page')
+  }
 
-    useEffect(() => {
-        getProduct();
-    }, []);
+  useEffect(() => {
+    getProduct();
+  }, [totalPage]);
 
-    const getProduct = async () => {
-        setIsLoading(true);
-        const res = await API_CALL.get('product');
-        if (res) {
-            setData(res.data.result.data);
-            setIsLoading(false);
-        }
-    };
+  useEffect(() => {
+    getProduct();
+  }, [searchParams.get('page')]);
 
-    const handleDeleteButton = async (id) => {
-        await API_CALL.delete(`product/${id}`);
-        getProduct();
-    };
+  const getProduct = async () => {
+    setIsLoading(true);
+    const res = await API_CALL.get('product', {
+      params: queryParam
+    });
+    if (res) {
+      setData(res.data.result.rows);
+      setTotalPage(res.data.result.totalPage)
+      setIsLoading(false);
+    }
+  };
 
-    return <>
-        <div className='flex flex-row container bg-blue-100 min-w-[360px] h-max min-h-screen'>
-            <AdminSidebar />
-            <LoadingSpinner isLoading={isLoading} size={16} />
-            <LayoutPageAdmin title='Manage Product'>
-                <div className='grid grid-cols-2 gap-5 lg:grid-cols-7'>
-                    {currentUserRole === 'super' && <BoxAddItem title='Add Product' onClick={() => navigate('/manage/product/create')} />}
-                    {data && data.map((item, index) => {
-                        return (
-                            <CardManageProduct
-                                key={index}
-                                image={item.product_images[0].image && IMG_URL_PRODUCT + item.product_images[0].image}
-                                productName={capitalize(item.name)}
-                                productUnit={item.weight + item.unit}
-                                price={item.price}
-                                onEdit={() => navigate(`/manage/product/edit/${item.name}`)}
-                                onDelete={() => handleDeleteButton(item.id)}
-                            />
-                        )
-                    })}
-                </div>
-            </LayoutPageAdmin>
+  const handleDeleteButton = async (id) => {
+    setIsLoading(true);
+    setIsOpen(false);
+    await API_CALL.delete(`product/${id}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('authToken')}`
+      }
+    });
+    setIsLoading(false);
+    searchParams.set('page', 1);
+    setSearchParams(searchParams);
+    getProduct();
+  };
+
+  return <>
+    <LayoutDashboard>
+      <LoadingSpinner isLoading={isLoading} size={16} />
+      <LayoutPageAdmin title='Manage Product'>
+        <div className='my-5 flex flex-col gap-3 justify-between lg:items-center lg:flex-row'>
+          <div>
+            {currentUserRole === 'super' && <Button theme={customButton} size={'responsive'} color='secondary' onClick={() => navigate('/manage/product/create')}> <IoMdAdd className='mr-1 w-4 h-4' /> Add Product</Button>}
+          </div>
         </div>
-    </>
+        <ManageProductTable
+          data={data && data}
+          onEdit={(item) => navigate(`/manage/product/edit/${item}`)}
+          onDelete={(item) => { setProductId(item); setIsOpen(true); }}
+          page={(searchParams.get('page') || 1)}
+        />
+        <div className="mt-3 mb-10">
+          <ResponsivePagination
+            currentPage={Number(searchParams.get('page')) || 1}
+            totalPages={totalPage}
+            onPageChange={(page) => onPageChange(page, setSearchParams)}
+          />
+        </div>
+        <ModalConfirm
+          show={isOpen}
+          header={'Delete Product'}
+          message={'Are you sure you want to delete a product?'}
+          onClose={() => setIsOpen(false)}
+          onConfirm={() => productId && handleDeleteButton(productId)}
+        />
+      </LayoutPageAdmin>
+    </LayoutDashboard>
+  </>
 };
 
 export default ManageProduct;

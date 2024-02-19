@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { Avatar, Button, Label, Modal, TextInput } from 'flowbite-react';
+import { Button, Label, Modal, TextInput } from 'flowbite-react';
 import UserLayout from '../components/UserLayout';
 import { HiChevronLeft, HiOutlineExclamationCircle } from 'react-icons/hi2';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -10,7 +10,7 @@ import { useFormik } from 'formik';
 import API_CALL from '../helpers/API';
 import customToast from '../utils/toast';
 import { logout } from '../redux/slice/userSlice';
-import InputPassword from '../components/InputPassword';
+import CosmoTextLogo from '../components/CosmoTextLogo';
 
 const UserChangeEmail = (props) => {
   const globalUser = useSelector((reducer) => reducer.userReducer);
@@ -66,9 +66,9 @@ const UserChangeEmail = (props) => {
   return (
     <UserLayout>
       <div className="flex flex-col h-full w-full">
-        <div className="header flex flex-col pt-8 px-4 pb-4 bg-blue-50 gap-2">
+        <div className="header flex flex-col pt-8 px-4 lg:px-32 pb-4 bg-blue-50 gap-2">
           <div className="flex">
-            <span className="text-blue-800 font-extrabold text-3xl">Cosmo</span>
+            <CosmoTextLogo size={'text-4xl'} />
           </div>
           <div
             className="flex items-center gap-2"
@@ -84,7 +84,7 @@ const UserChangeEmail = (props) => {
             </span>
           </div>
         </div>
-        <div className="flex flex-col items-center py-8 px-4 gap-4">
+        <div className="flex flex-col items-center py-8 px-4 lg:px-32 gap-4">
           <div className="w-full">
             <div className="mb-2 block">
               <Label htmlFor="newEmail" value="Email" />

@@ -3,29 +3,12 @@ import { findAllStores, findOneStore } from '../controllers/store.controller';
 import cities from '../models/cities.model';
 import districts from '../models/districts.model';
 import provinces from '../models/provinces.model';
+import { findAllStoreService } from '../services/store/store.service';
 import calculateDistance from './calculateDistance';
 
 const findNearestStore = async (lat, lon) => {
   try {
-    const storeData = await findAllStores({
-      attributes: {
-        exclude: [
-          'id',
-          'userId',
-          'createdAt',
-          'updatedAt',
-          'deletedAt',
-          'provinceId',
-          'cityId',
-          'districtId',
-        ],
-      },
-      include: [
-        { model: districts, attributes: ['districtName'] },
-        { model: cities, attributes: ['cityName'] },
-        { model: provinces, attributes: ['provinceName'] },
-      ],
-    });
+    const storeData = await findAllStoreService();
     const nearest = { distance: null, data: {} };
     storeData.forEach((value, idx) => {
       const distance = calculateDistance(

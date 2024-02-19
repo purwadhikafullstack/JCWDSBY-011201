@@ -1,4 +1,5 @@
 import { HiChevronLeft } from 'react-icons/hi2';
+import cosmoLogo from '../assets/cosmo-logo.svg';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -7,6 +8,8 @@ import API_CALL from '../helpers/API';
 import customToast from '../utils/toast';
 import ButtonWithLoading from '../components/ButtonWithLoading';
 import { useSelector } from 'react-redux';
+import Container from '../components/Container';
+import CosmoTextLogo from '../components/CosmoTextLogo';
 
 const Forgot = () => {
   const [isLoading, setIsloading] = useState(false);
@@ -30,7 +33,6 @@ const Forgot = () => {
         navigate('/login');
       }
     } catch (error) {
-      console.log(error);
       customToast('error', error.response.data.message);
     }
     setIsloading(false);
@@ -51,11 +53,15 @@ const Forgot = () => {
   });
 
   return (
-    <div className="container lg:w-[1024px] m-auto h-screen">
+    <Container>
       <div className="flex w-full h-full">
         <div className="header flex flex-col w-full h-full">
-          <div className="flex w-full h-full justify-center items-center">
-            <div className="flex flex-col w-full md:w-[50%] p-8">
+          <div className="flex w-full h-full justify-center items-center py-6">
+            <div className="flex flex-col w-full md:w-[500px] p-6 lg:p-8 border rounded-lg overflow-hidden shadow-lg">
+              <div className="flex items-center justify-center gap-2 py-3 drop-shadow-md">
+                <img className="w-16 h-16" src={cosmoLogo} alt="" />
+                <CosmoTextLogo size={'text-6xl'} />
+              </div>
               <div
                 className="back flex items-center text-blue-800 font-bold gap-2 mb-2 cursor-pointer"
                 onClick={() => {
@@ -105,7 +111,7 @@ const Forgot = () => {
           </div>
         </div>
       </div>
-    </div>
+    </Container>
   );
 };
 

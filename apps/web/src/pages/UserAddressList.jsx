@@ -1,11 +1,13 @@
-import { Avatar, Button, Label, Modal, TextInput } from 'flowbite-react';
 import UserLayout from '../components/UserLayout';
-import { HiChevronLeft, HiOutlineExclamationCircle } from 'react-icons/hi2';
+import { HiChevronLeft } from 'react-icons/hi2';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import API_CALL from '../helpers/API';
 import UserAddressListCard from '../components/UserAddressListCard';
 import customToast from '../utils/toast';
+import ButtonWithLoading from '../components/ButtonWithLoading';
+import CosmoTextLogo from '../components/CosmoTextLogo';
+import ActionAlertModal from '../components/modal/ActionAlertModal';
 
 const UserAddressList = (props) => {
   const location = useLocation();
@@ -13,7 +15,9 @@ const UserAddressList = (props) => {
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+  const [openModalSetDefault, setOpenModalSetDefault] = useState(false);
   const [addressList, setAddressList] = useState(null);
+  const [updateDefaultId, setUpdateDefaultId] = useState(null);
   const [deleteId, setDeleteId] = useState(null);
   const token = localStorage.getItem('authToken');
 
@@ -28,7 +32,7 @@ const UserAddressList = (props) => {
         setAddressList(result.data.result);
       }
     } catch (error) {
-      console.log(error);
+      customToast('error', 'Failed to get address data');
     }
     setIsLoadingData(false);
   };
@@ -46,7 +50,6 @@ const UserAddressList = (props) => {
         getAddressList();
       }
     } catch (error) {
-      console.log(error);
       customToast('error', 'Failed to delete address');
     }
     setDeleteId(null);
@@ -56,6 +59,7 @@ const UserAddressList = (props) => {
 
   const handleDefault = async (id) => {
     try {
+      setIsLoading(true);
       const result = await API_CALL.patch(
         '/address/' + id + '/default',
         {
@@ -68,8 +72,11 @@ const UserAddressList = (props) => {
         getAddressList();
       }
     } catch (error) {
-      console.log(error);
+      customToast('error', 'Failed to change default address');
     }
+    setUpdateDefaultId(null);
+    setIsLoading(false);
+    setOpenModalSetDefault(false);
   };
 
   useEffect(() => {
@@ -79,9 +86,9 @@ const UserAddressList = (props) => {
   return (
     <UserLayout>
       <div className="flex flex-col h-full w-full">
-        <div className="header flex flex-col pt-8 px-4 pb-4 bg-blue-50 gap-2">
+        <div className="header flex flex-col pt-8 px-4 lg:px-32 pb-4 bg-blue-50 gap-2">
           <div className="flex">
-            <span className="text-blue-800 font-extrabold text-3xl">Cosmo</span>
+            <CosmoTextLogo size={'text-4xl'} />
           </div>
           <div
             className="flex items-center gap-2"
@@ -97,7 +104,7 @@ const UserAddressList = (props) => {
             </span>
           </div>
         </div>
-        <div className="flex flex-col items-center py-8 px-4 gap-4 overflow-auto">
+        <div className="flex flex-col items-center py-8 lg:px-32 px-4 gap-4 overflow-auto">
           {isLoadingData && (
             <div class="flex items-center w-full justify-between animate-pulse border rounded-xl p-4">
               <div>
@@ -122,7 +129,8 @@ const UserAddressList = (props) => {
                 postal={value.postalCode}
                 isDefault={value.isDefault}
                 onDefault={() => {
-                  handleDefault(value.UUID);
+                  setUpdateDefaultId(value.UUID);
+                  setOpenModalSetDefault(true);
                 }}
                 onEdit={() => {
                   navigate(`/profile/address/${value.UUID}`, {
@@ -135,48 +143,41 @@ const UserAddressList = (props) => {
                 }}
               />
             ))}
-          <Button
-            fullSized={true}
-            color="blue"
-            onClick={() => {
+          <ButtonWithLoading
+            func={() => {
               navigate('/profile/address/create', {
                 state: { previousPath: location.pathname },
               });
             }}
           >
             Add new address
-          </Button>
-          <Modal
-            show={openModal}
-            size="md"
+          </ButtonWithLoading>
+          <ActionAlertModal
+            openModal={openModal}
             onClose={() => {
               setOpenModal(false);
               setDeleteId(null);
             }}
-            popup
-          >
-            <Modal.Header />
-            <Modal.Body>
-              <div className="text-center">
-                <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
-                <h3 className="mb-5 text-sm font-normal text-gray-500 dark:text-gray-400">
-                  Are you sure you want to delete the address?
-                </h3>
-                <div className="flex justify-center gap-4">
-                  <Button
-                    className="w-full"
-                    isProcessing={isLoading}
-                    color="blue"
-                    onClick={() => {
-                      handleDelete(deleteId);
-                    }}
-                  >
-                    {"Yes, I'm sure"}
-                  </Button>
-                </div>
-              </div>
-            </Modal.Body>
-          </Modal>
+            message={'Are you sure you want to delete the address?'}
+            color={'failure'}
+            isLoading={isLoading}
+            onActionModal={() => {
+              handleDelete(deleteId);
+            }}
+          />
+          <ActionAlertModal
+            openModal={openModalSetDefault}
+            onClose={() => {
+              setOpenModalSetDefault(false);
+              setUpdateDefaultId(null);
+            }}
+            message={'Are you sure you want to change default address?'}
+            color={'blue'}
+            isLoading={isLoading}
+            onActionModal={() => {
+              handleDefault(updateDefaultId);
+            }}
+          />
         </div>
       </div>
     </UserLayout>

@@ -3,7 +3,6 @@ import fs from 'fs';
 
 const uploader = (dir, maxSize) => {
     const defaultdir = './src/assets';
-
     const storage = multer.diskStorage({
         destination: (req, file, cb) => {
             const path = dir ? defaultdir + dir : defaultdir;
@@ -13,7 +12,6 @@ const uploader = (dir, maxSize) => {
             } else {
                 fs.mkdirSync(path, (err) => {
                     if (err) {
-                        // console.log("error creating directory", err);
                         cb(err);
                     } else {
                         cb(null, path);

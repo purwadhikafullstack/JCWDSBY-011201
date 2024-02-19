@@ -15,6 +15,9 @@ import { utilsRouter } from './routers/utils.router';
 import { eventRouter } from './routers/event.router';
 import { adminRouter } from './routers/admin.router';
 import { inventoryRouter } from './routers/inventory.router';
+import { transactionRouter } from './routers/transactions.router';
+import { reportRouter } from './routers/report.router';
+import { discountRouter } from './routers/discount.router';
 
 const router = Router();
 
@@ -38,12 +41,15 @@ router.use('/event', eventRouter);
 
 //Fahmi Ardiansyah
 router.use('/category', categoryRouter);
-router.use('/product', productRouter);
 router.use('/product/image', productImageRouter);
+router.use('/product', productRouter);
 router.use('/admin', adminRouter);
-router.use('/inventory', inventoryRouter)
+router.use('/inventory', inventoryRouter);
+router.use('/report', reportRouter);
+router.use('/discount', discountRouter);
 
 //Afra
 router.use('/cart', cartRouter);
+router.use('/transaction', transactionRouter);
 
 export default router;

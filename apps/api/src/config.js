@@ -26,8 +26,9 @@ export const OPENCAGE_API_URL = process.env.OPENCAGE_API_URL;
 export const OPENCAGE_API_KEY = process.env.OPENCAGE_API_KEY;
 export const BITESHIP_API_URL = process.env.BITESHIP_API_URL;
 export const BITESHIP_API_KEY = process.env.BITESHIP_API_KEY;
-
 export const MAX_DISTANCE = process.env.MAX_DISTANCE;
 
 //Afra Hanifi
 export const PRODUCT_URL = process.env.VITE_PRODUCT_URL;
+export const MIDTRANS_KEY = process.env.MIDTRANS_SERVER_KEY;
+export const MIDTRANS_FINISH_URL = process.env.MIDTRANS_FINISH_URL

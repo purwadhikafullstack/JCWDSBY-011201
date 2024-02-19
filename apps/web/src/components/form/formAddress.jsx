@@ -1,4 +1,6 @@
 import { Button, Label, Select, TextInput } from 'flowbite-react';
+import { useState } from 'react';
+import ActionAlertModal from '../modal/ActionAlertModal';
 
 const FormAddress = ({
   province,
@@ -17,8 +19,9 @@ const FormAddress = ({
   onSubmit,
   isLoading,
 }) => {
+  const [confirmModal, setConfirmModal] = useState(false);
   return (
-    <div className="flex flex-col items-center py-8 px-4 gap-4">
+    <div className="flex flex-col w-full items-center py-8 px-4 gap-4">
       <div className="flex flex-col gap-2 w-full">
         <Label htmlFor="province" value="Province *" />
         <Select onChange={onProvince}>
@@ -89,12 +92,25 @@ const FormAddress = ({
         <Button
           color="blue"
           fullSized
-          onClick={onSubmit}
+          onClick={() => {
+            setConfirmModal(true);
+          }}
           isProcessing={isLoading}
         >
           Save Address
         </Button>
       </div>
+      <ActionAlertModal
+        openModal={confirmModal}
+        onClose={() => setConfirmModal(false)}
+        message={'Are you sure to change address data?'}
+        color={'blue'}
+        isLoading={isLoading}
+        onActionModal={() => {
+          onSubmit();
+          setConfirmModal(false);
+        }}
+      />
     </div>
   );
 };

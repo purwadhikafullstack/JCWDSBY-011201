@@ -38,7 +38,8 @@ const globalAPIErrorHandler = (app) => {
   // error
   app.use((err, req, res, next) => {
     if (req.path.includes('/api/')) {
-      console.error('Error : ', err.stack || err.message);
+      console.error('Error : ', err.message);
+      console.error(err.stack || err.message);
       if (err.code === 'LIMIT_FILE_SIZE') {
         res.status(413).send('File size exceeds the limit!');
       }
@@ -68,6 +69,7 @@ const main = () => {
   app.use('/category', express.static(__dirname + '/assets/category'));
   app.use('/product', express.static(__dirname + '/assets/product'));
   app.use('/avatar', express.static(__dirname + '/assets/avatar'));
+  app.use('/proof', express.static(__dirname + '/assets/proof'));
 
   globalAPIErrorHandler(app);
   serveWebProjectBuildResult(app);

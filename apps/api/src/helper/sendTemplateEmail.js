@@ -15,13 +15,11 @@ export const sendSignUpEmailVerification = async (to, link) => {
       subject: 'Verify Account',
       sender: 'COSMO',
       html: mustache.render(templateHtml, {
-        productImage: APP_URL + '/cosmo.png',
+        productImage: APP_URL + '/cosmo.svg',
         verifyLink: link,
       }),
     });
-  } catch (error) {
-    console.log(error);
-  }
+  } catch (error) {}
 };
 
 export const sendSuccessResetPasswordEmail = async (to, link) => {
@@ -35,13 +33,11 @@ export const sendSuccessResetPasswordEmail = async (to, link) => {
       subject: 'Reset Password Success',
       sender: 'COSMO',
       html: mustache.render(templateHtml, {
-        productImage: APP_URL + '/cosmo.png',
+        productImage: APP_URL + '/cosmo.svg',
         loginLink: link,
       }),
     });
-  } catch (error) {
-    console.log(error);
-  }
+  } catch (error) {}
 };
 
 export const sendResetPasswordEmail = async (to, link) => {
@@ -55,13 +51,11 @@ export const sendResetPasswordEmail = async (to, link) => {
       subject: 'Reset Password',
       sender: 'COSMO',
       html: mustache.render(templateHtml, {
-        productImage: APP_URL + '/cosmo.png',
+        productImage: APP_URL + '/cosmo.svg',
         resetLink: link,
       }),
     });
-  } catch (error) {
-    console.log(error);
-  }
+  } catch (error) {}
 };
 
 export const sendWelcomeEmail = async (to, link, name) => {
@@ -75,12 +69,10 @@ export const sendWelcomeEmail = async (to, link, name) => {
       subject: 'Welcome to COSMO',
       sender: 'COSMO',
       html: mustache.render(templateHtml, {
-        productImage: APP_URL + '/cosmo.png',
+        productImage: APP_URL + '/cosmo.svg',
         loginLink: link,
         name: name,
       }),
     });
-  } catch (error) {
-    console.log(error);
-  }
+  } catch (error) {}
 };

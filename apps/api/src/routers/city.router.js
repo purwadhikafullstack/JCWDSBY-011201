@@ -1,29 +1,13 @@
 import { Router } from 'express';
-import { findAllCity } from '../controllers/city.controller';
+import { getAllCityController } from '../controllers/city.controller';
+import { query } from 'express-validator';
 
 const cityRouter = Router();
 
-cityRouter.get('/', async (req, res, next) => {
-  try {
-    const filter = {};
-    if (req.query?.provinceId) {
-      filter.provinceId = req.query.provinceId;
-    }
-    const result = await findAllCity(filter);
-    return res.status(200).json({
-      rc: 200,
-      success: true,
-      message: 'Success get city data',
-      result: result,
-    });
-  } catch (error) {
-    return res.status(error.rc || 500).json({
-      rc: error.rc || 500,
-      success: false,
-      message: error.message,
-      result: null,
-    });
-  }
-});
+cityRouter.get(
+  '/',
+  query('provinceId').optional().escape(),
+  getAllCityController,
+);
 
 export { cityRouter };

@@ -1,12 +1,15 @@
 import { Navigate, useNavigate } from 'react-router-dom';
 import API_CALL from '../helpers/API';
-import { useEffect, useState } from 'react';
+import cosmoLogo from '../assets/cosmo-logo.svg';
+import { useState } from 'react';
 import customToast from '../utils/toast';
 import ButtonWithLoading from '../components/ButtonWithLoading';
 import SignUpWithGoogle from '../components/SignUpWithGoogle';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import { useSelector } from 'react-redux';
+import Container from '../components/Container';
+import CosmoTextLogo from '../components/CosmoTextLogo';
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -30,8 +33,11 @@ const SignUp = () => {
         navigate('/login', { replace: true });
       }
     } catch (error) {
-      console.log(error);
-      customToast('error', error.response.data.message);
+      if (error.response.status !== 500) {
+        customToast('error', error.response.data.message);
+      } else {
+        customToast('error', 'Failed to Signup');
+      }
     }
     setIsLoading(false);
   };
@@ -58,11 +64,15 @@ const SignUp = () => {
   });
 
   return (
-    <div className="container lg:w-[1024px] m-auto h-screen">
-      <div className="flex w-full h-full">
+    <Container>
+      <div className="flex w-full h-full max-sm:p-2">
         <div className="header flex flex-col w-full h-full">
-          <div className="flex w-full h-full justify-center items-center">
-            <div className="flex flex-col w-full md:w-[50%] p-8">
+          <div className="flex w-full h-full justify-center items-center py-6">
+            <div className="flex flex-col w-full md:w-[500px] p-6 lg:p-8 border rounded-lg overflow-hidden shadow-lg">
+              <div className="flex items-center justify-center gap-2 py-3 drop-shadow-md">
+                <img className="w-16 h-16" src={cosmoLogo} alt="" />
+                <CosmoTextLogo size={'text-6xl'} />
+              </div>
               <div className="title mb-2">
                 <span className="text-3xl font-bold">Register to Cosmo</span>
               </div>
@@ -145,7 +155,7 @@ const SignUp = () => {
           </div>
         </div>
       </div>
-    </div>
+    </Container>
   );
 };
 

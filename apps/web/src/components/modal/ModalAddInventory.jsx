@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux'
 import API_CALL from '../../helpers/API';
 import capitalize from '../../helpers/capitalize';
+import { customButton } from "../../helpers/flowbiteCustomTheme";
 
 const ModalAddInventory = ({
     isOpen,
@@ -26,7 +27,6 @@ const ModalAddInventory = ({
     const getData = async () => {
         try {
             const resProduct = await API_CALL.get('product');
-
             if (currentUser.role === 'super') {
                 const resStore = await API_CALL.get('store', {
                     headers: {
@@ -34,14 +34,14 @@ const ModalAddInventory = ({
                     },
                 });
 
-                setData({ ...data, productId: resProduct.data.result.data[0].id, storeId: resStore.data.result.data[0].id });
-                setStoreData(resStore.data.result.raw);
+                setData({ ...data, productId: resProduct.data.result.rows[0].id, storeId: resStore.data.result.data[0].id });
+                setStoreData(resStore.data.result.data);
             }
             if (currentUser.role === 'admin') {
-                setData({ ...data, productId: resProduct.data.result.data[0].id });
+                setData({ ...data, productId: resProduct.data.result.rows[0].id });
             }
 
-            setProductData(resProduct.data.result.data);
+            setProductData(resProduct.data.result.rows);
         } catch (error) {
             console.error(error);
         }
@@ -100,8 +100,8 @@ const ModalAddInventory = ({
                 </div>
             </ModalBody>
             <ModalFooter className='justify-end'>
-                <Button color='blue' onClick={() => onAdd(data)}>Add</Button>
-                <Button color='blue' onClick={handleOnClose}>Cancel</Button>
+                <Button theme={customButton} color='primary' onClick={() => onAdd(data)}>Add</Button>
+                <Button theme={customButton} color='secondary' onClick={handleOnClose}>Cancel</Button>
             </ModalFooter>
         </Modal>
     </>

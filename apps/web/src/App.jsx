@@ -11,7 +11,7 @@ import LoginAdmin from './pages/LoginAdmin';
 import Landing from './pages/Landing';
 import { gapi } from 'gapi-script';
 import { useEffect, useState } from 'react';
-import AdminDashboard from './pages/AdminDashboard';
+import AdminDashboard from './pages/admin/AdminDashboard';
 import { useDispatch, useSelector } from 'react-redux';
 import NotFound from './pages/NotFound';
 import UserProfile from './pages/UserProfile';
@@ -32,7 +32,7 @@ import Inventory from './pages/admin/Inventory';
 import ManageAdmin from './pages/admin/ManageAdmin';
 import RegisteredUser from './pages/admin/RegisteredUser';
 import ManageStore from './pages/admin/ManageStore';
-import CheckAuth from './helpers/CheckAuth';
+import CheckAuth from './helpers/checkAuth';
 import { setStore } from './redux/slice/storeSlice';
 import ManageStoreAdd from './pages/admin/ManageStoreAdd';
 import ManageStoreUpdate from './pages/admin/ManageStoreUpdate';
@@ -44,7 +44,18 @@ import VerifyEmail from './pages/VerifyEmail';
 import TesCheckOut from './pages/TesCheckOut';
 
 import { fetchCartItems } from './redux/slice/cartSlice';
+import Checkout from './pages/Checkout';
+import UserOrders from './pages/UserOrders';
+import UserOrderDetails from './pages/UserOrderDetails';
+import AdminOrders from './pages/AdminOrders';
+import StockReport from './pages/admin/StockReport';
+import ManageDiscount from './pages/admin/ManageDiscount';
+import ManageDiscountAdd from './pages/admin/ManageDiscountAdd';
+import ManageDiscountEdit from './pages/admin/ManageDiscountEdit';
 import Cart from './pages/Cart';
+import SalesReport from './pages/admin/SalesReport';
+import CourierArrival from './pages/CourierArrival';
+import CheckoutTransfer from './pages/CheckoutTransfer';
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 function App() {
@@ -56,7 +67,7 @@ function App() {
   const storeUUID = useSelector((state) => state.storeReducer.storeId);
 
   useEffect(() => {
-    if (globalUser) {
+    if (globalUser && globalUser?.role === 'user') {
       dispatch(fetchCartItems(storeUUID));
     }
   }, [storeUUID]);
@@ -80,12 +91,12 @@ function App() {
           if (!authResult) {
             throw 'Authentication failed';
           }
+          console.log(authResult);
           dispatch(login(authResult));
           localStorage.setItem('authToken', authResult.token);
         }
         setIsLoading(false);
       } catch (error) {
-        console.log(error);
         dispatch(logout());
         localStorage.removeItem('authToken');
         setIsLoading(false);
@@ -104,17 +115,13 @@ function App() {
               loc.coords.longitude,
             );
             dispatch(setStore(result.payload));
-          } catch (error) {
-            console.log(error);
-          }
+          } catch (error) {}
         },
         async (error) => {
           try {
             const result = await getNearestStore();
             dispatch(setStore(result.payload));
-          } catch (err) {
-            console.log(err);
-          }
+          } catch (err) {}
         },
       );
     }
@@ -202,7 +209,6 @@ function App() {
         />
         <Route path="/category" element={<UserFindCategory />} />
         <Route path="/product/:name" element={<UserProductDetail />} />
-
         {/* Afra */}
         <Route
           path="/cart"
@@ -212,6 +218,55 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route
+          path="/checkout"
+          element={
+            <PrivateRoute role={'user'} navigate={'/login'}>
+              <Checkout />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/orders"
+          element={
+            <PrivateRoute role={'user'} navigate={'/login'}>
+              <UserOrders />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/order-details"
+          element={
+            <PrivateRoute role={'user'} navigate={'/login'}>
+              <UserOrderDetails />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/checkout-transfer"
+          element={
+            <PrivateRoute role={'user'} navigate={'/login'}>
+              <CheckoutTransfer />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/orders"
+          element={
+            <PrivateRoute role={['admin', 'super']}>
+              <AdminOrders />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/order-details"
+          element={
+            <PrivateRoute role={['admin', 'super']}>
+              <UserOrderDetails />
+            </PrivateRoute>
+          }
+        />
+        <Route path="/courier/arriv" element={<CourierArrival />} />
         {/* Admin Side */}
         {/* Wahyu Widiantoro */}
         <Route path="/manage/login" element={<LoginAdmin />} />
@@ -333,6 +388,46 @@ function App() {
           element={
             <PrivateRoute role={['admin', 'super']}>
               <ManageStoreUpdate />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/report/stock"
+          element={
+            <PrivateRoute role={['admin', 'super']}>
+              <StockReport />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/report/sales"
+          element={
+            <PrivateRoute role={['admin', 'super']}>
+              <SalesReport />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/discount"
+          element={
+            <PrivateRoute role={['admin', 'super']}>
+              <ManageDiscount />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/discount/create"
+          element={
+            <PrivateRoute role={['admin', 'super']}>
+              <ManageDiscountAdd />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manage/discount/edit/:UUID"
+          element={
+            <PrivateRoute role={['admin', 'super']}>
+              <ManageDiscountEdit />
             </PrivateRoute>
           }
         />
