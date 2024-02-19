@@ -9,16 +9,20 @@ import cosmoLogo from '../assets/cosmo-logo.svg';
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
 import { IMG_URL_PROOF } from '../constants/imageURL';
+import { useCountdown } from '../hooks/useCountdown';
+import { CountDown } from '../components/checkout/CountDown';
+
 const CheckoutTransfer = () => {
   const [order, setOrder] = useState(null);
   const [proofUpload, setProofUpload] = useState(null);
   const [uploaded, setUploaded] = useState(false);
   const [openModal, setOpenModal] = useState(false);
-  const [openModalDetail,setOpenModalDetail] = useState(false)
+  const [openModalDetail, setOpenModalDetail] = useState(false);
   const inputRef = useRef(null);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const orderId = searchParams.get('order_id');
+  const [days, hours, minutes, seconds] = useCountdown(order?.createdAt);
   const getOrderDetails = async (orderId) => {
     const response = await API_CALL.get(`/transaction/details/${orderId}`, {
       headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` },
@@ -151,21 +155,26 @@ const CheckoutTransfer = () => {
                   src={`${IMG_URL_PROOF}${order?.img}`}
                 />
               </Zoom>
-              <p className='capitalize text-green-500 font-bold self-center'>bukti transfer telah diunggah</p>
+              <p className="capitalize text-green-500 font-bold self-center">
+                bukti transfer telah diunggah
+              </p>
             </Card>
           )}
           {!order?.img && order?.paymentMethod === 'transfer' && (
             <Card className="mt-2 shadow-md">
               <p className="font-semibold capitalize">upload bukti transfer</p>
               <p className="font-semibold capitalize text-sm">Transfer ke:</p>
-              <div className='flex justify-between text-sm'>
+              <div className="flex justify-between text-sm">
                 <p>Nama</p>
                 <p>Cosmo</p>
               </div>
-              <div className='flex justify-between text-sm'>
+              <div className="flex justify-between text-sm">
                 <p>Nomor Rekening</p>
                 <p>(BCA) 5220304321</p>
               </div>
+              {minutes ? (
+                <CountDown hours={hours} minutes={minutes} seconds={seconds} />
+              ) : null}
               {proofUpload && (
                 <Zoom>
                   <img
