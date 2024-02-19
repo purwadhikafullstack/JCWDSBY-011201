@@ -1,7 +1,8 @@
 import { createCategoryService, deleteCategoryService, getCategoryDetailService, getCategoryService, updateCategoryService } from "../services/category/category.service";
 import resTemplate from "../helper/resTemplate";
+import path from "path"
 
-const dir = './src/assets/category/';
+const dir = path.join(__dirname,'../../category/')
 
 export const getCategory = async (req, res, next) => {
   try {
