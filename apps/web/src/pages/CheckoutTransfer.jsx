@@ -14,6 +14,7 @@ const CheckoutTransfer = () => {
   const [proofUpload, setProofUpload] = useState(null);
   const [uploaded, setUploaded] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+  const [openModalDetail,setOpenModalDetail] = useState(false)
   const inputRef = useRef(null);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -150,6 +151,7 @@ const CheckoutTransfer = () => {
                   src={`${IMG_URL_PROOF}${order?.img}`}
                 />
               </Zoom>
+              <p className='capitalize text-green-500 font-bold self-center'>bukti transfer telah diunggah</p>
             </Card>
           )}
           {!order?.img && order?.paymentMethod === 'transfer' && (
@@ -212,6 +214,7 @@ const CheckoutTransfer = () => {
         openModal={openModal}
         setOpenModal={setOpenModal}
         order={order}
+        setOpenModalDetail={setOpenModalDetail}
       />
     </div>
   );

@@ -2,7 +2,9 @@ import { Button, Modal } from 'flowbite-react';
 import React from 'react';
 import { HiOutlineExclamationCircle } from 'react-icons/hi2';
 import { updateTransactionStatus } from '../helpers/checkout/updateTransaction';
+import { useNavigate } from 'react-router-dom';
 export function UserCancelOrderModal({ openModal, setOpenModal, order,setOpenModalDetail }) {
+  const navigate = useNavigate()
   return (
     <Modal show={openModal} size="md" onClose={() => setOpenModal(false)} popup>
       <Modal.Header />
@@ -19,6 +21,7 @@ export function UserCancelOrderModal({ openModal, setOpenModal, order,setOpenMod
                 updateTransactionStatus(order?.invoice,'canceled')
                 setOpenModal(false);
                 setOpenModalDetail(false)
+                navigate('/orders')
               }}
             >
               {"Yes, I'm sure"}
