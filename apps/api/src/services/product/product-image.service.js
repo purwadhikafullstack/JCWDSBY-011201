@@ -8,9 +8,10 @@ export const createProductImageService = async (productId, image) => {
       productId,
       image: image.filename
     }));
-
+    console.log('BulkImage>>>>', bulkImage);
     return await productImage.bulkCreate(bulkImage);
   } catch (error) {
+    console.log('Catch Error Product Image >>>>', error);
     throw error;
   }
 };
