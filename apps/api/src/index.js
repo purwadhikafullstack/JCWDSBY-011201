@@ -64,12 +64,12 @@ const main = () => {
   const app = express();
   app.use(cors());
   app.use(json());
-  app.use('/api', router);
   app.use('/event', express.static(__dirname + '/assets/event'));
   app.use('/category', express.static(__dirname + '/assets/category'));
   app.use('/product', express.static(__dirname + '/assets/product'));
   app.use('/avatar', express.static(__dirname + '/assets/avatar'));
   app.use('/proof', express.static(__dirname + '/assets/proof'));
+  app.use('/api', router);
 
   globalAPIErrorHandler(app);
   serveWebProjectBuildResult(app);
