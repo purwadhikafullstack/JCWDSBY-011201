@@ -3,9 +3,9 @@ import { HiOutlineTrash, HiPencilSquare, HiMiniEllipsisHorizontal} from 'react-i
 import { customTable } from "../../helpers/flowbiteCustomTheme";
 
 const ManageAdminTable = ({data, page, onEdit, onDelete, onChangePassword}) => {
-  return <div className="grid overflow-x-auto">
+  return <div className="grid">
   {data ? !data.length ? <span>Data not available</span> :
-    <Table theme={customTable}>
+    <Table theme={customTable} >
       <TableHead>
         <TableHeadCell >#</TableHeadCell>
         <TableHeadCell >Name</TableHeadCell>

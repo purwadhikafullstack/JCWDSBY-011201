@@ -155,6 +155,15 @@ const CheckoutTransfer = () => {
           {!order?.img && order?.paymentMethod === 'transfer' && (
             <Card className="mt-2 shadow-md">
               <p className="font-semibold capitalize">upload bukti transfer</p>
+              <p className="font-semibold capitalize text-sm">Transfer ke:</p>
+              <div className='flex justify-between text-sm'>
+                <p>Nama</p>
+                <p>Cosmo</p>
+              </div>
+              <div className='flex justify-between text-sm'>
+                <p>Nomor Rekening</p>
+                <p>(BCA) 5220304321</p>
+              </div>
               {proofUpload && (
                 <Zoom>
                   <img
