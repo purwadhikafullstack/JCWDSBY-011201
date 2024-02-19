@@ -24,7 +24,7 @@ export const updateOrderStatusForAdminTransferController = async (
   next,
 ) => {
   await DB.initialize();
-  const dir = './src/assets/proof/';
+  const dir = path.join(__dirname,'./src/assets/proof')
   try {
     const result = await getOneTransaction(req);
     if (req.body.status === 'rejected') {
@@ -57,7 +57,7 @@ export const updateOrderStatusForAdminTransferController = async (
 };
 export const cancelOrdersForAdminController = async (req, res, next) => {
   await DB.initialize();
-  const dir = './src/assets/proof/';
+  const dir = path.join(__dirname,'./src/assets/proof')
   try {
     const result = await getOneTransaction(req);
     if (!result) {
