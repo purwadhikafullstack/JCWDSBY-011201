@@ -1,7 +1,23 @@
 import { Badge } from 'flowbite-react';
+import { useState, useEffect } from 'react';
 import { HiMapPin, HiOutlineMapPin } from 'react-icons/hi2';
+import API_CALL from '../helpers/API';
 
 const NearestSTore = ({ storeData }) => {
+  const [storeList, setStoreList] = useState(null);
+  const getStoreList = async () => {
+    try {
+      const result = await API_CALL.get('/utils/store');
+      setStoreList(result.data.result);
+    } catch (error) {}
+  };
+
+  console.log(storeList);
+
+  useEffect(() => {
+    getStoreList();
+  }, []);
+
   if (!storeData.storeName) {
     return (
       <div className="flex max-sm:flex-col gap-1 md:items-baseline">

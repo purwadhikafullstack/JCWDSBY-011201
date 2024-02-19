@@ -1,4 +1,7 @@
-import { getStoreByUUIDService } from '../services/store/store.service';
+import {
+  findAllStoreService,
+  getStoreByUUIDService,
+} from '../services/store/store.service';
 import resTemplate from '../helper/resTemplate';
 import createStore from './store/createStore';
 import deleteStore from './store/deleteStore';
@@ -28,5 +31,24 @@ export const getStoreByUUID = async (req, res, next) => {
       .json(resTemplate(200, true, 'Update discount success!', result));
   } catch (error) {
     next(error);
+  }
+};
+
+export const getStoresLandingController = async (req, res, next) => {
+  try {
+    const result = await findAllStoreService();
+    const finalResult = result.map((val) => {
+      const value = val.dataValues;
+      delete value.id;
+      delete value.userId;
+      delete value.user;
+      return { ...value };
+    });
+    return res
+      .status(200)
+      .json(resTemplate(200, true, 'Get store list success', finalResult));
+  } catch (error) {
+    console.log(error);
+    next();
   }
 };
