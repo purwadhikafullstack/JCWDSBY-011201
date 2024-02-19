@@ -3,8 +3,13 @@ import React from 'react';
 import { HiOutlineExclamationCircle } from 'react-icons/hi2';
 import { updateTransactionStatus } from '../helpers/checkout/updateTransaction';
 import { useNavigate } from 'react-router-dom';
-export function UserCancelOrderModal({ openModal, setOpenModal, order,setOpenModalDetail }) {
-  const navigate = useNavigate()
+export function UserCancelOrderModal({
+  openModal,
+  setOpenModal,
+  order,
+  setOpenModalDetail,
+}) {
+  const navigate = useNavigate();
   return (
     <Modal show={openModal} size="md" onClose={() => setOpenModal(false)} popup>
       <Modal.Header />
@@ -18,10 +23,12 @@ export function UserCancelOrderModal({ openModal, setOpenModal, order,setOpenMod
             <Button
               color="failure"
               onClick={() => {
-                updateTransactionStatus(order?.invoice,'canceled')
+                updateTransactionStatus(order?.invoice, 'canceled');
                 setOpenModal(false);
-                setOpenModalDetail(false)
-                navigate('/orders')
+                setOpenModalDetail(false);
+                setTimeout(() => {
+                  navigate('/orders');
+                }, 500);
               }}
             >
               {"Yes, I'm sure"}

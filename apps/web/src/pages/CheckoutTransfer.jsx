@@ -1,4 +1,4 @@
-import { Button, Card, Modal } from 'flowbite-react';
+import { Card } from 'flowbite-react';
 import React, { useEffect, useRef, useState } from 'react';
 import { HiChevronLeft } from 'react-icons/hi2';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -6,11 +6,10 @@ import API_CALL from '../helpers/API';
 import { UserCancelOrderModal } from '../components/UserCancelOrderModal';
 import CosmoTextLogo from '../components/CosmoTextLogo';
 import cosmoLogo from '../assets/cosmo-logo.svg';
-import Zoom from 'react-medium-image-zoom';
-import 'react-medium-image-zoom/dist/styles.css';
 import { IMG_URL_PROOF } from '../constants/imageURL';
 import { useCountdown } from '../hooks/useCountdown';
-import { CountDown } from '../components/checkout/CountDown';
+import { updateTransactionStatus } from '../helpers/checkout/updateTransaction';
+import { CheckoutTransferRightSide } from '../components/checkout/CheckoutTransferRightSide';
 
 const CheckoutTransfer = () => {
   const [order, setOrder] = useState(null);
@@ -32,11 +31,19 @@ const CheckoutTransfer = () => {
     }
   };
   useEffect(() => {
-    if (orderId && !openModal) {
+    if (orderId) {
       getOrderDetails(orderId);
     }
   }, [orderId, openModal]);
-
+  useEffect(() => {
+    if (order?.status === 'pending' && days + hours + minutes + seconds <= 0) {
+      updateTransactionStatus(order?.invoice, 'canceled');
+      setTimeout(() => {
+        getOrderDetails(orderId);
+        console.log('yaaay');
+      }, 1000);
+    }
+  }, [days, hours, minutes, seconds]);
   const handleFile = (e) => {
     setProofUpload(e.target.files[0]);
   };
@@ -144,80 +151,20 @@ const CheckoutTransfer = () => {
             </div>
           </Card>
         </div>
-        <div className="flex flex-col md:w-4/12">
-          {order?.img && order?.paymentMethod === 'transfer' && (
-            <Card className="mt-2 shadow-md">
-              <p className="font-semibold capitalize">bukti transfer</p>
-              <Zoom>
-                <img
-                  className="w-full h-64 object-contain"
-                  alt={order?.img}
-                  src={`${IMG_URL_PROOF}${order?.img}`}
-                />
-              </Zoom>
-              <p className="capitalize text-green-500 font-bold self-center">
-                bukti transfer telah diunggah
-              </p>
-            </Card>
-          )}
-          {!order?.img && order?.paymentMethod === 'transfer' && (
-            <Card className="mt-2 shadow-md">
-              <p className="font-semibold capitalize">upload bukti transfer</p>
-              <p className="font-semibold capitalize text-sm">Transfer ke:</p>
-              <div className="flex justify-between text-sm">
-                <p>Nama</p>
-                <p>Cosmo</p>
-              </div>
-              <div className="flex justify-between text-sm">
-                <p>Nomor Rekening</p>
-                <p>(BCA) 5220304321</p>
-              </div>
-              {minutes ? (
-                <CountDown hours={hours} minutes={minutes} seconds={seconds} />
-              ) : null}
-              {proofUpload && (
-                <Zoom>
-                  <img
-                    className="w-full h-64 object-contain"
-                    src={URL.createObjectURL(proofUpload)}
-                  />
-                </Zoom>
-              )}
-              {!proofUpload ? (
-                <Button className="bg-blue-500" onClick={handleClick}>
-                  Select File...
-                </Button>
-              ) : (
-                <div className="flex flex-col gap-y-4">
-                  <Button className="bg-blue-500" onClick={handleUploadProof}>
-                    Upload Proof
-                  </Button>
-                  <Button className="bg-blue-500" onClick={handleClick}>
-                    Select Another File...
-                  </Button>
-                </div>
-              )}
-              <input
-                ref={inputRef}
-                className="hidden"
-                type="file"
-                id="proofUpload"
-                name="proofUpload"
-                onChange={handleFile}
-                accept=".jpg,.png,.jpeg,.gif"
-              />
-              {order?.paymentMethod === 'transfer' &&
-                order?.status === 'pending' && (
-                  <Button
-                    color="failure"
-                    onClick={() => setOpenModal(!openModal)}
-                  >
-                    <p className="capitalize text-base">cancel order</p>
-                  </Button>
-                )}
-            </Card>
-          )}
-        </div>
+        <CheckoutTransferRightSide
+          order={order}
+          IMG_URL_PROOF={IMG_URL_PROOF}
+          hours={hours}
+          minutes={minutes}
+          seconds={seconds}
+          proofUpload={proofUpload}
+          handleClick={handleClick}
+          handleUploadProof={handleUploadProof}
+          inputRef={inputRef}
+          handleFile={handleFile}
+          setOpenModal={setOpenModal}
+          openModal={openModal}
+        />
       </div>
       <UserCancelOrderModal
         openModal={openModal}

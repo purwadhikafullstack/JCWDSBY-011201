@@ -89,7 +89,6 @@ function App() {
           if (!authResult) {
             throw 'Authentication failed';
           }
-          console.log(authResult);
           dispatch(login(authResult));
           localStorage.setItem('authToken', authResult.token);
         }
