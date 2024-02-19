@@ -4,6 +4,12 @@ on:
   push:
     branches:
       - main
+#Allow repo secrets
+env:
+  VITE_API_URL: ${{ secrets.VITE_API_URL }}
+  VITE_IMG_URL: ${{ secrets.VITE_IMG_URL }}
+  VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
