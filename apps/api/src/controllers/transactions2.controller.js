@@ -13,11 +13,11 @@ import {
   findVoucherCode,
 } from '../services/transactionAndOrder/transactions2.service';
 import { updateLimitVoucher } from '../services/transactionAndOrder/order.service';
-import path from 'path';
+import transactions from '../models/transactions.model';
 
 export const patchTransactionStatusController = async (req, res, next) => {
   try {
-    const dir = path.join(__dirname,'./src/assets/proof')
+    const dir = './src/assets/proof/';
     await DB.initialize();
     const result = await getOneTransaction(req);
     await DB.db.sequelize.transaction(async (t) => {
@@ -42,7 +42,7 @@ export const patchTransactionStatusController = async (req, res, next) => {
 export const patchPaymentProofController = async (req, res, next) => {
   await DB.initialize();
   try {
-    const dir = path.join(__dirname,'./src/assets/proof')
+    const dir = './src/assets/proof/';
     if (req.file?.filename) {
       const result = await DB.db.sequelize.transaction(async (t) => {
         const transData = await getOneTransaction(req);
