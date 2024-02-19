@@ -1,8 +1,9 @@
 import multer from 'multer';
 import fs from 'fs';
+import path from 'path';
 
 const uploader = (dir, maxSize) => {
-    const defaultdir = './src/assets';
+    const defaultdir = path.join(__dirname,'../assets');
     const storage = multer.diskStorage({
         destination: (req, file, cb) => {
             const path = dir ? defaultdir + dir : defaultdir;
