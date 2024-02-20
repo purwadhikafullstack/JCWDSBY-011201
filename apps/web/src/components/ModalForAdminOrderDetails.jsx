@@ -60,9 +60,11 @@ export function ModalForAdminOrderDetails({ openModal, setOpenModal, order }) {
             <div className="flex justify-between">
               <p>Status</p>
               <p
-                className={`capitalize ${
-                  order?.status === 'canceled' || order?.status === 'rejected'
-                    ? 'text-red-500 font-bold'
+                className={`capitalize font-bold ${
+                  order?.status === 'canceled' ||
+                  order?.status === 'rejected' ||
+                  order?.status === 'refunded'
+                    ? 'text-red-500'
                     : ''
                 }`}
               >

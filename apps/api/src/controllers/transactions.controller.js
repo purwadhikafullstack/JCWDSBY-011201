@@ -83,6 +83,7 @@ export const getTransactionDetailsController = async (req, res, next) => {
           img: transData.paymentProofImg,
           discountData: transData.discount,
           createdAt:transData.createdAt,
+          updatedAt:transData.updatedAt,
           items: [
             ...processedRes,
             {
