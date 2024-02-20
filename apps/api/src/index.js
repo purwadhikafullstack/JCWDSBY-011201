@@ -5,7 +5,8 @@ import { NODE_ENV, PORT } from './config';
 import router from './router';
 import { DB } from './db';
 import {
-  updateArrivedToFinishedScheduleJobs
+  updateArrivedToFinishedScheduleJobs,
+  updatePendingToCanceledScheduleJobs,
 } from './helper/scheduledTask/scheduler';
 
 /**
@@ -78,7 +79,8 @@ const main = () => {
   serveWebProjectBuildResult(app);
 
   updateArrivedToFinishedScheduleJobs();
-  
+  updatePendingToCanceledScheduleJobs();
+
   app.listen(PORT, (err) => {
     if (err) {
       console.log(`ERROR: ${err}`);
