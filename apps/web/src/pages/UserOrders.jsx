@@ -3,7 +3,7 @@ import API_CALL from '../helpers/API';
 import UserLayout from '../components/UserLayout';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { HiOutlineMagnifyingGlass } from 'react-icons/hi2';
-import { Pagination } from 'flowbite-react';
+import { Button, Pagination } from 'flowbite-react';
 import { DatepickerForOrders } from '../components/DatepickerForOrders';
 import { UserFinishOrderModal } from '../components/UserFinishOrderModal';
 import { getOrderDetails } from '../helpers/orders/getOrdersByInvoice';
@@ -87,34 +87,44 @@ const UserOrders = () => {
           </div>
           <label className="flex flex-col mb-4 font-bold">
             Payment Status
-            <select
-              id="payment"
-              defaultValue={'default'}
-              onChange={(e) => {
-                setSearchParams((value) => {
-                  value.delete('page');
-                  if (e.target.value === 'reset') {
-                    value.delete('status');
-                  } else {
+            <div className="flex gap-4">
+              <select
+                id="payment"
+                defaultValue={'default'}
+                onChange={(e) => {
+                  setSearchParams((value) => {
+                    value.delete('page');
                     value.set('status', e.target.value);
-                  }
-                  return value;
-                });
-              }}
-              className="bg-gray-50 border font-normal capitalize border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full lg:w-56 p-2.5 "
-            >
-              <option value={'default'} disabled>
-                Choose payment status
-              </option>
-              <option value={'reset'}>clear</option>
-              <option value={'rejected'}>rejected</option>
-              <option value={'canceled'}>canceled</option>
-              <option value={'pending'}>pending</option>
-              <option value={'paid'}>paid</option>
-              <option value={'checking'}>checking</option>
-              <option value={'arrived'}>arrived</option>
-              <option value={'finished'}>finished</option>
-            </select>
+                    return value;
+                  });
+                }}
+                className="bg-gray-50 border font-normal capitalize border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full lg:w-56 p-2.5 "
+              >
+                <option value={'default'} disabled>
+                  Choose payment status
+                </option>
+                <option value={'rejected'}>rejected</option>
+                <option value={'canceled'}>canceled</option>
+                <option value={'pending'}>pending</option>
+                <option value={'checking'}>checking</option>
+                <option value={'paid'}>paid</option>
+                <option value={'sending'}>sending</option>
+                <option value={'arrived'}>arrived</option>
+                <option value={'finished'}>finished</option>
+              </select>
+              <Button
+                color="blue"
+                onClick={() =>
+                  setSearchParams((value) => {
+                    value.delete('page');
+                    value.delete('status');
+                    return value;
+                  })
+                }
+              >
+                Clear
+              </Button>
+            </div>
           </label>
           <DatepickerForOrders setSearchParams={setSearchParams} />
           <div className="flex flex-col flex-grow gap-y-4 overflow-y-auto">

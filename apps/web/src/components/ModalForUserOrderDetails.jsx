@@ -6,6 +6,8 @@ import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
 import { useSearchParams } from 'react-router-dom';
 import { UserCancelOrderModal } from './UserCancelOrderModal';
+import { copyToClipboard } from '../helpers/orders/copyToClipboard';
+import { FaRegCopy } from 'react-icons/fa';
 export function ModalForUserOrderDetails({
   openModalDetail,
   setOpenModalDetail,
@@ -22,6 +24,7 @@ export function ModalForUserOrderDetails({
       onClose={() => {
         setSearchParams((value) => {
           value.delete('order_id');
+          return value
         });
         setOpenModalDetail(false);
         return;
@@ -32,13 +35,29 @@ export function ModalForUserOrderDetails({
         <div className="font-roboto overflow-y-auto md:px-3 ">
           <Card className="mt-2 shadow-md">
             <p className="font-bold text-lg capitalize">Information</p>
-            <div className="flex justify-between">
+            <div className="flex justify-between ">
               <p>Invoice</p>
-              <p>{order?.invoice}</p>
+              <div
+                className="flex items-center hover:cursor-pointer"
+                onClick={() => {
+                  copyToClipboard(order?.invoice ?? '');
+                }}
+              >
+                <p className="hover:cursor-pointer">{order?.invoice}</p>
+                <FaRegCopy />
+              </div>
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between ">
               <p>Resi</p>
-              <p>{order?.resi ?? '-'}</p>
+              <div
+                className="flex items-center hover:cursor-pointer"
+                onClick={() => {
+                  copyToClipboard(order?.resi ?? '');
+                }}
+              >
+                <p>{order?.resi || '-'}</p>
+                <FaRegCopy />
+              </div>
             </div>
             <div className="flex justify-between">
               <p>Tipe Pembayaran</p>
@@ -104,14 +123,13 @@ export function ModalForUserOrderDetails({
             </Card>
           )}
         </div>
-        {order?.paymentMethod === 'transfer' &&
-          order?.status === 'pending' && (
-            <Card className="shadow-none border-none">
-              <Button color="failure" onClick={() => setOpenModal(!openModal)}>
-                <p className="capitalize text-base">cancel order</p>
-              </Button>
-            </Card>
-          )}
+        {order?.paymentMethod === 'transfer' && order?.status === 'pending' && (
+          <Card className="shadow-none border-none">
+            <Button color="failure" onClick={() => setOpenModal(!openModal)}>
+              <p className="capitalize text-base">cancel order</p>
+            </Button>
+          </Card>
+        )}
         <UserCancelOrderModal
           openModal={openModal}
           setOpenModal={setOpenModal}
