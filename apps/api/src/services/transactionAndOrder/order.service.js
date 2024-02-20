@@ -39,7 +39,6 @@ export const getOrdersAdmin = async (
     offset,
     where: {
       paymentStatus: { [Op.substring]: status },
-      storeId,
       createdAt: {
         [Op.between]: [from, to],
       },
@@ -49,6 +48,7 @@ export const getOrdersAdmin = async (
         },
         { paymentMethod: { [Op.substring]: payment } },
       ],
+      ...(storeId && { storeId }),
     },
     raw: true,
     nest: true,
@@ -62,7 +62,6 @@ export const getOrdersAdmin = async (
       {
         model: stores,
         as: 'store',
-        required: true,
         attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
       },
     ],
