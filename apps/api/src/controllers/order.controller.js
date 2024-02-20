@@ -17,7 +17,7 @@ export const getAllTransactions = async (req, res, next) => {
     const invoice = req.query.order_id ?? '';
     const status = req.query.status ?? '';
     const payment = req.query.payment ?? '';
-    const storeUUID = req.query.store ?? 'bscRVKQHPOlaGshDx8KES';
+    const storeUUID = req.query.store ?? '';
     const sort =
       req.query.store === 'asc' ? ['createdAt', 'ASC'] : ['createdAt', 'DESC'];
     const { page, size } = req.query;
@@ -27,10 +27,10 @@ export const getAllTransactions = async (req, res, next) => {
     if (req.tokenData.role === 'admin' || req.tokenData.role === 'super') {
       const storeData = await findStoreIdByAdminId(req, req.tokenData.id);
       if (req.tokenData.role === 'super') {
-        const storeForSuper = (await getStoreByUUIDService(storeUUID)).toJSON();
+        const storeForSuper = await getStoreByUUIDService(storeUUID);
         const SuperOrderList = await getOrdersAdmin(
           req,
-          storeForSuper.id,
+          storeForSuper?.id,
           limit,
           offset,
           invoice,
