@@ -37,7 +37,7 @@ const Cart = () => {
       {cartItems && cartItems.length >= 1 ? (
         <div className="flex flex-col lg:flex-row font-roboto h-full lg:px-32 lg:py-4 lg:gap-x-5 overflow-x-auto ">
           <div className="w-full lg:w-8/12 h-full overflow-y-auto ">
-            <div className="flex tracking-tight mb-3 justify-center md:justify-start ">
+            <div className="flex tracking-tight mb-3 justify-center pt-2 md:justify-start ">
               <h1 className="text-4xl font-bold">Cart</h1>
             </div>
             <div className="flex flex-col">

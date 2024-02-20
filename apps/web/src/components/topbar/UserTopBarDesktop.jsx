@@ -14,6 +14,7 @@ const UserTopbarDesktop = (props) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const cartLength = useSelector((state) => state.cartReducer.items.length);
 
   return (
     <div
@@ -72,6 +73,11 @@ const UserTopbarDesktop = (props) => {
           >
             <span className="w-6 h-6">
               <HiOutlineShoppingCart size={'100%'} />
+              {cartLength && cartLength > 0 ? (
+                <div className="absolute inline-flex items-center justify-center w-5 h-5 text-[10px] font-bold text-white bg-red-500 border-2 border-white rounded-full top-3 right-[255px] min-[1200px]:right-[315px]">
+                  {cartLength}
+                </div>
+              ) : null}
             </span>
           </div>
           <ProfileMenu />

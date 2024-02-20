@@ -40,7 +40,7 @@ const AdminOrders = () => {
     });
     if (response) {
       setOrder(response.data.result);
-      setTotalPage(Math.ceil(response.data.count / 5));
+      setTotalPage(Math.ceil(response.data.count / 7));
     }
   };
   useEffect(() => {

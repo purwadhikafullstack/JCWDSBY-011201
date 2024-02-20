@@ -1,20 +1,28 @@
 import cron from 'node-cron';
 import transactions from '../../models/transactions.model';
 import { Op } from 'sequelize';
-import {  subDays } from 'date-fns';
+import { subDays } from 'date-fns';
+import { DB } from '../../db';
 
-export const initScheduleJobs = async () => {
-  const scheduledJobsFunc = cron.schedule('* * * * *', async () => {
-    console.log("I'm executed on a schedule!");
+export const updateArrivedToFinishedScheduleJobs = async () => {
+  const scheduledJobsFunc = cron.schedule('*/30 * * * *', async () => {
+    console.log('Operation update Arrived to Finished begin');
+    await DB.initialize();
     try {
-      const transData = await transactions.findAll({
-        where: {
-          paymentStatus: 'arrived',
-          updatedAt: { [Op.lte]: subDays(new Date(), 3) },
-        },
-        raw: true,
+      await DB.db.sequelize.transaction(async (t) => {
+        await transactions.update(
+          { paymentStatus: 'finished' },
+          {
+            where: {
+              paymentStatus: 'arrived',
+              updatedAt: { [Op.lte]: subDays(new Date(), 3) },
+            },
+            raw: true,
+            transaction: t,
+          },
+        );
       });
-      console.log('🚀 ~ scheduledJobsFunc ~ transData:', transData);
+      console.log('Operation update Arrived to Finished done');
     } catch (error) {
       console.log(error);
     }
