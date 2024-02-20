@@ -6,9 +6,11 @@ import {
   shippingAddressController,
 } from '../controllers/utils.controller';
 import { body, query } from 'express-validator';
+import { getStoresLandingController } from '../controllers/store.controller';
 
 const utilsRouter = Router();
 
+utilsRouter.get('/store', getStoresLandingController);
 utilsRouter.get('/store/nearest', nearestStoreController);
 utilsRouter.get(
   '/shipping-address',
