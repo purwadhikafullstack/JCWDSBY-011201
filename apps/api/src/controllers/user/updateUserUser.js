@@ -6,6 +6,7 @@ import {
 } from '../../services/user/user.service';
 import resTemplate from '../../helper/resTemplate';
 import { validationResult } from 'express-validator';
+import path from 'path';
 
 const updateUserUser = async (req, res, next) => {
   await DB.initialize();
@@ -30,7 +31,7 @@ const updateUserUser = async (req, res, next) => {
     if (req.file?.filename) {
       const dir = './src/assets/avatar/';
       if (currImage.dataValues.image) {
-        fs.unlinkSync(dir + currImage.dataValues.image);
+        fs.unlinkSync(path.join(dir + currImage.dataValues.image));
       }
     }
     await t.commit();
@@ -49,7 +50,7 @@ const updateUserUser = async (req, res, next) => {
   } catch (error) {
     await t.rollback();
     if (req.file?.filename) {
-      fs.unlinkSync(req.file.destination + '/' + req.file.filename);
+      fs.unlinkSync(path.join(req.file.destination + '/' + req.file.filename));
     }
     return res
       .status(error.rc || 500)
