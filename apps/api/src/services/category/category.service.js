@@ -1,10 +1,10 @@
-import { col, fn, literal } from "sequelize";
+import { literal } from "sequelize";
 import categories from "../../models/categories.model";
-import product from "../../models/product.model";
 import resTemplate from "../../helper/resTemplate";
 import { unlink, existsSync } from "fs";
+import path from "path";
 
-const dir = './src/assets/category/';
+const dir = path.join(__dirname,'../../category/');
 
 export const getCategoryService = async (queryParam) => {
   try {
@@ -50,8 +50,10 @@ export const createCategoryService = async (data, image) => {
     if (checkCategory) throw resTemplate(409, false, 'Category already exists');
 
     const value = image ? { name: data.name, image: image.filename } : { name: data.name };
+    console.log('Category Image >>>', image);
     return await categories.create(value);
   } catch (error) {
+    console.log('Catch Error Create Category', error);
     throw error;
   }
 };

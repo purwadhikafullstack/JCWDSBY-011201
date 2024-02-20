@@ -1,7 +1,8 @@
 import { createCategoryService, deleteCategoryService, getCategoryDetailService, getCategoryService, updateCategoryService } from "../services/category/category.service";
 import resTemplate from "../helper/resTemplate";
+import path from "path"
 
-const dir = './src/assets/category/';
+const dir = path.join(__dirname,'../../category/')
 
 export const getCategory = async (req, res, next) => {
   try {
@@ -15,7 +16,8 @@ export const getCategory = async (req, res, next) => {
 
 export const createCategory = async (req, res, next) => {
   try {
-    await createCategoryService(req.body, req.file)
+    const result = await createCategoryService(req.body, req.file)
+    console.log('Create Category Controller :', result);
     res.status(201).json(resTemplate(201, true, 'Create Category Success'));
   } catch (error) {
     next(error);

@@ -41,6 +41,8 @@ import EditAdmin from './pages/admin/EditAdmin';
 import getNearestStore from './helpers/getNearestStore';
 import UserChangeEmail from './pages/UserChangeEmail';
 import VerifyEmail from './pages/VerifyEmail';
+import TesCheckOut from './pages/TesCheckOut';
+
 import { fetchCartItems } from './redux/slice/cartSlice';
 import Checkout from './pages/Checkout';
 import UserOrders from './pages/UserOrders';
@@ -89,7 +91,6 @@ function App() {
           if (!authResult) {
             throw 'Authentication failed';
           }
-          console.log(authResult);
           dispatch(login(authResult));
           localStorage.setItem('authToken', authResult.token);
         }
@@ -194,6 +195,14 @@ function App() {
           element={
             <PrivateRoute role={'user'} navigate={'/login'}>
               <UserEditAddress />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/tes/checkout"
+          element={
+            <PrivateRoute role={'user'} navigate={'/login'}>
+              <TesCheckOut />
             </PrivateRoute>
           }
         />

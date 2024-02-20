@@ -45,7 +45,6 @@ export function CheckoutLeftSide({
                 if (selectedAddress.UUID !== value.UUID) {
                   setCourier(null);
                 }
-
                 setSelectedAddress(value);
               }}
             />
@@ -64,7 +63,7 @@ export function CheckoutLeftSide({
           </Card>
           <Card className="flex flex-col rounded-none capitalize text-xs md:text-base mb-3 w-full ">
             <p className="font-semibold">rincian pesanan</p>
-            <div className="flex flex-col md:gap-3 overflow-auto ">
+            <div className="flex flex-col gap-2 md:gap-4 overflow-auto ">
               {cartItems.map((val, idx) => {
                 return (
                   <div className="justify-between flex w-full" key={idx}>
@@ -78,7 +77,8 @@ export function CheckoutLeftSide({
                       <div className="flex-col  items-start text-start gap-y-2 flex w-full">
                         <div className="flex-col flex">
                           <div className="text-black text-xs md:text-sm capitalize truncate  ">
-                            {val.productName}
+                            {val.productName}{' '}
+                            <span className="font-semibold">X{val.amount}</span>
                           </div>
                         </div>
                         <div className="flex flex-row justify-start items-start gap-1 w-full ">

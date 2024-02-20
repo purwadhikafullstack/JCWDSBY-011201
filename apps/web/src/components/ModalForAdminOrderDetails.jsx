@@ -5,7 +5,12 @@ import { IMG_URL_PROOF } from '../constants/imageURL';
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
 import { copyToClipboard } from '../helpers/orders/copyToClipboard';
-import { cancelOrdersForAdmin, sendingOrderForAdmin, updateStatusForTransferAdmin } from '../helpers/orders/adminFunction';
+import {
+  cancelOrdersForAdmin,
+  sendingOrderForAdmin,
+  updateStatusForTransferAdmin,
+} from '../helpers/orders/adminFunction';
+import { FaRegCopy } from 'react-icons/fa';
 export function ModalForAdminOrderDetails({ openModal, setOpenModal, order }) {
   const [resi, setResi] = useState('');
   const totalPrice = reduceTotalPrice(order);
@@ -20,27 +25,29 @@ export function ModalForAdminOrderDetails({ openModal, setOpenModal, order }) {
         <div className="font-roboto overflow-y-auto px-2 ">
           <Card className="mt-2 shadow-md">
             <p className="font-bold text-lg capitalize">Information</p>
-            <div className="flex justify-between">
+            <div className="flex justify-between ">
               <p>Invoice</p>
-              <p
-                className="hover:cursor-pointer"
+              <div
+                className="flex items-center hover:cursor-pointer"
                 onClick={() => {
                   copyToClipboard(order?.invoice ?? '');
                 }}
               >
-                {order?.invoice}
-              </p>
+                <p className="hover:cursor-pointer">{order?.invoice}</p>
+                <FaRegCopy />
+              </div>
             </div>
             <div className="flex justify-between ">
               <p>Resi</p>
-              <p
-                className="hover:cursor-pointer"
+              <div
+                className="flex items-center hover:cursor-pointer"
                 onClick={() => {
                   copyToClipboard(order?.resi ?? '');
                 }}
               >
-                {order?.resi || '-'}
-              </p>
+                <p>{order?.resi || '-'}</p>
+                <FaRegCopy />
+              </div>
             </div>
             <div className="flex justify-between">
               <p>Tipe Pembayaran</p>
@@ -53,9 +60,11 @@ export function ModalForAdminOrderDetails({ openModal, setOpenModal, order }) {
             <div className="flex justify-between">
               <p>Status</p>
               <p
-                className={`capitalize ${
-                  order?.status === 'canceled' || order?.status === 'rejected'
-                    ? 'text-red-500 font-bold'
+                className={`capitalize font-bold ${
+                  order?.status === 'canceled' ||
+                  order?.status === 'rejected' ||
+                  order?.status === 'refunded'
+                    ? 'text-red-500'
                     : ''
                 }`}
               >
@@ -108,7 +117,11 @@ export function ModalForAdminOrderDetails({ openModal, setOpenModal, order }) {
                   <Button
                     color="success"
                     onClick={() => {
-                      updateStatusForTransferAdmin('paid', order?.invoice,setOpenModal);
+                      updateStatusForTransferAdmin(
+                        'paid',
+                        order?.invoice,
+                        setOpenModal,
+                      );
                     }}
                   >
                     ACCEPT Payment Proof
@@ -116,7 +129,11 @@ export function ModalForAdminOrderDetails({ openModal, setOpenModal, order }) {
                   <Button
                     color="failure"
                     onClick={() => {
-                      updateStatusForTransferAdmin('rejected', order?.invoice,setOpenModal);
+                      updateStatusForTransferAdmin(
+                        'rejected',
+                        order?.invoice,
+                        setOpenModal,
+                      );
                     }}
                   >
                     REJECT Payment Proof
@@ -168,7 +185,11 @@ export function ModalForAdminOrderDetails({ openModal, setOpenModal, order }) {
               <Button
                 color="failure"
                 onClick={() => {
-                  cancelOrdersForAdmin('refunded', order?.invoice,setOpenModal);
+                  cancelOrdersForAdmin(
+                    'refunded',
+                    order?.invoice,
+                    setOpenModal,
+                  );
                 }}
               >
                 CANCEL ORDER

@@ -6,7 +6,7 @@ import { replace } from 'formik';
 import { useDispatch } from 'react-redux';
 import { login } from '../redux/slice/userSlice';
 import { useState } from 'react';
-const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+const clientId = "1076033600801-pt7pinnejol3nlse77t6kn6j81f7giq3.apps.googleusercontent.com";
 
 const SignUpWithGoogle = () => {
   const navigate = useNavigate();

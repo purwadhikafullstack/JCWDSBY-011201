@@ -6,6 +6,10 @@ import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
 import { useSearchParams } from 'react-router-dom';
 import { UserCancelOrderModal } from './UserCancelOrderModal';
+import { copyToClipboard } from '../helpers/orders/copyToClipboard';
+import { FaRegCopy } from 'react-icons/fa';
+import { useDayCountdown } from '../hooks/useDayCountDown';
+import { DaysCountDown } from './DaysCountDown';
 export function ModalForUserOrderDetails({
   openModalDetail,
   setOpenModalDetail,
@@ -14,6 +18,7 @@ export function ModalForUserOrderDetails({
   const totalPrice = reduceTotalPrice(order);
   const [searchParams, setSearchParams] = useSearchParams();
   const [openModal, setOpenModal] = useState(false);
+  const [days, hours, minutes, seconds] = useDayCountdown(order?.updatedAt, 3);
 
   return (
     <Modal
@@ -22,6 +27,7 @@ export function ModalForUserOrderDetails({
       onClose={() => {
         setSearchParams((value) => {
           value.delete('order_id');
+          return value;
         });
         setOpenModalDetail(false);
         return;
@@ -30,15 +36,49 @@ export function ModalForUserOrderDetails({
       <Modal.Header className="capitalize">Detail Transaksi</Modal.Header>
       <Modal.Body>
         <div className="font-roboto overflow-y-auto md:px-3 ">
+          {order?.updatedAt &&
+            order?.status === 'arrived' &&
+            days + hours + minutes + seconds >= 0 && (
+              <div className="flex flex-col text-center gap-2">
+                <p className="self-center capitalize font-semibold">
+                  status akan berubah secara otomatis menjadi{' '}
+                  <span className="text-emerald-500">Finished</span> dalam waktu
+                  :
+                </p>
+                <DaysCountDown
+                  days={days}
+                  hours={hours}
+                  minutes={minutes}
+                  seconds={seconds}
+                  displayText={true}
+                />
+              </div>
+            )}
           <Card className="mt-2 shadow-md">
             <p className="font-bold text-lg capitalize">Information</p>
-            <div className="flex justify-between">
+            <div className="flex justify-between ">
               <p>Invoice</p>
-              <p>{order?.invoice}</p>
+              <div
+                className="flex items-center hover:cursor-pointer"
+                onClick={() => {
+                  copyToClipboard(order?.invoice ?? '');
+                }}
+              >
+                <p className="hover:cursor-pointer">{order?.invoice}</p>
+                <FaRegCopy />
+              </div>
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between ">
               <p>Resi</p>
-              <p>{order?.resi ?? '-'}</p>
+              <div
+                className="flex items-center hover:cursor-pointer"
+                onClick={() => {
+                  copyToClipboard(order?.resi ?? '');
+                }}
+              >
+                <p>{order?.resi || '-'}</p>
+                <FaRegCopy />
+              </div>
             </div>
             <div className="flex justify-between">
               <p>Tipe Pembayaran</p>
@@ -51,9 +91,11 @@ export function ModalForUserOrderDetails({
             <div className="flex justify-between">
               <p>Status</p>
               <p
-                className={`capitalize ${
-                  order?.status === 'canceled' || order?.status === 'rejected'
-                    ? 'text-red-500 font-bold'
+                className={`capitalize font-bold ${
+                  order?.status === 'canceled' ||
+                  order?.status === 'rejected' ||
+                  order?.status === 'refunded'
+                    ? 'text-red-500'
                     : ''
                 }`}
               >
@@ -104,14 +146,13 @@ export function ModalForUserOrderDetails({
             </Card>
           )}
         </div>
-        {order?.paymentMethod === 'transfer' &&
-          order?.status === 'pending' && (
-            <Card className="shadow-none border-none">
-              <Button color="failure" onClick={() => setOpenModal(!openModal)}>
-                <p className="capitalize text-base">cancel order</p>
-              </Button>
-            </Card>
-          )}
+        {order?.paymentMethod === 'transfer' && order?.status === 'pending' && (
+          <Card className="shadow-none border-none">
+            <Button color="failure" onClick={() => setOpenModal(!openModal)}>
+              <p className="capitalize text-base">cancel order</p>
+            </Button>
+          </Card>
+        )}
         <UserCancelOrderModal
           openModal={openModal}
           setOpenModal={setOpenModal}
