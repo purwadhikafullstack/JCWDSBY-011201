@@ -20,7 +20,10 @@ export function FreeCartItems({ val, idx, checkall, setCheckallFalse }) {
       <div className="flex w-4"></div>
       <div className="justify-start items-start gap-1 flex w-full">
         <div className=" rounded justify-center items-center flex">
-          <img className="w-12 h-10 object-cover" src={val.imageLink} />
+          <img
+            className="w-12 lg:w-20 h-12 lg:h-20 object-cover"
+            src={val.imageLink}
+          />
         </div>
         <div className="flex-col  items-start text-start gap-y-2 flex w-full">
           <div className="flex-col flex">

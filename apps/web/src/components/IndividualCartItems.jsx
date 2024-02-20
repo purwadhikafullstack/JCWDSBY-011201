@@ -44,7 +44,7 @@ export function IndividualCartItems({ val, idx, checkall, setCheckallFalse }) {
         <div className="flex justify-start gap-x-2">
           <div className=" rounded justify-center items-center flex">
             <img
-              className="w-16 lg:w-24 h-12 lg:h-20 object-cover"
+              className="w-12 lg:w-20 h-12 lg:h-20 object-cover"
               src={val.imageLink}
             />
           </div>

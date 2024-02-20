@@ -1,3 +1,4 @@
+import customToast from "../../utils/toast";
 import API_CALL from "../API";
 
 export const sendingOrderForAdmin = async (status, invoice, resi,setOpenModal) => {
@@ -34,6 +35,7 @@ export const sendingOrderForAdmin = async (status, invoice, resi,setOpenModal) =
       setOpenModal(false);
     } catch (error) {
       console.log(error);
+      customToast('error', error.response.data.message);
     }
   };
 
@@ -52,5 +54,6 @@ export const sendingOrderForAdmin = async (status, invoice, resi,setOpenModal) =
       setOpenModal(false);
     } catch (error) {
       console.log(error);
+      customToast('error', error.response.data.message);
     }
   };

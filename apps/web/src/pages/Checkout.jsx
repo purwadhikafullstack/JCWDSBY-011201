@@ -141,6 +141,9 @@ const Checkout = () => {
           id="snap-container"
           className="flex justify-center self-center md:w-[768px]"
         ></div>
+          <div className="flex tracking-tight mb-3 lg:px-32 pt-1 justify-center md:justify-start ">
+            <h1 className=" text-2xl lg:text-4xl font-bold">Checkout</h1>
+          </div>
         <div className="w-full h-full flex flex-col overflow-auto lg:flex-row lg:gap-x-4 lg:px-32 lg:py-4">
           <CheckoutLeftSide
             showSnap={showSnap}

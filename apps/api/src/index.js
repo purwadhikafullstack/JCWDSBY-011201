@@ -4,6 +4,10 @@ import { join } from 'path';
 import { NODE_ENV, PORT } from './config';
 import router from './router';
 import { DB } from './db';
+import {
+  updateArrivedToFinishedScheduleJobs,
+  updatePendingToCanceledScheduleJobs,
+} from './helper/scheduledTask/scheduler';
 
 /**
  * Serve "web" project build result (for production only)
@@ -73,6 +77,9 @@ const main = () => {
 
   globalAPIErrorHandler(app);
   serveWebProjectBuildResult(app);
+
+  updateArrivedToFinishedScheduleJobs();
+  updatePendingToCanceledScheduleJobs();
 
   app.listen(PORT, (err) => {
     if (err) {

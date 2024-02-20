@@ -28,7 +28,8 @@ const UserTopbar = () => {
         className={`flex md:hidden cursor-pointer ${
           location.pathname.includes('category') ||
           location.pathname.includes('product') ||
-          location.pathname.includes('cart')
+          location.pathname.includes('cart')||
+          location.pathname.includes('checkout')
             ? 'hidden'
             : ''
         }`}
@@ -43,7 +44,8 @@ const UserTopbar = () => {
         className={`${
           location.pathname.includes('category') ||
           location.pathname.includes('product') ||
-          location.pathname.includes('cart')
+          location.pathname.includes('cart')||
+          location.pathname.includes('checkout')
             ? 'flex'
             : 'hidden'
         } md:hidden items-center cursor-pointer`}
